@@ -11,7 +11,8 @@ VAR trust_he_min = 0
 VAR trust_ma_er_fu = 0
 VAR knows_bloodline = false
 VAR has_fumen_key = false
-VAR accepted_help = false
+VAR discipline_pending = false
+VAR badge_holder = "unassigned"
 
 -> arrival
 
@@ -31,7 +32,6 @@ VAR accepted_help = false
 * [沉默不语]
     ~ trust_ma_er_fu -= 1
     ~ reputation += 1
-    ~ accepted_help = false
     -> kneel_curse
 * [忽略她，直接路过]
     ~ reputation -= 1
@@ -47,6 +47,7 @@ VAR accepted_help = false
 * [先道歉]
     ~ reputation -= 1
     ~ trust_ma_er_fu += 1
+    ~ discipline_pending = true
     “昨天的事，对不起。我会赔你的制服。” # speaker:li_er_ha
     “赔得起吗？”马二福冷笑，但魔杖没有立刻抬起。 # speaker:ma_er_fu # emotion:skeptical
     “登记结束后，跟我去校纪室说明。”她补了一句。 # speaker:ma_er_fu
@@ -55,11 +56,15 @@ VAR accepted_help = false
 === kneel_curse ===
 马二福抬起一根银白色魔杖。礼堂里嘈杂的人声像被谁掐住了喉咙。 # speaker:narrator # audio:magic-hum
 
-“敢无视我，”她说，“下跪咒！” # speaker:ma_er_fu # emotion:angry
+{discipline_pending:
+    “先把校纪室的事说清楚，再谈赔偿。”她说，“下跪咒！” # speaker:ma_er_fu # emotion:angry
+- else:
+    “敢无视我，”她说，“下跪咒！” # speaker:ma_er_fu # emotion:angry
+}
 
 膝盖上方传来一股沉重的压力。你差点跪下，耳边却先响起了一个带着不合时宜 BGM 的声音。 # speaker:narrator # music:system-awakening
 
-“叮。福运辅助系统激活。宿主已重生至霍海魔法大学，检测到高危法术。” # speaker:system
+“叮。意识置换确认。宿主已进入霍海魔法大学，检测到高危法术。” # speaker:system
 
 你在心里骂了一句：怎么才来？
 
@@ -103,7 +108,6 @@ VAR accepted_help = false
 “我只相信账单。”她收回魔杖，“这笔账我记下了。” # speaker:ma_er_fu
 ~ trust_ma_er_fu += 1
 ~ investigation += 1
-~ accepted_help = true
 罗金恩摸黑抓住你的袖口。 # speaker:jin_en
 “哈哥，这种时候还敢乱借魔力，你真是越来越像你的外号了。” # speaker:jin_en
 ~ trust_jin_en += 1
@@ -120,7 +124,6 @@ VAR accepted_help = false
 
 “起来。”马二福说，“别让别人以为我喜欢欺负跪着的人。” # speaker:ma_er_fu
 ~ trust_ma_er_fu += 1
-~ accepted_help = true
 罗金妮从旁边递来一只手。 # speaker:jin_ni
 “先站起来，哈哥。等你站稳了，再决定要不要还回去。” # speaker:jin_ni
 ~ trust_jin_ni += 1
@@ -145,32 +148,55 @@ VAR accepted_help = false
 * [把旧校徽交给何敏]
     ~ trust_he_min += 2
     ~ investigation += 1
+    ~ badge_holder = "he_min"
     何敏没有追问你为什么相信她，只把校徽夹进自己的笔记本。她提醒你：“这只是线索，不是你血脉的证明。” # speaker:he_min
     -> first_night
 * [先交给罗金恩保管]
     ~ trust_jin_en += 2
     ~ reputation += 1
+    ~ badge_holder = "jin_en"
     罗金恩把校徽塞进袖口：“我不懂校史，但我懂什么时候该把东西藏好。” # speaker:jin_en
     -> first_night
-* [追上马二福，把校徽给她看]
+* [先由我保管]
+    ~ courage += 1
+    ~ badge_holder = "li_er_ha"
+    你把校徽贴身收好。系统立刻发出一声短促的警告。 # speaker:narrator # audio:system-warning
+    “独自保管会让你承担更多风险。请确认，这不是系统建议。” # speaker:system
+    -> badge_private
+
+=== badge_private ===
+你走到回廊的阴影里，手指碰到校徽缺口。远处马二福还没有离开。 # speaker:narrator
+
+* [追上马二福，给她看]
     ~ trust_ma_er_fu += 2
     ~ investigation += 1
+    ~ badge_holder = "ma_er_fu"
     你在回廊口追上马二福。她看到校徽缺口时，脸色第一次真正变了。 # speaker:ma_er_fu # emotion:guarded
     “这东西不该出现在你手里。” # speaker:ma_er_fu
     “那它应该在谁手里？” # speaker:li_er_ha
     马二福没有回答，只伸手按住校徽。两人的指尖同时感到一阵冰凉。 # speaker:narrator # audio:seal-pulse
     -> first_night
-* [把校徽留在自己手里]
-    ~ courage += 1
+* [继续自己保管]
     ~ causality_debt += 1
-    你把校徽贴身收好。系统立刻发出一声短促的警告。 # speaker:narrator # audio:system-warning
-    “宿主选择独自承担。请确认：这不是系统建议。” # speaker:system
+    你把校徽重新收好。系统发出一声短促的警告。 # speaker:narrator # audio:system-warning
+    “记录风险，不替你做决定。” # speaker:system
     -> first_night
 
 === first_night ===
 新生注册结束，礼堂外的雨也停了。远处钟楼敲响第九声，回声在校园地下停了半拍。 # speaker:narrator # music:bell-distant
 
 你们四个人站在回廊阴影里。没人知道那枚旧校徽究竟打开什么，但每个人都知道，今晚之后，霍海不会再只是大学。 # speaker:narrator
+
+{discipline_pending:
+    马二福在校纪员的记录纸上签下自己的名字。她看了你一眼：“明早，校纪室。别迟到。” # speaker:ma_er_fu
+- else:
+    马二福没有再提下跪咒，只把魔杖收回袖中。她看了你一眼，像是在记住一笔尚未结清的账。 # speaker:ma_er_fu
+}
+
+{badge_holder == "he_min": 何敏把校徽收进内袋，确认道：“明天由我带它去查校史。” # speaker:he_min}
+{badge_holder == "jin_en": 罗金恩拍了拍袖口：“校徽在我这里，今晚谁也别单独行动。” # speaker:jin_en}
+{badge_holder == "ma_er_fu": 马二福的手指仍压着校徽缺口，像是在确认它没有再次发热。 # speaker:ma_er_fu}
+{badge_holder == "li_er_ha": 你按住口袋里的校徽，感觉那枚缺口像一扇没有合上的门。 # speaker:li_er_ha}
 
 何敏说：“明晚，旧档案室门口。迟到的人负责解释。” # speaker:he_min
 罗金恩说：“我带吃的。” # speaker:jin_en

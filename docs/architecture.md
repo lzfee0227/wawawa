@@ -1,6 +1,6 @@
 # Architecture and API contract
 
-The authoritative game service uses `inkjs` in Node.js/TypeScript. Fastify exposes HTTP, React/Vite provides a local authoring and simulator UI, and MongoDB persists drafts, immutable versions and sessions. Future MCP adapters call the same service functions. Binary audio belongs in object storage, not story/session documents.
+The authoritative game service uses `inkjs` in Node.js/TypeScript. Fastify exposes HTTP, React/Vite provides a local authoring and simulator UI, and MongoDB persists drafts, immutable versions and sessions. The MCP play adapter specified in SDD-002 calls the same service functions. Binary audio belongs in object storage, not story/session documents.
 
 ## Shared types (contract frozen for initial parallel work)
 
@@ -48,6 +48,12 @@ Compile once on publish; sessions load compiled JSON. Runtime work is bounded; d
 
 Normal/dev/CI browser execution uses MongoDB via `MONGODB_URI`. Unit tests may use a repository test double, but the application must never silently fall back to memory. Bind localhost by default. Production authentication, ownership, authorization, quota controls and deployment are outside the initial local prototype.
 
-## Future transport
+## MCP play transport
 
-MCP returns story results and accepts validated selections; it does not guarantee host audio playback or raw ASR forwarding. Verify xiaozhi.me playback/auto-listen capabilities with one device before committing to hosted integration. A compatible self-hosted Xiaozhi backend is an alternative, not equivalent to xiaozhi.me support.
+SDD-002 is the play contract. One factory registers `list_stories`, `start_session`, `get_session`, `choose_option`, and the `play_turn` prompt. stdio and Streamable HTTP `/mcp` on the API process both use that factory. The server instance stores no game progress; sessions stay in MongoDB.
+
+Successful tool results are one JSON text block: a published-story list, or a play snapshot with `sessionId`, `turnId`, `revision`, lines, resolved `speakerName` when the tag matches a character, choices, characters, and variables. Results omit Ink state and retry receipts. `get_session` does not advance. `choose_option` uses the HTTP choice rules, including client-generated `requestId` and exactly one of `choiceId` or `input`.
+
+Service errors become MCP tool errors whose text starts with `CODE: message`. Invalid tool arguments are rejected by the SDK and do not call the service. The adapter does not author, compile, publish, play audio, or interpret raw speech. A host that only displays the returned text still satisfies the contract.
+
+stdio reserves stdout for JSON-RPC. HTTP uses the existing `HOST` and `PORT`, localhost by default. Device playback, including Xiaozhi, stays unverified and outside this adapter.

@@ -97,9 +97,8 @@ VAR badge_returned_by_ma = false
 
     礼堂里有人倒吸冷气。马二福的魔杖第一次偏离了你的眉心。 # speaker:narrator
 
-    “低阶立界？” # speaker:he_min
     何敏在旁边小声说。 # speaker:narrator
-    “你明明没有参加过护界预备课。” # speaker:he_min
+    “低阶立界？你明明没有参加过护界预备课。” # speaker:he_min
 
 “我也想知道我刚才做了什么。” # speaker:li_er_ha
 

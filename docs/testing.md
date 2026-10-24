@@ -33,7 +33,7 @@
 5. 修改剧本并发布，旧会话继续原版本，新会话读取新版本。
 6. 用键盘和窄屏检查编辑器、模拟器、错误提示及焦点。
 
-真实音频、语音识别和小智设备尚未实现，不计入“已通过”。M01–M07 由进程内 MCP 客户端覆盖，M08 由 API 进程上的 `/mcp` 和失败启动时的 stdio 输出覆盖。C01–C07 随工作室 MCP 测试台实现后补运行证据。设备试点仍须单独验证播完转监听、打断、重连和音色一致性。
+真实音频、语音识别和小智设备尚未实现，不计入“已通过”。M01–M07 由进程内 MCP 客户端覆盖，M08 由 API 进程上的 `/mcp` 和失败启动时的 stdio 输出覆盖。C01–C07 由工作室 MCP 测试台的组件测试、客户端单测和浏览器流程覆盖。设备试点仍须单独验证播完转监听、打断、重连和音色一致性。
 
 ## 2026-10-24 本地运行验收
 
@@ -75,3 +75,7 @@ E2E_MONGODB_URI=mongodb://127.0.0.1:27018/wawawa_e2e npm run test:e2e
 ## 2026-10-24 MCP 游玩
 
 [传输检查](https://github.com/lzfee0227/wawawa/actions/runs/40103467985) 在 Node 22 上通过：服务端 19 个测试、前端 20 个、MongoDB 集成 2 个、Playwright 2 个。其中包含官方客户端的分支游玩、非法选择、`/mcp` 和 stdio 失败启动。没有宿主模型对话、配音或小智记录。阶段分数见 [MCP 游玩评审](reviews/mcp-play.md)。本机若是 Node 25，既有前端测试需要 `NODE_OPTIONS=--no-experimental-webstorage`，否则 Node 自带的 `localStorage` 会让组件测试失败。
+
+## 2026-10-24 MCP 测试台
+
+本地 Node 25 在 `NODE_OPTIONS=--no-experimental-webstorage` 下通过 `npm run check`：服务端 19 个测试，前端 35 个测试。前端覆盖统计包含 `App.tsx`、`api.ts`、`mcp-client.ts`、`McpConsole.tsx`，行覆盖 100%，语句 94.61%，分支 85.45%，函数 99.16%。Playwright 3 个通过，其中包含经真实 `/mcp` 发布、非法原话、选项推进、读取不推进，以及 390px 无横向溢出。远端 [Quality](https://github.com/lzfee0227/wawawa/actions/runs/40108062395) 在 Node 22 上通过，包含 MongoDB 集成和 Chromium。浏览器里走通了同一条人工操作路径。测试台仍然不是宿主模型，也没有播放音频。

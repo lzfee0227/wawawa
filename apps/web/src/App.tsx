@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, ApiError, type Character, type Compilation, type Draft, type Session, type Turn, type Version } from './api';
+import { McpConsole } from './McpConsole';
 import { sampleCharacters, sampleSource } from './sample';
 
 const sessionKey = (storyId: string) => `wawawa.session.${storyId}`;
@@ -17,7 +18,7 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
-  const [tab, setTab] = useState<'write' | 'play'>('write');
+  const [tab, setTab] = useState<'write' | 'play' | 'mcp'>('write');
   const [loading, setLoading] = useState(true);
   const requestLock = useRef(false);
   const selected = useRef<string | null>(null);
@@ -156,8 +157,8 @@ export default function App() {
       <div className="feedback" aria-live="polite">{notice && <p className="notice">{notice}</p>}</div>
       {error && <div className="error-banner" role="alert"><strong>操作未完成</strong><span>{error}</span><button onClick={() => setError('')} aria-label="关闭错误提示">×</button></div>}
       {loading ? <div className="empty"><span className="loading-dot" /><h2>正在打开故事书架</h2><p>正在连接本地剧情服务。</p></div> : !draft ? <div className="empty welcome"><div className="wave" aria-hidden="true">▂ ▅ ▃ ▇ ▄ ▆ ▂</div><span className="eyebrow">WRITE · CHOOSE · REMEMBER</span><h2>用声音构建世界，<br />用选择改变故事。</h2><p>从「雨夜来信」开始，验证角色、好感度与长线分支。<br />先让故事跑通，再让角色开口。</p><button className="primary" onClick={createStory} disabled={busy}>创建第一个故事</button>{error && <p>请确认后端与 MongoDB 已启动，然后刷新页面。</p>}</div> : <>
-        <div className="workspace-nav"><div className="tabs" role="tablist" aria-label="工作模式"><button role="tab" aria-selected={tab === 'write'} onClick={() => setTab('write')}>01 剧本工作室</button><button role="tab" aria-selected={tab === 'play'} onClick={() => setTab('play')}>02 对话模拟器</button></div><span className={`save-state ${dirty ? 'unsaved' : ''}`}>{busy ? '处理中…' : dirty ? '● 有未保存修改' : `已保存 · r${draft.revision}`}</span></div>
-        {tab === 'write' ? <section className="author-layout" aria-label="剧本工作室">
+        <div className="workspace-nav"><div className="tabs" role="tablist" aria-label="工作模式"><button role="tab" aria-selected={tab === 'write'} onClick={() => setTab('write')}>01 剧本工作室</button><button role="tab" aria-selected={tab === 'play'} onClick={() => setTab('play')}>02 对话模拟器</button><button role="tab" aria-selected={tab === 'mcp'} onClick={() => setTab('mcp')}>03 MCP 测试</button></div><span className={`save-state ${dirty ? 'unsaved' : ''}`}>{busy ? '处理中…' : dirty ? '● 有未保存修改' : `已保存 · r${draft.revision}`}</span></div>
+        {tab === 'mcp' ? <McpConsole /> : tab === 'write' ? <section className="author-layout" aria-label="剧本工作室">
           <div className="editor-panel panel"><div className="panel-heading"><div><span className="tiny-label">SCRIPT</span><h2>编写故事</h2></div><span className="chip">Ink</span></div>
             <label className="field-label" htmlFor="story-title">剧本名称</label><input id="story-title" value={draft.title} maxLength={120} disabled={busy} onChange={event => edit({ title: event.target.value })} />
             <div className="source-label"><label className="field-label" htmlFor="story-source">Ink 剧本</label><span>{draft.source.split('\n').length} 行</span></div>

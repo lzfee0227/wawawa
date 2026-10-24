@@ -78,4 +78,4 @@ E2E_MONGODB_URI=mongodb://127.0.0.1:27018/wawawa_e2e npm run test:e2e
 
 ## 2026-10-24 MCP 测试台
 
-本地 Node 25 在 `NODE_OPTIONS=--no-experimental-webstorage` 下通过 `npm run check`：服务端 19 个测试，前端 35 个测试。前端覆盖统计包含 `App.tsx`、`api.ts`、`mcp-client.ts`、`McpConsole.tsx`，行覆盖 100%，语句 94.61%，分支 85.45%，函数 99.16%。Playwright 3 个通过，其中包含经真实 `/mcp` 发布、非法原话、选项推进、读取不推进，以及 390px 无横向溢出。MongoDB 集成测试留在远端检查里复跑，这次本地没有单独重跑。浏览器里走通了同一条人工操作路径。测试台仍然不是宿主模型，也没有播放音频。
+本地 Node 25 在 `NODE_OPTIONS=--no-experimental-webstorage` 下通过 `npm run check`：服务端 19 个测试，前端 35 个测试。前端覆盖统计包含 `App.tsx`、`api.ts`、`mcp-client.ts`、`McpConsole.tsx`，行覆盖 100%，语句 94.61%，分支 85.45%，函数 99.16%。Playwright 3 个通过，其中包含经真实 `/mcp` 发布、非法原话、选项推进、读取不推进，以及 390px 无横向溢出。远端 [Quality](https://github.com/lzfee0227/wawawa/actions/runs/40108062395) 在 Node 22 上通过，包含 MongoDB 集成和 Chromium。浏览器里走通了同一条人工操作路径。测试台仍然不是宿主模型，也没有播放音频。

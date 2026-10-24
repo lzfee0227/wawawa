@@ -26,6 +26,9 @@ VAR true_plan = false
 VAR echo_shared_cost = false
 VAR echo_revocable_oath = false
 VAR echo_partner = false
+VAR run_echo_shared_cost = false
+VAR run_echo_revocable_oath = false
+VAR run_number = 1
 
 -> arrival
 
@@ -34,6 +37,12 @@ VAR echo_partner = false
 
 你，李博特，醒来时发现自己成了霍海魔法大学的新生李二哈。 # speaker:narrator
 你的记忆和这具身体的记忆在脑中撞成一团；你还没有资格把任何一段人生说成自己的。 # speaker:narrator
+{run_number > 1:
+    这是第 {run_number} 次醒来。系统没有带回上一轮的人生，只留下已经验证过的两道回响。 # speaker:system
+    {run_echo_shared_cost: “回响一：代价可以由多人分担。” # speaker:system}
+    {run_echo_revocable_oath: “回响二：权限必须可以撤回。” # speaker:system}
+    你仍然需要在这一轮重新取得证据和信任。 # speaker:narrator
+}
 
 一个金发女生挡在你面前。她穿着剪裁得像宣言一样利落的制服，校徽上的银马在灯下闪了一下。 # speaker:narrator # audio:footsteps
 
@@ -44,19 +53,19 @@ VAR echo_partner = false
 你想起昨天的记忆碎片：自己好像在分班登记处撞翻了她的墨水瓶，还把她写给校董会的申请踩出了一道脚印。 # speaker:narrator
 
 此时你要怎么回应？ # speaker:narrator
-* [沉默不语]
++ [沉默不语]
     ~ trust_ma_er_fu -= 1
     ~ reputation += 1
     ~ opening_response = "silence"
     -> kneel_curse
-* [忽略她，直接路过]
++ [忽略她，直接路过]
     ~ reputation -= 1
     ~ opening_response = "ignore"
     你没有停步，侧身从她身边走过。 # speaker:narrator
     马二福转身，魔杖抬得更快。 # speaker:narrator
     “直接走过去？你以为这件事就算了？” # speaker:ma_er_fu # emotion:angry
     -> kneel_curse
-* [怼回去]
++ [怼回去]
     ~ courage += 1
     ~ reputation += 1
     ~ trust_ma_er_fu += 1
@@ -64,7 +73,7 @@ VAR echo_partner = false
     “名字是父母给的，二字又不是你家的校产。” # speaker:li_er_ha
     你说完，马二福的眼睛眯了一下。 # speaker:narrator
     -> kneel_curse
-* [先道歉]
++ [先道歉]
     ~ reputation -= 1
     ~ trust_ma_er_fu += 1
     ~ discipline_pending = true
@@ -90,14 +99,14 @@ VAR echo_partner = false
 你在心里骂了一句：怎么才来？ # speaker:narrator
 
 系统只给出三个选项，像一张不太可靠的救命纸条： # speaker:narrator
-* [立界，硬挡这一击]
++ [立界，硬挡这一击]
     ~ courage += 1
     -> break_curse
-* [借势，把礼堂的钟声引过来]
++ [借势，把礼堂的钟声引过来]
     ~ causality_debt += 1
     ~ investigation += 1
     -> borrow_bell
-* [先道歉，记住这次屈辱]
++ [先道歉，记住这次屈辱]
     ~ trust_ma_er_fu += 1
     -> bow_choice
 
@@ -174,21 +183,21 @@ VAR echo_partner = false
 系统提示只出现了一行字： # speaker:narrator
 “检测到福门相关残响。请宿主选择第一位相信的人。” # speaker:system
 
-* [把旧校徽交给何敏]
++ [把旧校徽交给何敏]
     ~ trust_he_min += 2
     ~ investigation += 1
     ~ badge_holder = "he_min"
     何敏没有追问你为什么相信她，只把校徽夹进自己的笔记本。 # speaker:narrator
     “这只是线索，不是你血脉的证明。” # speaker:he_min
     -> first_night
-* [先交给罗金恩保管]
++ [先交给罗金恩保管]
     ~ trust_jin_en += 2
     ~ reputation += 1
     ~ badge_holder = "jin_en"
     罗金恩把校徽塞进袖口。 # speaker:narrator
     “我不懂校史，但我懂什么时候该把东西藏好。” # speaker:jin_en
     -> first_night
-* [把旧校徽交给马二福]
++ [把旧校徽交给马二福]
     ~ trust_ma_er_fu += 1
     ~ investigation += 1
     ~ badge_holder = "ma_er_fu"
@@ -200,7 +209,7 @@ VAR echo_partner = false
     “那就别把它交给下一个只会说漂亮话的人。” # speaker:ma_er_fu
     你没有错过她指尖一闪而过的迟疑：她收下的是一件证物，不是对你的信任。 # speaker:narrator
     -> first_night
-* [先由我保管]
++ [先由我保管]
     ~ courage += 1
     ~ badge_holder = "li_er_ha"
     你把校徽贴身收好。系统立刻发出一声短促的警告。 # speaker:narrator # audio:system-warning
@@ -210,7 +219,7 @@ VAR echo_partner = false
 === badge_private ===
 你走到回廊的阴影里，手指碰到校徽缺口。远处马二福还没有离开。 # speaker:narrator
 
-* [追上马二福，给她看]
++ [追上马二福，给她看]
     ~ trust_ma_er_fu += 2
     ~ investigation += 1
     ~ badge_holder = "ma_er_fu"
@@ -224,7 +233,7 @@ VAR echo_partner = false
     ~ badge_returned_by_ma = true
     ~ badge_holder = "li_er_ha"
     -> first_night
-* [继续自己保管]
++ [继续自己保管]
     ~ causality_debt += 1
     你把校徽重新收好。系统发出一声短促的警告。 # speaker:narrator # audio:system-warning
     “记录风险，不替你做决定。” # speaker:system
@@ -303,18 +312,18 @@ VAR echo_partner = false
 “如果有人受伤，先救人，再争论谁的理论漂亮。”
 
 校徽缺口在桌面上投出一片暗影。你听见那片暗影里有两次间隔很短的回声。 # speaker:narrator # audio:seal-pulse
-* [先查李家的名字]
++ [先查李家的名字]
     ~ investigation += 1
     ~ knows_bloodline = true
     你翻到一页被撕过的家谱。李家旁边只剩半句：“承福者，替人承受未落之厄。” # speaker:narrator
     何敏把残句抄下，却没有替你解释。 # speaker:he_min
     -> archive_split
-* [先查守福印的持有人]
++ [先查守福印的持有人]
     ~ investigation += 1
     你沿着校徽的银马纹路找到一册旧契约。第二位守福者的名字被墨水涂掉，只留下“马”字。 # speaker:narrator
     马二福站在门口，听见自己的姓后没有进来。 # speaker:ma_er_fu
     -> archive_split
-* [先查被删掉的灾年记录]
++ [先查被删掉的灾年记录]
     ~ courage += 1
     ~ investigation += 1
     你找到三十年前的灾年表：每次“丰收奇迹”之后，都有学生失去考试运和健康。 # speaker:narrator
@@ -326,10 +335,10 @@ VAR echo_partner = false
 旧档案室的地板突然向下沉。校徽滑入一条只容一人通过的缝隙，下面传来钟声的第九个半拍。 # speaker:narrator # audio:stone-shift
 何敏按住你的手腕。 # speaker:he_min
 “这里有两个入口。一个通向校史塔，一个通向地下旧礼堂。”
-* [带大家去校史塔，先取证]
++ [带大家去校史塔，先取证]
     ~ investigation += 1
     -> archive_tower
-* [跟着回声去地下旧礼堂]
++ [跟着回声去地下旧礼堂]
     ~ courage += 1
     ~ causality_debt += 1
     -> old_hall
@@ -360,14 +369,14 @@ VAR echo_partner = false
 罗金恩已经在找能让大家撤出的路。 # speaker:jin_en
 
 系统给出两种处理代价的办法。 # speaker:system
-* [让大家分担护界压力]
++ [让大家分担护界压力]
     ~ courage += 1
     ~ investigation += 1
     ~ reputation += 1
     ~ shared_cost = true
     你让每个人只承担一小段压力，护界因此出现可供撤离的缝隙。 # speaker:narrator
     -> trial_route
-* [借福把压力集中到自己身上]
++ [借福把压力集中到自己身上]
     ~ causality_debt += 1
     ~ investigation += 1
     你让系统把压力先记在自己身上。它警告：这笔债必须在福门前偿还。 # speaker:system
@@ -376,31 +385,31 @@ VAR echo_partner = false
 
 === trial_route ===
 试炼结束后，三位同伴和罗金恩各自提出同行邀请。选择决定接下来的调查方向，不等于自动承诺恋爱。 # speaker:narrator
-* [和罗金妮查诊疗站的抽取装置]
++ [和罗金妮查诊疗站的抽取装置]
     ~ route = "jin_ni"
     ~ trust_jin_ni += 1
     -> route_choice
-* [和何敏查契约实验室的权限记录]
++ [和何敏查契约实验室的权限记录]
     ~ route = "he_min"
     ~ trust_he_min += 1
     -> route_choice
-* [和马二福回马家契约厅]
++ [和马二福回马家契约厅]
     ~ route = "ma_er_fu"
     ~ trust_ma_er_fu += 1
     -> route_choice
-* [和罗金恩组织学生撤离与取证]
++ [和罗金恩组织学生撤离与取证]
     ~ route = "partner"
     ~ trust_jin_en += 1
     -> route_choice
 
 === route_choice ===
 你们在温室边的长椅上把关系说清楚。 # speaker:narrator
-* [明确想与同行者发展感情]
++ {route != "partner"} [明确想与同行者发展感情]
     ~ romance = true
     ~ relationship_confirmed = false
     “我想靠近你，但不会把你的帮助当成答应。”你说。 # speaker:li_er_ha
     -> route_dispatch
-* [先做伙伴，感情以后再决定]
++ [先做伙伴，感情以后再决定]
     ~ romance = false
     “我现在只想把证据和人都带回来。”你说。 # speaker:li_er_ha
     -> route_dispatch
@@ -414,26 +423,26 @@ VAR echo_partner = false
 === chapter_04_jinni ===
 潮汐温室的病历在雨里发亮。罗金妮发现每个被治好的学生都被抽走了一点“避险运”。 # speaker:narrator # music:greenhouse-rain
 “你记忆里的李二哈不会这样听病人的呼吸。”她说，“你愿意告诉我发生了什么吗？” # speaker:jin_ni # emotion:careful
-* [坦白自己有记忆断层]
++ [坦白自己有记忆断层]
     ~ trust_jin_ni += 2
     ~ knows_system_cost = true
     “我醒来时，带着另一个人的人生。可我不会拿旧记忆骗你。” # speaker:li_er_ha
     “那就从现在开始，一起记新的。”罗金妮说。 # speaker:jin_ni
     -> jinni_station
-* [只说系统给了提示]
++ [只说系统给了提示]
     ~ trust_jin_ni -= 1
     “提示不是证据。”她把病历合上。 # speaker:jin_ni
     -> jinni_station
 
 === jinni_station ===
 诊疗站的抽取管线正在给一名学生输送“好运”。罗金恩想砸掉总阀，罗金妮坚持先转移病人。 # speaker:narrator
-* [先按金妮的名单转移病人]
++ [先按金妮的名单转移病人]
     ~ trust_jin_ni += 1
     ~ investigation += 1
     ~ shared_cost = true
     你们把风险拆成小段，让每个人只承受能承受的一次咳嗽和一次失手。 # speaker:narrator
     -> chapter_05_jinni
-* [直接切断总阀]
++ [直接切断总阀]
     ~ courage += 1
     ~ causality_debt += 1
     管线停了，病人却同时失去护界。罗金妮先救人，再严肃地指出你把自己当成了唯一的决定者。 # speaker:jin_ni
@@ -442,25 +451,25 @@ VAR echo_partner = false
 === chapter_04_hemin ===
 契约实验室把每次抽取都写成“自愿”。何敏把代价记录推到你面前。 # speaker:he_min # music:contract-room
 “如果记录对你不利，你也要保留。否则我们只是换一个人掌权。”
-* [交出完整的系统代价记录]
++ [交出完整的系统代价记录]
     ~ trust_he_min += 2
     ~ knows_system_cost = true
     ~ investigation += 1
     你把借势、警告和每次债务都写进同一页。 # speaker:li_er_ha
     -> hemin_experiment
-* [只交出能证明校董有罪的部分]
++ [只交出能证明校董有罪的部分]
     ~ trust_he_min -= 1
     “删掉自己不利的证据，不能叫审议。”何敏说。 # speaker:he_min
     -> hemin_experiment
 
 === hemin_experiment ===
 你们复现实验：只要两名见证人都能撤回签名，抽取就会停止。 # speaker:narrator
-* [让实验公开，接受同学质询]
++ [让实验公开，接受同学质询]
     ~ trust_he_min += 1
     ~ investigation += 2
     ~ revocable_oath = true
     -> chapter_05_hemin
-* [先藏起实验，等掌握全部权限]
++ [先藏起实验，等掌握全部权限]
     ~ causality_debt += 1
     何敏同意继续查，但提醒你：延迟公开也会成为别人控制你的把柄。 # speaker:he_min
     -> chapter_05_hemin
@@ -468,11 +477,12 @@ VAR echo_partner = false
 === chapter_04_ma ===
 马家契约厅的墙上刻满“二福”两个字。马二福的母亲要求她签下守福继承书。 # speaker:narrator # music:contract-hall
 马二福看向你：“如果你替我说话，我会把你一起写进契约。” # speaker:ma_er_fu # emotion:guarded
-* [要求她自己决定，我只作见证]
++ [要求她自己决定，我只作见证]
     ~ trust_ma_er_fu += 2
-    你把笔推回她手边：“你的名字由你自己签。” # speaker:li_er_ha
+    ~ knows_system_cost = true
+    你把笔推回她手边：“你的名字由你自己签。我也会把系统代价记录交给你。” # speaker:li_er_ha
     -> ma_repair
-* [替她签下解除申请]
++ [替她签下解除申请]
     ~ trust_ma_er_fu -= 2
     你刚碰到笔，契约就把你的名字咬出一道血痕。 # speaker:narrator
     “你以为替我决定就是保护？”马二福冷冷地说。 # speaker:ma_er_fu
@@ -482,22 +492,22 @@ VAR echo_partner = false
 马二福终于承认：“第一天的下跪咒是我施的。我会向校纪室道歉，也会赔偿被我吓到的新生。” # speaker:ma_er_fu # emotion:ashamed
 ~ ma_apology = true
 ~ trust_ma_er_fu += 1
-* [告诉她道歉必须包含具体补偿]
++ [告诉她道歉必须包含具体补偿]
     ~ investigation += 1
     “还要公开说明我没有资格替别人决定尊严。”她补上。 # speaker:ma_er_fu
     -> chapter_05_ma
-* [说只要她对我道歉就够了]
++ [说只要她对我道歉就够了]
     “只对你道歉不够。”马二福摇头。 # speaker:ma_er_fu
     -> chapter_05_ma
 
 === chapter_04_partner ===
 校园撤离点挤满了被校董名单漏掉的学生。罗金恩负责搬运证据，金妮和何敏分别提供救援与复核方法。 # speaker:narrator # music:evacuation
-* [先建立公开的撤离名单]
++ [先建立公开的撤离名单]
     ~ trust_jin_en += 2
     ~ reputation += 1
     ~ investigation += 1
     -> chapter_05_partner
-* [先偷走校董的权限印章]
++ [先偷走校董的权限印章]
     ~ courage += 1
     ~ causality_debt += 1
     罗金恩把印章交给何敏登记：“证据要能交回去，不能只会藏。” # speaker:jin_en
@@ -506,81 +516,81 @@ VAR echo_partner = false
 === chapter_05_jinni ===
 暴雨冲垮旧渡口，诊疗站的病人只能靠临时护界过河。 # speaker:narrator # music:ferry-storm
 罗金妮提出把护界分成四段，由学生轮流维护。你听见系统提示：集中承福可以更快。 # speaker:system
-* [接受分担方案]
++ [接受分担方案]
     ~ shared_cost = true
     ~ investigation += 1
     ~ trust_jin_ni += 1
     你把最危险的一段也交给轮值表，而不是交给自己。 # speaker:narrator
     -> jinni_relationship
-* [独自承受整座渡口的坏运]
++ [独自承受整座渡口的坏运]
     ~ causality_debt += 2
     你救下渡口，却在雨里摔倒。罗金妮救回你后说：“我需要伙伴，不需要一座会替所有人倒下的墙。” # speaker:jin_ni
     -> jinni_relationship
 
 === jinni_relationship ===
-* {romance} [和金妮确认关系]
++ {romance} [和金妮确认关系]
     ~ relationship_confirmed = true
     ~ trust_jin_ni += 1
     “我喜欢的是现在愿意听我说完的你。”罗金妮握住你的手。 # speaker:jin_ni # emotion:warm
     -> chapter_06_eve
-* [把她当作并肩伙伴]
++ [把她当作并肩伙伴]
     “我们先把网络建起来，感情不拿来当奖励。”你说。 # speaker:li_er_ha
     -> chapter_06_eve
 
 === chapter_05_hemin ===
 听证厅里，校董要求你删掉一条会暴露系统债务的记录。 # speaker:narrator # music:hearing
-* [保留对自己不利的证据]
++ [保留对自己不利的证据]
     ~ revocable_oath = true
     ~ investigation += 1
     ~ trust_he_min += 1
     何敏把记录投到每一面回声墙上，允许所有人逐条质问。 # speaker:he_min
     -> hemin_relationship
-* [先删掉，换取进入核心档案室]
++ [先删掉，换取进入核心档案室]
     ~ causality_debt += 1
     何敏没有离开，但她要求你在下一次听证中把删去的内容完整读回。 # speaker:he_min
     -> hemin_relationship
 
 === hemin_relationship ===
-* {romance} [和何敏确认关系]
++ {romance} [和何敏确认关系]
     ~ relationship_confirmed = true
     ~ trust_he_min += 1
     “我不需要一个永远正确的人，只要你愿意被复核。”何敏说。 # speaker:he_min # emotion:soft
     -> chapter_06_eve
-* [把她当作并肩伙伴]
++ [把她当作并肩伙伴]
     “规则要能被质疑，我们的关系也一样。”你说。 # speaker:li_er_ha
     -> chapter_06_eve
 
 === chapter_05_ma ===
 马家旧宅的继承火印要求马二福在你和家族之间选一个签名。 # speaker:narrator # music:fire-seal
-* [请她拒绝单人继承，和你共同提出公开契约]
++ [请她拒绝单人继承，和你共同提出公开契约]
     ~ trust_ma_er_fu += 1
     ~ investigation += 1
     ~ revocable_oath = true
     “共同不等于把权力分给两个人，而是让任何一个人都能被质询。”她说。 # speaker:ma_er_fu
     -> ma_relationship
-* [请她先签下继承，再慢慢改变制度]
++ [请她先签下继承，再慢慢改变制度]
     ~ causality_debt += 1
     “慢慢改变最容易变成永远不改。”马二福没有签。 # speaker:ma_er_fu
     -> ma_relationship
 
 === ma_relationship ===
-* {romance} [和马二福确认关系]
++ {romance} [和马二福确认关系]
     ~ relationship_confirmed = true
     ~ trust_ma_er_fu += 1
     “我选择和你一起查，但我的名字仍然是我的。”马二福说。 # speaker:ma_er_fu # emotion:resolute
     -> chapter_06_eve
-* [把她当作并肩伙伴]
++ [把她当作并肩伙伴]
     “我会要求你尊重我，也会尊重你的拒绝。”你说。 # speaker:li_er_ha
     -> chapter_06_eve
 
 === chapter_05_partner ===
 机动灾害响应队的第一张名单需要你在救援机制和契约机制之间选一个调查方向。 # speaker:narrator
-* [调查分担机制]
++ [调查分担机制]
     ~ shared_cost = true
     ~ investigation += 2
     ~ trust_jin_en += 1
     -> chapter_06_eve
-* [调查撤销机制]
++ [调查撤销机制]
     ~ revocable_oath = true
     ~ investigation += 2
     ~ trust_jin_en += 1
@@ -595,13 +605,13 @@ VAR echo_partner = false
 {route == "ma_er_fu": 马二福把家族印章放在桌边，却没有碰笔。 # speaker:ma_er_fu}
 {route == "partner": 罗金恩把学生响应队排成四列，公开点名，公开休息。 # speaker:jin_en}
 
-* [把自己的承福血脉告诉同伴]
++ [把自己的承福血脉告诉同伴]
     ~ knows_bloodline = true
     ~ investigation += 1
     ~ trust_jin_en += 1
     你说出李家曾封存福门，也说出系统每次护助都会增加债务。 # speaker:li_er_ha
     -> eve_plan
-* [暂时保留血脉，只公开已经验证的证据]
++ [暂时保留血脉，只公开已经验证的证据]
     ~ investigation += 1
     何敏要求你在终局前给出完整记录；没人替你把秘密说成真相。 # speaker:he_min
     -> eve_plan
@@ -609,11 +619,11 @@ VAR echo_partner = false
 === eve_plan ===
 {causality_debt > 2:
     系统提示：债务超过安全线。偿还方式是把下一次护界交给多人共同确认。 # speaker:system
-    * [接受共同偿还]
+    + [接受共同偿还]
         ~ causality_debt -= 1
         ~ shared_cost = true
         -> gate_choice
-    * [继续把债务压在自己身上]
+    + [继续把债务压在自己身上]
         ~ causality_debt += 1
         -> gate_choice
 - else:
@@ -622,11 +632,11 @@ VAR echo_partner = false
 
 === gate_choice ===
 你们来到福门外环。门上有两个签署位置，第三个位置被故意磨平。 # speaker:narrator # audio:gate-resonance
-* [重建共同分担方案]
++ [重建共同分担方案]
     ~ shared_cost = true
     ~ investigation += 1
     -> chapter_07_route
-* [重建可撤销权限方案]
++ [重建可撤销权限方案]
     ~ revocable_oath = true
     ~ investigation += 1
     -> chapter_07_route
@@ -639,30 +649,30 @@ VAR echo_partner = false
 
 === chapter_07_jinni ===
 福门外环裂开，学生们的坏运像黑雨一样落下。罗金妮指挥轮值护界，你必须选择是否让自己成为唯一承福者。 # speaker:narrator # music:gate-storm
-* [按轮值名单分担]
++ [按轮值名单分担]
     ~ shared_cost = true
     ~ investigation += 1
     -> chapter_08_jinni
-* [替所有人承福]
++ [替所有人承福]
     ~ causality_debt += 2
     “我爱你，也不接受你把自己消耗成证据。”罗金妮说。 # speaker:jin_ni
     -> chapter_08_jinni
 
 === chapter_07_hemin ===
 何敏让所有签署者逐一读出撤销条款。顾长明试图删掉最后一份副本。 # speaker:narrator # music:hearing-final
-* [让见证人共同保留副本]
++ [让见证人共同保留副本]
     ~ revocable_oath = true
     ~ investigation += 1
     -> chapter_08_hemin
-* [接受校董的单一保管]
++ [接受校董的单一保管]
     ~ causality_debt += 1
     何敏把自己的签名暂时撤回：“任何不可复核的答案，都不能救人。” # speaker:he_min
     -> chapter_08_hemin
 
 === chapter_07_ma ===
 马二福站在两个签署位置之间。她的家族印章要求她成为唯一守福者。 # speaker:narrator # music:inheritance
-* [与她共同重订可撤销契约]
-    {romance && relationship_confirmed && ma_apology && knows_bloodline && investigation >= 3 && causality_debt <= 2 && shared_cost && revocable_oath:
++ [与她共同重订可撤销契约]
+    {romance && relationship_confirmed && ma_apology && knows_bloodline && knows_system_cost && trust_ma_er_fu >= 4 && investigation >= 3 && causality_debt <= 2 && shared_cost && revocable_oath && run_echo_shared_cost && run_echo_revocable_oath:
         ~ true_plan = true
         ~ revocable_oath = true
         “我签自己的名字，也保留撤回的权利。”马二福说。 # speaker:ma_er_fu
@@ -671,18 +681,18 @@ VAR echo_partner = false
         “还缺一份证据。先把能救人的方案做完。”马二福说。 # speaker:ma_er_fu
     }
     -> chapter_08_ma
-* [只封住福门，接受现有继承规则]
++ [只封住福门，接受现有继承规则]
     ~ true_plan = false
     ~ causality_debt += 1
     -> chapter_08_ma
 
 === chapter_07_partner ===
 机动灾害响应队把学生送出外环。顾长明要求你们交出全部证据，换取由他任命的安全职位。 # speaker:narrator
-* [拒绝垄断，公开成立轮值响应队]
++ [拒绝垄断，公开成立轮值响应队]
     ~ reputation += 1
     ~ investigation += 1
     -> chapter_08_partner
-* [接受任命，成为最年轻的校董]
++ [接受任命，成为最年轻的校董]
     ~ causality_debt += 2
     -> power_end
 
@@ -698,12 +708,12 @@ VAR echo_partner = false
 - else:
     “我们先从一条轮值护界开始，直到你愿意把责任交给别人。”罗金妮说。 # speaker:jin_ni
 }
-* {romance && relationship_confirmed} [和金妮成婚并共同协调互助网络]
++ {romance && relationship_confirmed} [和金妮成婚并共同协调互助网络]
     ~ echo_shared_cost = true
     “我愿意和你结婚，也愿意在下一次轮值里听你的反对。”罗金妮说。 # speaker:jin_ni # emotion:warm
     你们在跨城镇互助网络的自治节点前交换戒指。 # speaker:narrator
     -> end_jinni
-* [以伙伴身份交接网络]
++ [以伙伴身份交接网络]
     ~ echo_shared_cost = true
     你们把协调权限交给轮值委员会，保留长期合作。 # speaker:narrator
     -> end_partner_jinni
@@ -715,12 +725,12 @@ VAR echo_partner = false
 - else:
     何敏宣布暂缓签署，直到见证人补齐副本。 # speaker:he_min
 }
-* {romance && relationship_confirmed} [和何敏成婚并共同接受审议]
++ {romance && relationship_confirmed} [和何敏成婚并共同接受审议]
     ~ echo_revocable_oath = true
     “我愿意和你成婚，也愿意让你在公开记录里指出我的错误。”何敏说。 # speaker:he_min # emotion:soft
     你们在审议所的门口交换戒指。 # speaker:narrator
     -> end_hemin
-* [以伙伴身份继续复核]
++ [以伙伴身份继续复核]
     ~ echo_revocable_oath = true
     你们把审议权交给独立成员，自己接受定期复核。 # speaker:narrator
     -> end_partner_hemin
@@ -732,13 +742,17 @@ VAR echo_partner = false
     -> end_ma_true
 - else:
     “我会把继承权改成多人议事，但今天先封住这扇门。”马二福说。 # speaker:ma_er_fu
-    -> end_ma_good
+    {romance && relationship_confirmed:
+        -> end_ma_good
+    - else:
+        -> end_ma_partner
+    }
 }
 
 === chapter_08_partner ===
 响应队把最后一名学生送到安全线外。罗金恩把队章别在你的外套上。 # speaker:jin_en # music:clear-sky
 “我们不需要一个救世主，需要能被叫停的队长。”
-* [主动选择单身，和伙伴建立响应队]
++ [主动选择单身，和伙伴建立响应队]
     {shared_cost || revocable_oath:
         ~ echo_partner = true
         你们离开校董体系，成立由多人轮值的机动灾害响应队。 # speaker:narrator
@@ -751,30 +765,71 @@ VAR echo_partner = false
 【金妮结局：从小到大的约定】 # speaker:narrator
 你们的婚后生活有争吵、有轮值，也有每次把功劳写回所有人的记录。 # speaker:narrator
 本轮获得福门回响：可分担代价。新周目中，系统只提示方向，不替你证明答案。 # speaker:system
--> END
+-> run_summary
 === end_partner_jinni ===
 【伙伴结局：共同的雨伞】 # speaker:narrator
 金妮仍是互助网络的核心成员，你们把机动响应队设为协作单位。 # speaker:narrator
--> END
+-> run_summary
 === end_hemin ===
 【何敏结局：答案之外】 # speaker:narrator
 你们的婚礼没有免除质询；第一份婚后协议就是允许彼此申请复核。 # speaker:narrator
 本轮获得福门回响：可撤销权限。新周目中，系统只提示方向，不替你签名。 # speaker:system
--> END
+-> run_summary
 === end_partner_hemin ===
 【伙伴结局：可复核的答案】 # speaker:narrator
 契约审议所与机动灾害响应队互相监督，所有撤销记录都公开保存。 # speaker:narrator
--> END
+-> run_summary
 === end_ma_good ===
 【马二福 Good End：名字写在一起】 # speaker:narrator
 马二福与你成婚，地区议事团的席位按公开规则轮换；她的名字终于不再是一张契约。 # speaker:ma_er_fu # emotion:warm
--> END
+-> run_summary
+=== end_ma_partner ===
+【马二福伙伴结局：名字由她自己保管】 # speaker:narrator
+你们没有把互相尊重说成婚约；马二福加入公开议事团，你和伙伴们继续维护可撤销的规则。 # speaker:narrator
+-> run_summary
 === end_ma_true ===
 【马二福 True End：这一福，留给你】 # speaker:narrator
 你们没有把福门换一个主人，而是把共同契约写成可质询、可撤销、可由多人承担的规则。 # speaker:narrator
 “有福，是我愿意和你一起过日子。”马二福说。你们在众人见证下成婚。 # speaker:ma_er_fu # emotion:warm
--> END
+-> run_summary
 === end_partner ===
 【伙伴结局：霍海的新校规】 # speaker:narrator
 四人离开校董体系，建立机动灾害响应队；成员轮值、公开记录，任何队长都可以被叫停。 # speaker:narrator
--> END
+-> run_summary
+
+=== run_summary ===
+第 {run_number} 周目已经结束。系统只保留结局和已验证的回响，不保留上一轮的关系、道具或技能。 # speaker:system
+{echo_shared_cost: “当前档案已有回响：可分担代价。” # speaker:system}
+{echo_revocable_oath: “当前档案已有回响：可撤销权限。” # speaker:system}
++ [开启新周目]
+    -> replay_start
++ [停在本轮结局]
+    -> END
+
+=== replay_start ===
+~ run_number += 1
+~ run_echo_shared_cost = echo_shared_cost
+~ run_echo_revocable_oath = echo_revocable_oath
+~ reputation = 0
+~ courage = 0
+~ investigation = 0
+~ causality_debt = 0
+~ trust_jin_en = 0
+~ trust_jin_ni = 0
+~ trust_he_min = 0
+~ trust_ma_er_fu = 0
+~ knows_bloodline = false
+~ has_fumen_key = false
+~ discipline_pending = false
+~ badge_holder = "unassigned"
+~ opening_response = "silence"
+~ badge_returned_by_ma = false
+~ shared_cost = false
+~ revocable_oath = false
+~ knows_system_cost = false
+~ route = "unselected"
+~ romance = false
+~ relationship_confirmed = false
+~ ma_apology = false
+~ true_plan = false
+-> arrival

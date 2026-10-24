@@ -26,6 +26,9 @@ VAR true_plan = false
 VAR echo_shared_cost = false
 VAR echo_revocable_oath = false
 VAR echo_partner = false
+VAR run_echo_shared_cost = false
+VAR run_echo_revocable_oath = false
+VAR run_number = 1
 
 -> arrival
 
@@ -34,6 +37,12 @@ VAR echo_partner = false
 
 你，李博特，醒来时发现自己成了霍海魔法大学的新生李二哈。 # speaker:narrator
 你的记忆和这具身体的记忆在脑中撞成一团；你还没有资格把任何一段人生说成自己的。 # speaker:narrator
+{run_number > 1:
+    这是第 {run_number} 次醒来。系统没有带回上一轮的人生，只留下已经验证过的两道回响。 # speaker:system
+    {run_echo_shared_cost: “回响一：代价可以由多人分担。” # speaker:system}
+    {run_echo_revocable_oath: “回响二：权限必须可以撤回。” # speaker:system}
+    你仍然需要在这一轮重新取得证据和信任。 # speaker:narrator
+}
 
 一个金发女生挡在你面前。她穿着剪裁得像宣言一样利落的制服，校徽上的银马在灯下闪了一下。 # speaker:narrator # audio:footsteps
 
@@ -44,19 +53,19 @@ VAR echo_partner = false
 你想起昨天的记忆碎片：自己好像在分班登记处撞翻了她的墨水瓶，还把她写给校董会的申请踩出了一道脚印。 # speaker:narrator
 
 此时你要怎么回应？ # speaker:narrator
-* [沉默不语]
++ [沉默不语]
     ~ trust_ma_er_fu -= 1
     ~ reputation += 1
     ~ opening_response = "silence"
     -> kneel_curse
-* [忽略她，直接路过]
++ [忽略她，直接路过]
     ~ reputation -= 1
     ~ opening_response = "ignore"
     你没有停步，侧身从她身边走过。 # speaker:narrator
     马二福转身，魔杖抬得更快。 # speaker:narrator
     “直接走过去？你以为这件事就算了？” # speaker:ma_er_fu # emotion:angry
     -> kneel_curse
-* [怼回去]
++ [怼回去]
     ~ courage += 1
     ~ reputation += 1
     ~ trust_ma_er_fu += 1
@@ -64,7 +73,7 @@ VAR echo_partner = false
     “名字是父母给的，二字又不是你家的校产。” # speaker:li_er_ha
     你说完，马二福的眼睛眯了一下。 # speaker:narrator
     -> kneel_curse
-* [先道歉]
++ [先道歉]
     ~ reputation -= 1
     ~ trust_ma_er_fu += 1
     ~ discipline_pending = true
@@ -90,14 +99,14 @@ VAR echo_partner = false
 你在心里骂了一句：怎么才来？ # speaker:narrator
 
 系统只给出三个选项，像一张不太可靠的救命纸条： # speaker:narrator
-* [立界，硬挡这一击]
++ [立界，硬挡这一击]
     ~ courage += 1
     -> break_curse
-* [借势，把礼堂的钟声引过来]
++ [借势，把礼堂的钟声引过来]
     ~ causality_debt += 1
     ~ investigation += 1
     -> borrow_bell
-* [先道歉，记住这次屈辱]
++ [先道歉，记住这次屈辱]
     ~ trust_ma_er_fu += 1
     -> bow_choice
 
@@ -174,21 +183,21 @@ VAR echo_partner = false
 系统提示只出现了一行字： # speaker:narrator
 “检测到福门相关残响。请宿主选择第一位相信的人。” # speaker:system
 
-* [把旧校徽交给何敏]
++ [把旧校徽交给何敏]
     ~ trust_he_min += 2
     ~ investigation += 1
     ~ badge_holder = "he_min"
     何敏没有追问你为什么相信她，只把校徽夹进自己的笔记本。 # speaker:narrator
     “这只是线索，不是你血脉的证明。” # speaker:he_min
     -> first_night
-* [先交给罗金恩保管]
++ [先交给罗金恩保管]
     ~ trust_jin_en += 2
     ~ reputation += 1
     ~ badge_holder = "jin_en"
     罗金恩把校徽塞进袖口。 # speaker:narrator
     “我不懂校史，但我懂什么时候该把东西藏好。” # speaker:jin_en
     -> first_night
-* [把旧校徽交给马二福]
++ [把旧校徽交给马二福]
     ~ trust_ma_er_fu += 1
     ~ investigation += 1
     ~ badge_holder = "ma_er_fu"
@@ -200,7 +209,7 @@ VAR echo_partner = false
     “那就别把它交给下一个只会说漂亮话的人。” # speaker:ma_er_fu
     你没有错过她指尖一闪而过的迟疑：她收下的是一件证物，不是对你的信任。 # speaker:narrator
     -> first_night
-* [先由我保管]
++ [先由我保管]
     ~ courage += 1
     ~ badge_holder = "li_er_ha"
     你把校徽贴身收好。系统立刻发出一声短促的警告。 # speaker:narrator # audio:system-warning
@@ -210,7 +219,7 @@ VAR echo_partner = false
 === badge_private ===
 你走到回廊的阴影里，手指碰到校徽缺口。远处马二福还没有离开。 # speaker:narrator
 
-* [追上马二福，给她看]
++ [追上马二福，给她看]
     ~ trust_ma_er_fu += 2
     ~ investigation += 1
     ~ badge_holder = "ma_er_fu"
@@ -224,7 +233,7 @@ VAR echo_partner = false
     ~ badge_returned_by_ma = true
     ~ badge_holder = "li_er_ha"
     -> first_night
-* [继续自己保管]
++ [继续自己保管]
     ~ causality_debt += 1
     你把校徽重新收好。系统发出一声短促的警告。 # speaker:narrator # audio:system-warning
     “记录风险，不替你做决定。” # speaker:system

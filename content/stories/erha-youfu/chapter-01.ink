@@ -1,5 +1,5 @@
 // 《二哈有福》第一章：下跪咒与新生注册
-// 本章是可直接导入工作台的原始 Ink。后续章节暂不写入。
+// 本章单章源稿；完整可导入版本见 story.ink。
 
 VAR reputation = 0
 VAR courage = 0
@@ -15,6 +15,17 @@ VAR discipline_pending = false
 VAR badge_holder = "unassigned"
 VAR opening_response = "silence"
 VAR badge_returned_by_ma = false
+VAR shared_cost = false
+VAR revocable_oath = false
+VAR knows_system_cost = false
+VAR route = "unselected"
+VAR romance = false
+VAR relationship_confirmed = false
+VAR ma_apology = false
+VAR true_plan = false
+VAR echo_shared_cost = false
+VAR echo_revocable_oath = false
+VAR echo_partner = false
 
 -> arrival
 

@@ -160,7 +160,7 @@ VAR badge_returned_by_ma = false
 罗金妮看着你手里的旧校徽。 # speaker:narrator
 “如果那是危险的东西，我们至少要先把它交给老师。” # speaker:jin_ni # emotion:concerned
 
-系统提示只出现了一行字：
+系统提示只出现了一行字： # speaker:narrator
 “检测到福门相关残响。请宿主选择第一位相信的人。” # speaker:system
 
 * [把旧校徽交给何敏]

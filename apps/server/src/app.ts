@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import { z, ZodError } from 'zod';
 import { GameError } from './errors.js';
+import { attachStoryMcp } from './mcp-http.js';
 import { GameService } from './service.js';
 import type { Repository } from './repository.js';
 import { choiceSchema, compileSchema, draftSchema, revisionSchema, sessionSchema } from './validation.js';
@@ -34,5 +35,6 @@ export function createApp(repository: Repository, options: { logger?: boolean } 
   });
   app.get('/api/sessions/:id', request => service.resume(params.parse(request.params).id));
   app.post('/api/sessions/:id/choices', request => service.choose(params.parse(request.params).id, choiceSchema.parse(request.body)));
+  attachStoryMcp(app, service);
   return app;
 }

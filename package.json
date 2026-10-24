@@ -13,6 +13,7 @@
   },
   "scripts": {
     "dev": "concurrently -k -n api,web \"npm run dev -w @wawawa/server\" \"npm run dev -w @wawawa/web\"",
+    "mcp": "npm run mcp -w @wawawa/server",
     "build": "npm --prefix apps/server run build && npm --prefix apps/web run build",
     "typecheck": "npm --prefix apps/server run typecheck && npm --prefix apps/web run typecheck",
     "test": "npm --prefix apps/server run test && npm --prefix apps/web run test",

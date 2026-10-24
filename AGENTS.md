@@ -16,6 +16,7 @@ This project is an audio-first, choice-only interactive story studio. Human deci
 - Published story versions are immutable. Sessions pin a version. Draft edits must not mutate running games.
 - Validate all external input. Bind choices to a turn and enforce optimistic concurrency and idempotency. Never let a model invent choices or edit game variables.
 - Keep domain logic separate from HTTP/MCP adapters and persistence. No secrets in source, logs, fixtures or screenshots.
+- The MCP play adapter in `docs/specs/002-mcp-play.md` calls the game service for listing published stories, starting, resuming, and choosing. It must not invent lines, choices, or variable writes. stdio logs go to stderr. Do not describe device playback or speech recognition as part of this adapter.
 - Local authoring access is the MVP trust boundary. Do not expose the unauthenticated studio publicly. Authentication is required before shared deployment.
 - Test meaningful invariants: branches, historical flags, state restoration, duplicate/stale choices, compilation failure, publishing and simulator flows. Use an actual MongoDB instance for persistence integration tests.
 - Run typecheck, unit/component tests with coverage, build, MongoDB integration tests and browser end-to-end tests before merging a release. Document any check that could not run; never report it as passed.

@@ -64,3 +64,5 @@ E2E_MONGODB_URI=mongodb://127.0.0.1:27018/wawawa_e2e npm run test:e2e
 集成测试创建并清理自己的随机测试数据库；E2E 使用专用数据库。不要将这些变量指向生产库。阶段结论与尚未验证的商业/AI 能力见 [MVP 运行验收评审](reviews/mvp-validation.md)。
 
 桌面编辑器、模拟器与 390px 窄屏截图已进行视觉检查。E2E 在 `test-results/` 输出 `desktop-author.png`、`desktop-simulator.png`、`mobile-author.png`；CI 将这些图片连同报告归档。
+
+远端证据：[Quality CI](https://github.com/lzfee0227/wawawa/actions/runs/40088730485) 已通过，包含 MongoDB 7、单元/组件覆盖率、构建及 Chromium E2E；本地旧 MongoDB 版本不再是目标版本的未验证缺口。

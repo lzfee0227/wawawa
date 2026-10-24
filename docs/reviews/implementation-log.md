@@ -77,3 +77,7 @@
 ### 视觉验收与后续合并
 
 PR #3（持久化/API）与 #4（创作/模拟界面）已合并。npm 11 干净 `npm ci` 复验成功，audit 仍为 0；随后两项 E2E 再次通过，并保留桌面编辑器、模拟器和 390px 窄屏截图。已检查布局、错误提示和操作区，无阻挡核心操作的问题。最后的 CI/验收 PR 等待远端 MongoDB 7 检查。
+
+### 远端验收
+
+[PR #5 首轮 CI](https://github.com/lzfee0227/wawawa/actions/runs/40088730485) 通过：Ubuntu/Node 22、npm 11 干净安装、覆盖率与构建、MongoDB 7 集成、Chromium E2E。文档修订触发的后续运行仍须检查成功后合并，不绕过失败检查。

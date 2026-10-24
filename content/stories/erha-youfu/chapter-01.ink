@@ -33,6 +33,7 @@ VAR opening_response = "silence"
 * [沉默不语]
     ~ trust_ma_er_fu -= 1
     ~ reputation += 1
+    ~ opening_response = "silence"
     -> kneel_curse
 * [忽略她，直接路过]
     ~ reputation -= 1
@@ -169,6 +170,7 @@ VAR opening_response = "silence"
     马二福没有立刻收拢手指：“你确定第一位相信的人是我？” # speaker:ma_er_fu # emotion:guarded
     “我确定你知道它为什么会让人害怕。”你说。 # speaker:li_er_ha
     她这才收下校徽：“那就别把它交给下一个只会说漂亮话的人。” # speaker:ma_er_fu
+    你没有错过她指尖一闪而过的迟疑：她收下的是一件证物，不是对你的信任。 # speaker:narrator
     -> first_night
 * [先由我保管]
     ~ courage += 1
@@ -187,7 +189,9 @@ VAR opening_response = "silence"
     你在回廊口追上马二福。她看到校徽缺口时，脸色第一次真正变了。 # speaker:ma_er_fu # emotion:guarded
     “这东西不该出现在你手里。” # speaker:ma_er_fu
     “那它应该在谁手里？” # speaker:li_er_ha
-    马二福没有回答，只伸手按住校徽。两人的指尖同时感到一阵冰凉。 # speaker:narrator # audio:seal-pulse
+    马二福没有回答，只伸手按住校徽。两人的指尖同时感到一阵冰凉。她没有收下，只把校徽推回你掌心。 # speaker:narrator # audio:seal-pulse
+    “先由你保管。明天把何敏查到的校史拿来，我们再谈它该交给谁。” # speaker:ma_er_fu # emotion:guarded
+    ~ badge_holder = "li_er_ha"
     -> first_night
 * [继续自己保管]
     ~ causality_debt += 1
@@ -198,7 +202,7 @@ VAR opening_response = "silence"
 === first_night ===
 新生注册结束，礼堂外的雨也停了。远处钟楼敲响第九声，回声在校园地下停了半拍。 # speaker:narrator # music:bell-distant
 
-你们四个人站在回廊阴影里。没人知道那枚旧校徽究竟打开什么，但每个人都知道，今晚之后，霍海不会再只是大学。 # speaker:narrator
+你们四个人站在回廊阴影里。没人知道那枚旧校徽最终会打开什么，但每个人都知道，今晚之后，霍海不会再只是大学。 # speaker:narrator
 
 {discipline_pending:
     马二福在校纪员的记录纸上签下自己的名字。她看了你一眼：“明早，校纪室。别迟到。” # speaker:ma_er_fu
@@ -215,10 +219,10 @@ VAR opening_response = "silence"
 罗金恩说：“我带吃的。” # speaker:jin_en
 罗金妮说：“我带绷带。” # speaker:jin_ni
 
-{badge_holder == "he_min": 马二福独自停在雨后的窗边。她没有回头，却轻声说了一句只有你听得到的话：“李二哈，别把那一福弄丢了。” # speaker:ma_er_fu # emotion:quiet}
-{badge_holder == "jin_en": 马二福看了看罗金恩的袖口，低声提醒：“李二哈，别让那一福在你们手里断了线。” # speaker:ma_er_fu # emotion:quiet}
-{badge_holder == "ma_er_fu": 马二福看着掌心的校徽，低声说：“李二哈，这一福先由我替你保管。” # speaker:ma_er_fu # emotion:quiet}
-{badge_holder == "li_er_ha": 马二福独自停在雨后的窗边。她没有回头，却轻声说了一句只有你听得到的话：“李二哈，别把那一福弄丢了。” # speaker:ma_er_fu # emotion:quiet}
+{badge_holder == "he_min": 马二福独自停在雨后的窗边。她没有回头，却轻声说：“李二哈，别把那一福弄丢了。”她说完便离开，校徽仍在何敏的内袋里。 # speaker:ma_er_fu # emotion:quiet}
+{badge_holder == "jin_en": 马二福看了看罗金恩的袖口，低声提醒：“李二哈，别让那一福在你们手里断了线。”她没有伸手，校徽仍由罗金恩保管。 # speaker:ma_er_fu # emotion:quiet}
+{badge_holder == "ma_er_fu": 马二福看着掌心的校徽，低声说：“李二哈，这一福先由我替你保管。”她转身走向校纪室，校徽没有再交给任何人。 # speaker:ma_er_fu # emotion:quiet}
+{badge_holder == "li_er_ha": 马二福独自停在雨后的窗边。她没有回头，却轻声说：“李二哈，别把那一福弄丢了。”校徽仍在你掌心。 # speaker:ma_er_fu # emotion:quiet}
 
 系统的最后一行提示浮在你的意识里：“本次残响已归档。下一处响应：旧档案室。” # speaker:system
 

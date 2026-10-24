@@ -1,0 +1,29 @@
+{
+  "name": "wawawa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Audio-first branching story authoring and simulation studio",
+  "workspaces": [
+    "apps/server",
+    "apps/web"
+  ],
+  "engines": {
+    "node": ">=22",
+    "npm": ">=11"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"npm run dev -w @wawawa/server\" \"npm run dev -w @wawawa/web\"",
+    "build": "npm --prefix apps/server run build && npm --prefix apps/web run build",
+    "typecheck": "npm --prefix apps/server run typecheck && npm --prefix apps/web run typecheck",
+    "test": "npm --prefix apps/server run test && npm --prefix apps/web run test",
+    "test:coverage": "npm --prefix apps/server run test:coverage && npm --prefix apps/web run test:coverage",
+    "test:integration": "npm --prefix apps/server run test:integration",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm run test:coverage && npm run build"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "concurrently": "^9.2.1"
+  },
+  "packageManager": "npm@11.21.1"
+}

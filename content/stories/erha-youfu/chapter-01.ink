@@ -26,7 +26,9 @@ VAR badge_returned_by_ma = false
 
 一个金发女生挡在你面前。她穿着剪裁得像宣言一样利落的制服，校徽上的银马在灯下闪了一下。 # speaker:narrator # audio:footsteps
 
-“原来你叫李二哈？”她抬起下巴，“凭你也配跟我的名字共享同一个二字？” # speaker:ma_er_fu # emotion:scornful
+“原来你叫李二哈？” # speaker:ma_er_fu # emotion:scornful
+她抬起下巴。 # speaker:narrator
+“凭你也配跟我的名字共享同一个二字？” # speaker:ma_er_fu # emotion:scornful
 
 你想起昨天的记忆碎片：自己好像在分班登记处撞翻了她的墨水瓶，还把她写给校董会的申请踩出了一道脚印。
 
@@ -48,8 +50,8 @@ VAR badge_returned_by_ma = false
     ~ reputation += 1
     ~ trust_ma_er_fu += 1
     ~ opening_response = "retort"
-    “名字是父母给的，二字又不是你家的校产。”你说。 # speaker:li_er_ha
-    马二福的眼睛眯了一下，像是第一次认真看你。 # speaker:narrator
+    “名字是父母给的，二字又不是你家的校产。” # speaker:li_er_ha
+    你说完，马二福的眼睛眯了一下。 # speaker:narrator
     -> kneel_curse
 * [先道歉]
     ~ reputation -= 1
@@ -65,10 +67,10 @@ VAR badge_returned_by_ma = false
 === kneel_curse ===
 马二福抬起一根银白色魔杖。礼堂里嘈杂的人声像被谁掐住了喉咙。 # speaker:narrator # audio:magic-hum
 
-{opening_response == "apology": “先把校纪室的事说清楚，再谈赔偿。”她说，“下跪咒！” # speaker:ma_er_fu # emotion:angry}
-{opening_response == "ignore": “还敢继续走？”她说，“下跪咒！” # speaker:ma_er_fu # emotion:angry}
-{opening_response == "retort": “嘴倒是很硬。”她说，“下跪咒！” # speaker:ma_er_fu # emotion:angry}
-{opening_response == "silence": “连一句解释都没有？”她说，“下跪咒！” # speaker:ma_er_fu # emotion:angry}
+{opening_response == "apology": “先把校纪室的事说清楚，再谈赔偿。下跪咒！” # speaker:ma_er_fu # emotion:angry}
+{opening_response == "ignore": “还敢继续走？下跪咒！” # speaker:ma_er_fu # emotion:angry}
+{opening_response == "retort": “嘴倒是很硬。下跪咒！” # speaker:ma_er_fu # emotion:angry}
+{opening_response == "silence": “连一句解释都没有？下跪咒！” # speaker:ma_er_fu # emotion:angry}
 
 膝盖上方传来一股沉重的压力。你差点跪下，耳边却先响起了一个带着不合时宜 BGM 的声音。 # speaker:narrator # music:system-awakening
 
@@ -95,11 +97,13 @@ VAR badge_returned_by_ma = false
 
     礼堂里有人倒吸冷气。马二福的魔杖第一次偏离了你的眉心。 # speaker:narrator
 
-“低阶立界？”何敏在旁边小声说，“你明明没有参加过护界预备课。” # speaker:he_min
+    “低阶立界？” # speaker:he_min
+    何敏在旁边小声说。 # speaker:narrator
+    “你明明没有参加过护界预备课。” # speaker:he_min
 
 “我也想知道我刚才做了什么。” # speaker:li_er_ha
 
-罗金恩从人群后面挤过来，一把揽住你的肩膀。 # speaker:jin_en
+罗金恩从人群后面挤过来，一把揽住你的肩膀。 # speaker:narrator
 “哈哥，能站着就先别解释。校纪员来了。” # speaker:jin_en
 ~ trust_jin_en += 1
 -> registration
@@ -109,7 +113,8 @@ VAR badge_returned_by_ma = false
 
 钟楼的第一声钟响轰然落下。所有浮灯同时熄灭，魔杖上的咒光也被震散。 # speaker:narrator # music:bell-impact
 
-黑暗里，马二福的声音离你很近：“你借了谁的势？” # speaker:ma_er_fu # emotion:low
+黑暗里，马二福的声音离你很近。 # speaker:narrator
+“你借了谁的势？” # speaker:ma_er_fu # emotion:low
 
 “如果我说是礼堂，你信吗？” # speaker:li_er_ha
 
@@ -117,23 +122,26 @@ VAR badge_returned_by_ma = false
     “我只相信账单。这笔账我记下了。” # speaker:ma_er_fu
 ~ trust_ma_er_fu += 1
 ~ investigation += 1
-罗金恩摸黑抓住你的袖口。 # speaker:jin_en
+罗金恩摸黑抓住你的袖口。 # speaker:narrator
 “哈哥，这种时候还敢乱借魔力，你真是越来越像你的外号了。” # speaker:jin_en
 ~ trust_jin_en += 1
 -> registration
 
 === bow_choice ===
-你让膝盖碰到地面前的最后一寸空气，低声说：“昨天的事，是我不对。” # speaker:li_er_ha # emotion:humiliated
+你让膝盖碰到地面前的最后一寸空气。 # speaker:narrator
+“昨天的事，是我不对。” # speaker:li_er_ha # emotion:humiliated
 
     下跪咒的压力停了一瞬。马二福似乎没想到你真的会道歉，魔杖尖端的银光因此晃了一下。 # speaker:narrator
 
-系统在你耳边提示：“检测到对方施法意图改变。建议保持清醒。” # speaker:system
+系统在你耳边提示。 # speaker:narrator
+“检测到对方施法意图改变。建议保持清醒。” # speaker:system
 
 你没有抬头，却听见魔力在她的呼吸里断了一拍。那不是心软，更像是她不习惯别人把选择还给她。 # speaker:narrator
 
-“起来。”马二福说，“别让别人以为我喜欢欺负跪着的人。” # speaker:ma_er_fu
+“起来。” # speaker:ma_er_fu
+“别让别人以为我喜欢欺负跪着的人。” # speaker:ma_er_fu
 ~ trust_ma_er_fu += 1
-罗金妮从旁边递来一只手。 # speaker:jin_ni
+罗金妮从旁边递来一只手。 # speaker:narrator
 “先站起来，哈哥。等你站稳了，再决定要不要还回去。” # speaker:jin_ni
 ~ trust_jin_ni += 1
 -> registration
@@ -174,10 +182,12 @@ VAR badge_returned_by_ma = false
     ~ trust_ma_er_fu += 1
     ~ investigation += 1
     ~ badge_holder = "ma_er_fu"
-    你在她离开登记台前追上去，把旧校徽递到她掌心。 # speaker:li_er_ha
-    马二福没有立刻收拢手指：“你确定第一位相信的人是我？” # speaker:ma_er_fu # emotion:guarded
-    “我确定你知道它为什么会让人害怕。”你说。 # speaker:li_er_ha
-    她这才收下校徽：“那就别把它交给下一个只会说漂亮话的人。” # speaker:ma_er_fu
+    你在她离开登记台前追上去，把旧校徽递到她掌心。 # speaker:narrator
+    马二福没有立刻收拢手指。 # speaker:narrator
+    “你确定第一位相信的人是我？” # speaker:ma_er_fu # emotion:guarded
+    “我确定你知道它为什么会让人害怕。” # speaker:li_er_ha
+    她这才收下校徽。 # speaker:narrator
+    “那就别把它交给下一个只会说漂亮话的人。” # speaker:ma_er_fu
     你没有错过她指尖一闪而过的迟疑：她收下的是一件证物，不是对你的信任。 # speaker:narrator
     -> first_night
 * [先由我保管]
@@ -198,7 +208,7 @@ VAR badge_returned_by_ma = false
     “这东西不该出现在你手里。” # speaker:ma_er_fu
     “那它应该在谁手里？” # speaker:li_er_ha
     马二福没有回答，只伸手按住校徽。两人的指尖同时感到一阵冰凉。 # speaker:narrator # audio:seal-pulse
-    她没有收下，只把校徽推回你掌心。 # speaker:ma_er_fu
+    她没有收下，只把校徽推回你掌心。 # speaker:narrator
     “先由你保管。明天把何敏查到的校史拿来，我们再谈它该交给谁。” # speaker:ma_er_fu # emotion:guarded
     ~ badge_returned_by_ma = true
     ~ badge_holder = "li_er_ha"
@@ -237,31 +247,37 @@ VAR badge_returned_by_ma = false
     你按住口袋里的校徽，感觉那枚缺口像一扇没有合上的门。 # speaker:narrator
 }
 
-何敏说：“明晚，旧档案室门口。迟到的人负责解释。” # speaker:he_min
-罗金恩说：“我带吃的。” # speaker:jin_en
-罗金妮说：“我带绷带。” # speaker:jin_ni
+“明晚，旧档案室门口。迟到的人负责解释。” # speaker:he_min
+“我带吃的。” # speaker:jin_en
+“我带绷带。” # speaker:jin_ni
 
 {badge_holder == "he_min":
-    马二福看向何敏的笔记本：“先把校史查清楚，再决定这枚校徽该交给谁。” # speaker:ma_er_fu # emotion:quiet
+    马二福看向何敏的笔记本。 # speaker:narrator
+    “先把校史查清楚，再决定这枚校徽该交给谁。” # speaker:ma_er_fu # emotion:quiet
     校徽仍在何敏的内袋里。 # speaker:narrator
 }
 {badge_holder == "jin_en":
-    马二福看了看罗金恩的袖口，低声提醒：“李二哈，别让那一福在你们手里断了线。” # speaker:ma_er_fu # emotion:quiet
+    马二福看了看罗金恩的袖口。 # speaker:narrator
+    “李二哈，别让那一福在你们手里断了线。” # speaker:ma_er_fu # emotion:quiet
     她没有伸手，校徽仍由罗金恩保管。 # speaker:narrator
 }
 {badge_holder == "ma_er_fu":
-    马二福看着掌心的校徽，低声说：“先别让它替任何人签字。” # speaker:ma_er_fu # emotion:quiet
+    马二福看着掌心的校徽。 # speaker:narrator
+    “先别让它替任何人签字。” # speaker:ma_er_fu # emotion:quiet
     校徽由她保管，没有再交给任何人。 # speaker:narrator
 }
 {badge_holder == "li_er_ha" && badge_returned_by_ma == false:
-    马二福看向你外套口袋的位置：“你既然要自己保管，就把明天的证据也一起带来。” # speaker:ma_er_fu # emotion:quiet
+    马二福看向你外套口袋的位置。 # speaker:narrator
+    “你既然要自己保管，就把明天的证据也一起带来。” # speaker:ma_er_fu # emotion:quiet
     校徽仍在你口袋里。 # speaker:narrator
 }
 {badge_holder == "li_er_ha" && badge_returned_by_ma:
-    马二福看向你外套口袋的位置：“先替我保管一晚，明天拿校史来换答案。” # speaker:ma_er_fu # emotion:quiet
+    马二福看向你外套口袋的位置。 # speaker:narrator
+    “先替我保管一晚，明天拿校史来换答案。” # speaker:ma_er_fu # emotion:quiet
     校徽已经收进你的口袋，是她推回给你的。 # speaker:narrator
 }
 
-系统的最后一行提示浮在你的意识里：“本次残响已归档。下一处响应：旧档案室。” # speaker:system
+系统的最后一行提示浮在你的意识里。 # speaker:narrator
+“本次残响已归档。下一处响应：旧档案室。” # speaker:system
 
 -> END

@@ -1,0 +1,90 @@
+import { createHash, randomUUID } from 'node:crypto';
+import { GameError } from './errors.js';
+import { compile, renderTurn, resolveChoice } from './engine.js';
+import type { Repository } from './repository.js';
+import type { ChoiceInput, Draft, DraftInput, DraftRecord, Session, SessionRecord, Version, VersionRecord } from './types.js';
+
+function publicDraft({ publicationCounter: _, ...draft }: DraftRecord): Draft { return draft; }
+function publicVersion({ compiled: _, characters: __, source: ___, sourceRevision: ____, ...version }: VersionRecord): Version { return version; }
+function publicSession({ inkState: _, receipts: __, ...session }: SessionRecord): Session { return session; }
+function required<T>(value: T | null, message: string): T {
+  if (!value) throw new GameError(404, 'NOT_FOUND', message);
+  return value;
+}
+function conflict(): never { throw new GameError(409, 'STALE_REVISION', '内容已更新，请刷新后重试。'); }
+
+export class GameService {
+  constructor(private repo: Repository) {}
+  async listDrafts() { return (await this.repo.listDrafts()).map(publicDraft); }
+  async getDraft(id: string) { return publicDraft(required(await this.repo.getDraft(id), '找不到故事')); }
+  async createDraft(input: DraftInput) {
+    const record: DraftRecord = { ...input, id: randomUUID(), revision: 0, publicationCounter: 0, updatedAt: new Date().toISOString() };
+    await this.repo.insertDraft(record);
+    return publicDraft(record);
+  }
+  async updateDraft(id: string, input: DraftInput, revision: number) {
+    const current = required(await this.repo.getDraft(id), '找不到故事');
+    if (current.revision !== revision) conflict();
+    const next = { ...current, ...input, revision: revision + 1, updatedAt: new Date().toISOString() };
+    if (!await this.repo.updateDraft(next, revision)) conflict();
+    return publicDraft(next);
+  }
+  compile(source: string) {
+    const { compiled: _, ...result } = compile(source);
+    return result;
+  }
+  async publish(id: string, revision: number) {
+    const draft = required(await this.repo.getDraft(id), '找不到故事');
+    if (draft.revision !== revision) conflict();
+    const result = compile(draft.source);
+    if (!result.ok || !result.compiled) throw new GameError(422, 'COMPILE_ERROR', '请修复编译错误后发布。', result.diagnostics);
+    // Check the entry scene before publishing, including non-terminating loops.
+    renderTurn(result.compiled);
+    const number = await this.repo.reserveVersion(id, revision);
+    if (number === null) conflict();
+    const version: VersionRecord = { id: randomUUID(), storyId: id, number, compiled: result.compiled, source: draft.source, sourceRevision: draft.revision, characters: draft.characters, createdAt: new Date().toISOString() };
+    await this.repo.insertVersion(version);
+    return publicVersion(version);
+  }
+  async versions(id: string) {
+    required(await this.repo.getDraft(id), '找不到故事');
+    return (await this.repo.listVersions(id)).map(publicVersion);
+  }
+  async start(storyId: string, versionId?: string) {
+    required(await this.repo.getDraft(storyId), '找不到故事');
+    const version = required(versionId ? await this.repo.getVersion(versionId) : (await this.repo.listVersions(storyId))[0] ?? null, '请先发布故事');
+    if (version.storyId !== storyId) throw new GameError(400, 'VERSION_MISMATCH', '版本不属于该故事');
+    const rendered = renderTurn(version.compiled);
+    const record: SessionRecord = { id: randomUUID(), storyId, versionId: version.id, versionNumber: version.number, revision: 0, characters: version.characters, ...rendered, receipts: [], updatedAt: new Date().toISOString() };
+    await this.repo.insertSession(record);
+    return publicSession(record);
+  }
+  async resume(id: string) { return publicSession(required(await this.repo.getSession(id), '找不到存档')); }
+  async choose(id: string, input: ChoiceInput) {
+    const current = required(await this.repo.getSession(id), '找不到存档');
+    const fingerprint = createHash('sha256').update(JSON.stringify([input.turnId, input.revision, input.choiceId ?? null, input.input ?? null])).digest('hex');
+    const retry = this.receipt(current, input.requestId, fingerprint);
+    if (retry) return retry;
+    if (current.revision !== input.revision || current.turn.id !== input.turnId) conflict();
+    if (current.turn.ended) throw new GameError(400, 'STORY_ENDED', '故事已结束，请开始新的游玩。');
+    const choice = resolveChoice(current.turn.choices, input);
+    const version = required(await this.repo.getVersion(current.versionId), '找不到存档对应的故事版本');
+    const rendered = renderTurn(version.compiled, current.inkState, choice.index);
+    const next: SessionRecord = { ...current, ...rendered, revision: current.revision + 1, updatedAt: new Date().toISOString() };
+    const result = publicSession(next);
+    next.receipts = [...current.receipts, { requestId: input.requestId, fingerprint, result }].slice(-8);
+    if (!await this.repo.updateSession(next, current.revision)) {
+      const latest = required(await this.repo.getSession(id), '找不到存档');
+      const duplicate = this.receipt(latest, input.requestId, fingerprint);
+      if (duplicate) return duplicate;
+      conflict();
+    }
+    return result;
+  }
+  private receipt(session: SessionRecord, requestId: string, fingerprint: string) {
+    const receipt = session.receipts.find(r => r.requestId === requestId);
+    if (!receipt) return undefined;
+    if (receipt.fingerprint !== fingerprint) throw new GameError(409, 'REQUEST_REUSED', 'requestId 已用于不同请求。');
+    return receipt.result;
+  }
+}

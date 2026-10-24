@@ -28,7 +28,9 @@ stdio 给本机客户端拉起，HTTP 挂在同一个 API 进程的 `/mcp`。两
 npm run mcp
 ```
 
-Cursor 可使用仓库里的 [`.cursor/mcp.json`](.cursor/mcp.json)。默认数据库是 `mongodb://127.0.0.1:27017/wawawa`。HTTP 地址是 `http://127.0.0.1:3001/mcp`。这不表示宿主会朗读台词，也不包含小智设备。工作室内的协议测试台见 [SDD-003](docs/specs/003-mcp-console.md)，实现合并前界面里还没有这个标签。
+Cursor 可使用仓库里的 [`.cursor/mcp.json`](.cursor/mcp.json)。默认数据库是 `mongodb://127.0.0.1:27017/wawawa`。HTTP 地址是 `http://127.0.0.1:3001/mcp`。这不表示宿主会朗读台词，也不包含小智设备。
+
+工作室的「MCP 测试」用同一个 HTTP 入口核对工具返回。它由人点击操作，用来看台词、选项和错误，不代替宿主模型，也不播放声音。规格见 [SDD-003](docs/specs/003-mcp-console.md)。
 
 ## 技术与质量
 
@@ -54,6 +56,7 @@ npm run test:e2e
 - [测试策略](docs/testing.md)
 - [MVP验收与比赛复盘](docs/reviews/mvp-validation.md)
 - [MCP 游玩评审](docs/reviews/mcp-play.md)
+- [MCP 测试台评审](docs/reviews/mcp-console.md)
 - [开发约定](AGENTS.md)
 
 采用规格驱动、AI协作开发，行为变更先更新验收要求。通过小规模PR合并主干，检查与评审结果随迭代记录。

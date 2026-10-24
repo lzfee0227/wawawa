@@ -14,6 +14,7 @@ VAR has_fumen_key = false
 VAR discipline_pending = false
 VAR badge_holder = "unassigned"
 VAR opening_response = "silence"
+VAR badge_returned_by_ma = false
 
 -> arrival
 
@@ -191,6 +192,7 @@ VAR opening_response = "silence"
     “那它应该在谁手里？” # speaker:li_er_ha
     马二福没有回答，只伸手按住校徽。两人的指尖同时感到一阵冰凉。她没有收下，只把校徽推回你掌心。 # speaker:narrator # audio:seal-pulse
     “先由你保管。明天把何敏查到的校史拿来，我们再谈它该交给谁。” # speaker:ma_er_fu # emotion:guarded
+    ~ badge_returned_by_ma = true
     ~ badge_holder = "li_er_ha"
     -> first_night
 * [继续自己保管]
@@ -219,10 +221,11 @@ VAR opening_response = "silence"
 罗金恩说：“我带吃的。” # speaker:jin_en
 罗金妮说：“我带绷带。” # speaker:jin_ni
 
-{badge_holder == "he_min": 马二福独自停在雨后的窗边。她没有回头，却轻声说：“李二哈，别把那一福弄丢了。”她说完便离开，校徽仍在何敏的内袋里。 # speaker:ma_er_fu # emotion:quiet}
+{badge_holder == "he_min": 马二福看向何敏的笔记本：“先把校史查清楚，再决定这枚校徽该交给谁。”校徽仍在何敏的内袋里。 # speaker:ma_er_fu # emotion:quiet}
 {badge_holder == "jin_en": 马二福看了看罗金恩的袖口，低声提醒：“李二哈，别让那一福在你们手里断了线。”她没有伸手，校徽仍由罗金恩保管。 # speaker:ma_er_fu # emotion:quiet}
-{badge_holder == "ma_er_fu": 马二福看着掌心的校徽，低声说：“李二哈，这一福先由我替你保管。”她转身走向校纪室，校徽没有再交给任何人。 # speaker:ma_er_fu # emotion:quiet}
-{badge_holder == "li_er_ha": 马二福独自停在雨后的窗边。她没有回头，却轻声说：“李二哈，别把那一福弄丢了。”校徽仍在你掌心。 # speaker:ma_er_fu # emotion:quiet}
+{badge_holder == "ma_er_fu": 马二福看着掌心的校徽，低声说：“先别让它替任何人签字。”校徽由她保管，没有再交给任何人。 # speaker:ma_er_fu # emotion:quiet}
+{badge_holder == "li_er_ha" && badge_returned_by_ma == false: 马二福看向你掌心的校徽：“你既然要自己保管，就把明天的证据也一起带来。”校徽仍在你手里。 # speaker:ma_er_fu # emotion:quiet}
+{badge_holder == "li_er_ha" && badge_returned_by_ma: 马二福看向你掌心的校徽：“先替我保管一晚，明天拿校史来换答案。”校徽是她推回给你的。 # speaker:ma_er_fu # emotion:quiet}
 
 系统的最后一行提示浮在你的意识里：“本次残响已归档。下一处响应：旧档案室。” # speaker:system
 

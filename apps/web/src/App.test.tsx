@@ -248,4 +248,15 @@ describe('simulated play acceptance R05-R09', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('无法连接 MongoDB');
     expect(await screen.findByRole('button', { name: '创建第一个故事' })).toBeEnabled();
   });
+
+  it('opens the MCP console as a protocol check rather than playback', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')));
+    const user = userEvent.setup();
+    await loaded();
+    await user.click(screen.getByRole('tab', { name: '03 MCP 测试' }));
+    expect(screen.getByRole('region', { name: 'MCP 测试台' })).toBeInTheDocument();
+    expect(screen.getByText(/不是语言模型在游玩/)).toBeInTheDocument();
+    expect(screen.getByText(/这里不会播放/)).toBeInTheDocument();
+    expect(await screen.findByRole('alert')).toHaveTextContent('无法连接本机 MCP 服务。');
+  });
 });

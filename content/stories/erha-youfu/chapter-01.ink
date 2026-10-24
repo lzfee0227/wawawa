@@ -21,7 +21,7 @@ VAR badge_returned_by_ma = false
 === arrival ===
 雨水沿着霍海魔法大学的黑曜石拱门往下流。新生礼堂里，成百上千盏浮灯排成一条银色长河。 # speaker:narrator # music:rain
 
-你，李博特，醒来时发现自己成了霍海魔法大学的新生李二哈。
+你，李博特，醒来时发现自己成了霍海魔法大学的新生李二哈。 # speaker:narrator
 你的记忆和这具身体的记忆在脑中撞成一团；你还没有资格把任何一段人生说成自己的。 # speaker:narrator
 
 一个金发女生挡在你面前。她穿着剪裁得像宣言一样利落的制服，校徽上的银马在灯下闪了一下。 # speaker:narrator # audio:footsteps
@@ -30,9 +30,9 @@ VAR badge_returned_by_ma = false
 她抬起下巴。 # speaker:narrator
 “凭你也配跟我的名字共享同一个二字？” # speaker:ma_er_fu # emotion:scornful
 
-你想起昨天的记忆碎片：自己好像在分班登记处撞翻了她的墨水瓶，还把她写给校董会的申请踩出了一道脚印。
+你想起昨天的记忆碎片：自己好像在分班登记处撞翻了她的墨水瓶，还把她写给校董会的申请踩出了一道脚印。 # speaker:narrator
 
-此时你要怎么回应？
+此时你要怎么回应？ # speaker:narrator
 * [沉默不语]
     ~ trust_ma_er_fu -= 1
     ~ reputation += 1
@@ -76,9 +76,9 @@ VAR badge_returned_by_ma = false
 
 “叮。意识置换确认。宿主已进入霍海魔法大学，检测到高危法术。” # speaker:system
 
-你在心里骂了一句：怎么才来？
+你在心里骂了一句：怎么才来？ # speaker:narrator
 
-系统只给出三个选项，像一张不太可靠的救命纸条：
+系统只给出三个选项，像一张不太可靠的救命纸条： # speaker:narrator
 * [立界，硬挡这一击]
     ~ courage += 1
     -> break_curse
@@ -208,6 +208,7 @@ VAR badge_returned_by_ma = false
     “那它应该在谁手里？” # speaker:li_er_ha
     马二福没有回答，只伸手按住校徽。两人的指尖同时感到一阵冰凉。 # speaker:narrator # audio:seal-pulse
     她没有收下，只把校徽推回你掌心。 # speaker:narrator
+    你立刻把校徽收进口袋。 # speaker:narrator
     “先由你保管。明天把何敏查到的校史拿来，我们再谈它该交给谁。” # speaker:ma_er_fu # emotion:guarded
     ~ badge_returned_by_ma = true
     ~ badge_holder = "li_er_ha"
@@ -227,7 +228,7 @@ VAR badge_returned_by_ma = false
     马二福在校纪员的记录纸上签下自己的名字。她看了你一眼。 # speaker:narrator
     “明早，校纪室。别迟到。” # speaker:ma_er_fu
 - else:
-    马二福没有再提下跪咒，只把魔杖收回袖中。她看了你一眼，像是在记住一笔尚未结清的账。 # speaker:narrator
+    马二福没有再提下跪咒。她看了你一眼，像是在记住一笔尚未结清的账；魔杖仍在袖中。 # speaker:narrator
 }
 
 {badge_holder == "he_min":

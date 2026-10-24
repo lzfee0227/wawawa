@@ -52,6 +52,7 @@ npm run test:e2e
 - [分阶段路线图](docs/roadmap.md)
 - [测试策略](docs/testing.md)
 - [MVP验收与比赛复盘](docs/reviews/mvp-validation.md)
+- [MCP 游玩评审](docs/reviews/mcp-play.md)
 - [开发约定](AGENTS.md)
 
 采用规格驱动、AI协作开发，行为变更先更新验收要求。通过小规模PR合并主干，检查与评审结果随迭代记录。

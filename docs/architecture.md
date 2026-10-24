@@ -54,6 +54,8 @@ SDD-002 is the play contract. One factory registers `list_stories`, `start_sessi
 
 Successful tool results are one JSON text block: a published-story list, or a play snapshot with `sessionId`, `turnId`, `revision`, lines, resolved `speakerName` when the tag matches a character, choices, characters, and variables. Results omit Ink state and retry receipts. `get_session` does not advance. `choose_option` uses the HTTP choice rules, including client-generated `requestId` and exactly one of `choiceId` or `input`.
 
+The studio console in SDD-003 is another client of this HTTP endpoint. It posts JSON-RPC to the same-origin `/mcp` path, which the Vite dev server proxies alongside `/api`. The console does not call the authoring routes to play, and it does not store its session id in the simulator's local recovery key.
+
 Service errors become MCP tool errors whose text starts with `CODE: message`. Invalid tool arguments are rejected by the SDK and do not call the service. The adapter does not author, compile, publish, play audio, or interpret raw speech. A host that only displays the returned text still satisfies the contract.
 
 stdio reserves stdout for JSON-RPC. HTTP uses the existing `HOST` and `PORT`, localhost by default. Device playback, including Xiaozhi, stays unverified and outside this adapter.

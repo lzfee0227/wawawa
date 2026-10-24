@@ -28,7 +28,7 @@ stdio 给本机客户端拉起，HTTP 挂在同一个 API 进程的 `/mcp`。两
 npm run mcp
 ```
 
-Cursor 可使用仓库里的 [`.cursor/mcp.json`](.cursor/mcp.json)。默认数据库是 `mongodb://127.0.0.1:27017/wawawa`。HTTP 地址是 `http://127.0.0.1:3001/mcp`。这不表示宿主会朗读台词，也不包含小智设备。
+Cursor 可使用仓库里的 [`.cursor/mcp.json`](.cursor/mcp.json)。默认数据库是 `mongodb://127.0.0.1:27017/wawawa`。HTTP 地址是 `http://127.0.0.1:3001/mcp`。这不表示宿主会朗读台词，也不包含小智设备。工作室内的协议测试台见 [SDD-003](docs/specs/003-mcp-console.md)，实现合并前界面里还没有这个标签。
 
 ## 技术与质量
 
@@ -47,6 +47,7 @@ npm run test:e2e
 
 - [MVP规格](docs/specs/001-mvp.md)
 - [MCP 游玩规格](docs/specs/002-mcp-play.md)
+- [MCP 测试台规格](docs/specs/003-mcp-console.md)
 - [架构与API约定](docs/architecture.md)
 - [需求、商业与技术调研](docs/research.md)
 - [分阶段路线图](docs/roadmap.md)

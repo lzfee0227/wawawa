@@ -18,8 +18,8 @@ VAR accepted_help = false
 === arrival ===
 雨水沿着霍海魔法大学的黑曜石拱门往下流。新生礼堂里，成百上千盏浮灯排成一条银色长河。 # speaker:narrator # music:rain
 
-你，李博特，刚刚魂穿到一个同名的新生身上。
-更糟的是，所有人都叫你李二哈。 # speaker:narrator
+你，李博特，醒来时发现自己成了霍海魔法大学的新生李二哈。
+你的记忆和这具身体的记忆在脑中撞成一团；你还没有资格把任何一段人生说成自己的。 # speaker:narrator
 
 一个金发女生挡在你面前。她穿着剪裁得像宣言一样利落的制服，校徽上的银马在灯下闪了一下。 # speaker:narrator # audio:footsteps
 
@@ -31,22 +31,25 @@ VAR accepted_help = false
 * [沉默不语]
     ~ trust_ma_er_fu -= 1
     ~ reputation += 1
+    ~ accepted_help = false
     -> kneel_curse
 * [忽略她，直接路过]
     ~ reputation -= 1
+    马二福把你的沉默当成挑衅，魔杖抬得更快。 # speaker:ma_er_fu # emotion:angry
     -> kneel_curse
 * [怼回去]
     ~ courage += 1
     ~ reputation += 1
     ~ trust_ma_er_fu += 1
-    “名字是父母给的，二字又不是你家的校产。”你说。
+    “名字是父母给的，二字又不是你家的校产。”你说。 # speaker:li_er_ha
     马二福的眼睛眯了一下，像是第一次认真看你。 # speaker:ma_er_fu # emotion:surprised
     -> kneel_curse
 * [先道歉]
     ~ reputation -= 1
     ~ trust_ma_er_fu += 1
-    “昨天的事，对不起。我会赔你的制服。”
+    “昨天的事，对不起。我会赔你的制服。” # speaker:li_er_ha
     “赔得起吗？”马二福冷笑，但魔杖没有立刻抬起。 # speaker:ma_er_fu # emotion:skeptical
+    “登记结束后，跟我去校纪室说明。”她补了一句。 # speaker:ma_er_fu
     -> kneel_curse
 
 === kneel_curse ===
@@ -63,7 +66,6 @@ VAR accepted_help = false
 系统只给出三个选项，像一张不太可靠的救命纸条：
 * [立界，硬挡这一击]
     ~ courage += 1
-    ~ causality_debt += 0
     -> break_curse
 * [借势，把礼堂的钟声引过来]
     ~ causality_debt += 1
@@ -71,7 +73,6 @@ VAR accepted_help = false
     -> borrow_bell
 * [先道歉，记住这次屈辱]
     ~ trust_ma_er_fu += 1
-    ~ causality_debt += 0
     -> bow_choice
 
 === break_curse ===
@@ -83,10 +84,10 @@ VAR accepted_help = false
 
 “低阶立界？”何敏在旁边小声说，“你明明没有参加过护界预备课。” # speaker:he_min
 
-“我也想知道我刚才做了什么。”
+“我也想知道我刚才做了什么。” # speaker:li_er_ha
 
 罗金恩从人群后面挤过来，一把揽住你的肩膀。 # speaker:jin_en
-“哈哥，能站着就先别解释。校纪员来了。”
+“哈哥，能站着就先别解释。校纪员来了。” # speaker:jin_en
 ~ trust_jin_en += 1
 -> registration
 
@@ -97,19 +98,19 @@ VAR accepted_help = false
 
 黑暗里，马二福的声音离你很近：“你借了谁的势？” # speaker:ma_er_fu # emotion:low
 
-“如果我说是礼堂，你信吗？”
+“如果我说是礼堂，你信吗？” # speaker:li_er_ha
 
 “我只相信账单。”她收回魔杖，“这笔账我记下了。” # speaker:ma_er_fu
 ~ trust_ma_er_fu += 1
 ~ investigation += 1
 ~ accepted_help = true
 罗金恩摸黑抓住你的袖口。 # speaker:jin_en
-“哈哥，这种时候还敢乱借魔力，你真是越来越像你的外号了。”
+“哈哥，这种时候还敢乱借魔力，你真是越来越像你的外号了。” # speaker:jin_en
 ~ trust_jin_en += 1
 -> registration
 
 === bow_choice ===
-你让膝盖碰到地面前的最后一寸空气，低声说：“昨天的事，是我不对。” # speaker:narrator # emotion:humiliated
+你让膝盖碰到地面前的最后一寸空气，低声说：“昨天的事，是我不对。” # speaker:li_er_ha # emotion:humiliated
 
 下跪咒的压力停了一瞬。马二福似乎没想到你真的会道歉，魔杖尖端的银光因此晃了一下。 # speaker:ma_er_fu # emotion:uncertain
 
@@ -121,7 +122,7 @@ VAR accepted_help = false
 ~ trust_ma_er_fu += 1
 ~ accepted_help = true
 罗金妮从旁边递来一只手。 # speaker:jin_ni
-“先站起来，哈哥。等你站稳了，再决定要不要还回去。”
+“先站起来，哈哥。等你站稳了，再决定要不要还回去。” # speaker:jin_ni
 ~ trust_jin_ni += 1
 -> registration
 
@@ -132,7 +133,7 @@ VAR accepted_help = false
 
 何敏把一张被雨水打湿的登记单递给你。纸背面印着一枚半圆形的旧校徽，校徽中央缺了一角。 # speaker:he_min
 
-“这不是新生登记表的图案。”她说，“它和校史目录里一张被撕掉的图一模一样。”
+“这不是新生登记表的图案。”她说，“它和校史目录里一张被撕掉的图一模一样。” # speaker:he_min
 
 罗金恩压低声音：“今晚去钟楼回廊？我知道一条不经过校纪室的路。” # speaker:jin_en
 
@@ -144,8 +145,7 @@ VAR accepted_help = false
 * [把旧校徽交给何敏]
     ~ trust_he_min += 2
     ~ investigation += 1
-    ~ knows_bloodline = true
-    何敏没有追问你为什么相信她，只把校徽夹进自己的笔记本。 # speaker:he_min
+    何敏没有追问你为什么相信她，只把校徽夹进自己的笔记本。她提醒你：“这只是线索，不是你血脉的证明。” # speaker:he_min
     -> first_night
 * [先交给罗金恩保管]
     ~ trust_jin_en += 2
@@ -156,8 +156,8 @@ VAR accepted_help = false
     ~ trust_ma_er_fu += 2
     ~ investigation += 1
     你在回廊口追上马二福。她看到校徽缺口时，脸色第一次真正变了。 # speaker:ma_er_fu # emotion:guarded
-    “这东西不该出现在你手里。”
-    “那它应该在谁手里？”
+    “这东西不该出现在你手里。” # speaker:ma_er_fu
+    “那它应该在谁手里？” # speaker:li_er_ha
     马二福没有回答，只伸手按住校徽。两人的指尖同时感到一阵冰凉。 # speaker:narrator # audio:seal-pulse
     -> first_night
 * [把校徽留在自己手里]
@@ -179,6 +179,6 @@ VAR accepted_help = false
 回廊另一端，马二福独自停在雨后的窗边。她没有回头，却轻声说了一句只有你听得到的话：
 “李二哈，别把那一福弄丢了。” # speaker:ma_er_fu # emotion:quiet
 
-系统的最后一行提示浮在你的意识里：“第一章完成。福门残响已记录。” # speaker:system
+系统的最后一行提示浮在你的意识里：“本次残响已归档。下一处响应：旧档案室。” # speaker:system
 
 -> END

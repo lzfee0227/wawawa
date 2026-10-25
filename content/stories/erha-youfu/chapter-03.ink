@@ -37,7 +37,13 @@
     -> trial_after
 
 === trial_after ===
-教员清点完人数，阿槐坐在药箱上，嘴唇还白着。他把那只碎陶杯捧回来，告诉你杯子可以赔，里面的人不能。你笑了，笑完才发现后背湿透。 # speaker:narrator
+教员清点完人数，阿槐坐在药箱上，嘴唇还白着。 # speaker:narrator
+{trial_shared:
+    他把滚到墙角的陶杯捡回来，杯沿已经磕出一个缺口。他说杯子可以赔，里面的人不能。 # speaker:narrator
+- else:
+    他把那只碎陶杯的碎片捧回来，告诉你杯子可以赔，里面的人不能。 # speaker:narrator
+}
+你笑了，笑完才发现后背湿透。 # speaker:narrator
 顾长明撤去外圈，疲惫地站了一会儿。他让负责器材的人把损坏记在学校账上，然后带你去看护界底座。盖板下有一条新接的铜线，编号与昨晚灾年账的转运栏相同。 # speaker:narrator
 “旧系统正在把潮汐冲击送进教学阵。我会在三天后的落潮夜接管它，切断家族的手。” # speaker:gu_chang_ming
 “接管以后，谁能叫您停下来？” # speaker:he_min

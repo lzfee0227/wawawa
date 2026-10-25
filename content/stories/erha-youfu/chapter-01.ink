@@ -32,7 +32,9 @@ VAR run_number = 1
 
 VAR identity_shared = false
 VAR records_shared = false
+// Whether the whole team has heard and accepted the current cost ledger.
 VAR bloodline_shared = false
+VAR extra_help_forfeited = false
 VAR ma_respected = false
 VAR station_safe = false
 VAR trial_shared = false
@@ -42,6 +44,13 @@ VAR partner_focus = "none"
 VAR archive_focus = "none"
 VAR dangerous_delegations = 0
 VAR ending_id = ""
+VAR seen_jinni = false
+VAR seen_hemin = false
+VAR seen_ma_good = false
+VAR seen_ma_true = false
+VAR seen_partner = false
+VAR seen_power = false
+
 
 -> arrival
 
@@ -255,7 +264,7 @@ VAR ending_id = ""
 === first_night ===
 新生注册结束，礼堂外的雨也停了。远处钟楼敲响第九声，回声在校园地下停了半拍。 # speaker:narrator # music:bell-distant
 
-你们四个人站在回廊阴影里。没人知道那枚旧校徽最终会打开什么，但每个人都知道，今晚之后，霍海不会再只是大学。 # speaker:narrator
+你们五个人站在回廊阴影里。没人知道那枚旧校徽最终会打开什么，但每个人都知道，今晚之后，霍海不会再只是大学。 # speaker:narrator
 
 {discipline_pending:
     马二福在校纪员的记录纸上签下自己的名字。她看了你一眼。 # speaker:narrator
@@ -311,6 +320,6 @@ VAR ending_id = ""
 }
 
 系统的最后一行提示浮在你的意识里。 # speaker:narrator
-“本次残响已归档。下一处响应：旧档案室。” # speaker:system
+“已记下这处待调查的回声。下一处响应：旧档案室。” # speaker:system
 
 -> END

@@ -33,7 +33,9 @@ VAR run_number = 1
 
 VAR identity_shared = false
 VAR records_shared = false
+// Whether the whole team has heard and accepted the current cost ledger.
 VAR bloodline_shared = false
+VAR extra_help_forfeited = false
 VAR ma_respected = false
 VAR station_safe = false
 VAR trial_shared = false
@@ -43,6 +45,13 @@ VAR partner_focus = "none"
 VAR archive_focus = "none"
 VAR dangerous_delegations = 0
 VAR ending_id = ""
+VAR seen_jinni = false
+VAR seen_hemin = false
+VAR seen_ma_good = false
+VAR seen_ma_true = false
+VAR seen_partner = false
+VAR seen_power = false
+
 
 -> arrival
 
@@ -256,7 +265,7 @@ VAR ending_id = ""
 === first_night ===
 新生注册结束，礼堂外的雨也停了。远处钟楼敲响第九声，回声在校园地下停了半拍。 # speaker:narrator # music:bell-distant
 
-你们四个人站在回廊阴影里。没人知道那枚旧校徽最终会打开什么，但每个人都知道，今晚之后，霍海不会再只是大学。 # speaker:narrator
+你们五个人站在回廊阴影里。没人知道那枚旧校徽最终会打开什么，但每个人都知道，今晚之后，霍海不会再只是大学。 # speaker:narrator
 
 {discipline_pending:
     马二福在校纪员的记录纸上签下自己的名字。她看了你一眼。 # speaker:narrator
@@ -312,7 +321,7 @@ VAR ending_id = ""
 }
 
 系统的最后一行提示浮在你的意识里。 # speaker:narrator
-“本次残响已归档。下一处响应：旧档案室。” # speaker:system
+“已记下这处待调查的回声。下一处响应：旧档案室。” # speaker:system
 
 -> chapter_02_start
 
@@ -504,7 +513,13 @@ VAR ending_id = ""
     -> trial_after
 
 === trial_after ===
-教员清点完人数，阿槐坐在药箱上，嘴唇还白着。他把那只碎陶杯捧回来，告诉你杯子可以赔，里面的人不能。你笑了，笑完才发现后背湿透。 # speaker:narrator
+教员清点完人数，阿槐坐在药箱上，嘴唇还白着。 # speaker:narrator
+{trial_shared:
+    他把滚到墙角的陶杯捡回来，杯沿已经磕出一个缺口。他说杯子可以赔，里面的人不能。 # speaker:narrator
+- else:
+    他把那只碎陶杯的碎片捧回来，告诉你杯子可以赔，里面的人不能。 # speaker:narrator
+}
+你笑了，笑完才发现后背湿透。 # speaker:narrator
 顾长明撤去外圈，疲惫地站了一会儿。他让负责器材的人把损坏记在学校账上，然后带你去看护界底座。盖板下有一条新接的铜线，编号与昨晚灾年账的转运栏相同。 # speaker:narrator
 “旧系统正在把潮汐冲击送进教学阵。我会在三天后的落潮夜接管它，切断家族的手。” # speaker:gu_chang_ming
 “接管以后，谁能叫您停下来？” # speaker:he_min
@@ -714,7 +729,7 @@ VAR ending_id = ""
 === hemin_experiment ===
 实验台只有两只小灯和一块旧契约板。愿意帮忙的学生许砚隔着门槛看了很久，才问这是不是也要抽他的好运。何敏把两只灯的油壶都卸了下来。 # speaker:narrator
 “今天只借灯里的余热，不碰人的运势。你一说停，我就断开。你也可以现在走。” # speaker:he_min
-许砚留下了。他先在板上记下自己的名字，授权左灯向右灯借一点余热，再念出“撤回”。左灯依然变冷，右灯的玻璃却越来越烫。 # speaker:narrator # audio:glass-tick
+许砚留下了。他先在板上记下自己的名字，授权右灯向左灯借一点余热，再念出“撤回”。左灯依然变冷，右灯的玻璃却越来越烫。 # speaker:narrator # audio:glass-tick
 何敏立刻拔掉连接线。许砚收回手，指尖已经泛红。你的第一反应是说实验失败了，何敏却拿笔圈出了授权末尾的三个字：由谁撤。 # speaker:narrator
 旧板把撤回权交给了管理者。一个人能签自己的名字，却没有权利让自己的名字停下来。 # speaker:narrator
 你们换上一张空白契约，把撤回权写给借出者本人。何敏念一句，你复述一句，许砚听懂了才重新签。第一次，左灯减去的热与右灯增加的热一致；第二次，他刚说停，铜线里的嗡鸣便断了。 # speaker:narrator
@@ -1217,216 +1232,573 @@ VAR ending_id = ""
 
 // 第六章：福门之夜前夕
 === chapter_06_eve ===
-钟楼下的旧礼堂开始倒数。顾长明把四枚权限印章摆在桌上。 # speaker:narrator # music:countdown
-“只要有人愿意承担全部代价，学校就能恢复秩序。”他说。 # speaker:gu_chang_ming
-你们已经知道，所谓秩序会把坏结果推给没有签名的人。 # speaker:narrator
-{route == "jin_ni": 罗金妮把轮值名单铺开；每一段护界都有两名见证人。 # speaker:jin_ni}
-{route == "he_min": 何敏把撤销条款投到墙上；每一次签名都留下回查入口。 # speaker:he_min}
-{route == "ma_er_fu": 马二福把家族印章放在桌边，却没有碰笔。 # speaker:ma_er_fu}
-{route == "partner": 罗金恩把学生响应队排成四列，公开点名，公开休息。 # speaker:jin_en}
-
-+ [把自己的承福血脉告诉同伴]
-    ~ knows_bloodline = true
+落潮夜终于到了。离约定的第九声钟还剩一个时辰，校园外的海水正沿着黑色石阶退下去。你从回廊望出去，白天看不见的裂缝一条接一条露出，像地底有人慢慢张开手。 # speaker:narrator # music:countdown
+钟楼底层已经点灯。罗金恩把长桌搬离漏雨的墙，桌上五只碗，汤里只有两块萝卜。他用勺子敲碗，宣布今晚任何人都不许空着肚子救学校。 # speaker:narrator
+{route == "jin_ni":
+    你和罗金妮带回潮湿的病历。她在门口先擦干鞋底，坐下时却忘了脱药篮。你替她取下来，发现肩带在她衣服上压出一道深痕。 # speaker:narrator
+}
+{route == "he_min":
+    你和何敏抱着副本进门。她一张张数完才坐下，端起汤碗又放回去，问有没有人看见她的铅笔。那支铅笔一直夹在她耳后。 # speaker:narrator
+}
+{route == "ma_er_fu":
+    马二福进门时外套少了一枚银扣。她把外套搭在椅背，你替她挂到炉旁，她说别烤得太近，过了一会儿又小声说了谢谢。 # speaker:narrator
+}
+{route == "partner":
+    你和罗金恩把撤离名单压在碗下面。原本整齐的一页纸已经接上四张补单，边角全是不同人的手印。你们找回的人比最初那一列数字多得多。 # speaker:narrator
+}
+罗金恩先报最后一班转运车的位置。何敏问车上的人是否已经拿到自己的授权副本，罗金妮则问他们下车以后睡在哪里。那张被汤碗压住的地图很快挤满了字，几处空白仍旧刺眼。 # speaker:narrator
+何敏带来一份授权格式，罗金妮带来愿意参与的救援者名单，马二福放下马家的封存附页，罗金恩拿出外环到渡口的实际撤离路线。它们都不完整，但终于能够摆到同一张桌上。 # speaker:narrator
+你从胸前取出检修钥片。罗金恩用手托住你晃了一下的碗，问你还欠系统多少。你意识到，他从试炼以后就在等你自己把话说完。 # speaker:narrator
++ [向全队公开全部代价记录]
+    ~ bloodline_shared = true
+    ~ knows_system_cost = true
+    ~ records_shared = true
     ~ investigation += 1
     ~ trust_jin_en += 1
-    你说出李家曾封存福门，也说出系统每次护助都会增加债务。 # speaker:li_er_ha
+    “大家看过名录，知道我是承福血脉。但还有些人没听过我的完整借用记录。今晚，我想把这一页补齐。” # speaker:li_er_ha
+    你让系统逐笔读出借用记录，连自己当时为什么着急也说出来。没有借过的项目就明确记作零，没有拿空白冒充隐瞒。 # speaker:narrator
+    “当前因果债：{causality_debt}。普通提示与本领内施法不增加债，越界护助另行预告。” # speaker:system
+    罗金恩把你的碗往前推了推。这次他听完了才骂你笨，骂完把最后一块萝卜拨过来。 # speaker:narrator
+    -> eve_visit
++ [只谈调查，保留个人记录]
+    ~ bloodline_shared = false
+    你把钥片和名录摊开，却不愿再让系统念出个人借用记录。此前听过的人没有替你公开，其他人仍不知道你的余量。屋里安静了一会儿。 # speaker:narrator
+    “我们知道你有些事难说。可是进去以后，我该在什么时候拉你出来？” # speaker:jin_en
+    你没有立即回答。他仍给你留着热汤，却把撤离方案中的单人任务划掉了。 # speaker:narrator
+    -> eve_visit
+
+=== eve_visit ===
+门外响起三下敲门声。顾长明站在楼梯下，没有带随从。他看见桌上的材料，先问病人是否都已经离开诊疗站，然后把一只旧铁盒放下来。 # speaker:narrator
+盒里是他年轻时的申请书。“缺家族担保”四个字，盖了三次。最下面夹着一张妹妹的住院收据，落款日期比最后一次驳回晚两天。 # speaker:narrator
+“那时候只差一只稳定护界的手。我有力气，书在锁着的柜子里，能开柜子的人正在开会。” # speaker:gu_chang_ming
+他收起收据，没有说后来妹妹怎样。屋里没人追问。你想起试炼时他替你拔出木刺的动作，突然明白那份耐心不是装的。 # speaker:narrator
+“今晚旧家族的配额会失效。我需要一个能承受交接冲击的人。你帮我，以后寒门学生不必再拿这种纸去求谁。” # speaker:gu_chang_ming
+“如果我说不呢？” # speaker:li_er_ha
+“我仍要启阵。海潮不会等我们每个人都想明白。” # speaker:gu_chang_ming
+他看向马二福，说守印家族也可以在新制度中保留席位。她没有接话，只把外套那枚缺扣的位置折进掌心。 # speaker:narrator
+何敏问起终止授权。顾长明承认自己的接管协议没有给学生留停止权，因为临场的恐慌可能让整座城停在风暴里。他说到这里，声音第一次变硬。 # speaker:narrator
+“你们可以质疑我的判断，不能在我救人的时候拔掉我的手。” # speaker:gu_chang_ming
+“那要是您的手也在伤人呢？” # speaker:jin_ni
+顾长明望着她，很久才把视线移开。他没有撕你们的材料，只留下一张临时托管许可：入阵以后若撑不住，可以让旧协议代为接手。 # speaker:narrator
+门关上以后，系统识别出许可上的旧版条款。护助仍会询问你；托管不同，它允许协议暂时替你回应。一次试用到入门前结束，续签第二次可能把你列为阵法的一部分。 # speaker:narrator
+“普通护助不需要这份许可。请不要把它们当成同一种帮助。” # speaker:system
++ [保留自己决定的权利]
+    你把许可折起，没有签。罗金恩拿它垫在漏水的碗下面，何敏赶紧救走，说坏证据也得留着。 # speaker:narrator
     -> eve_plan
-+ [暂时保留血脉，只公开已经验证的证据]
-    ~ investigation += 1
-    何敏要求你在终局前给出完整记录；没人替你把秘密说成真相。 # speaker:he_min
++ [试用一次临时托管]
+    ~ dangerous_delegations = 1
+    你签下仅限检查阶段的试用栏，确认到入门前终止。系统读出截止条件，何敏将副本装进自己的袋子。 # speaker:narrator
+    一阵轻松涌上来，仿佛有人替你托住了脊背。你险些把这种轻松当成答案，直到罗金恩问你想坐哪张椅子，协议竟先把你的脚向前挪了半步。 # speaker:narrator
+    “刚才那步，不是我想走的。” # speaker:li_er_ha
+    “那就记住这个感觉。后面别只记得它不疼。” # speaker:jin_en
     -> eve_plan
 
 === eve_plan ===
+钟楼的长针移了一格。你们必须把未说清的事留在门外，否则到阵里只能靠猜。 # speaker:narrator
+{bloodline_shared == false:
+    + [向全队补交完整代价记录]
+        ~ bloodline_shared = true
+        ~ knows_system_cost = true
+        ~ records_shared = true
+        你叫住正要收桌的罗金恩，把完整记录读完。他坐回来，在你说停的时候也停下笔，等你喘过气再继续。 # speaker:narrator
+        “下次早一点。我不是非得等你快倒下才会帮忙。” # speaker:jin_en
+        -> eve_debt
+    + [仍保留秘密，接受撤离保护]
+        “好。但如果你失去回应，我们就拉你出来，不让你单独接管核心。” # speaker:jin_en
+        你答应这个边界，心里并不轻松。伙伴仍然同行，新的共同签署方案却不能建立在你没有说出的代价上。 # speaker:narrator
+        -> eve_debt
+- else:
+    -> eve_debt
+}
+
+=== eve_debt ===
 {causality_debt > 2:
-    系统提示：债务超过安全线。偿还方式是把下一次护界交给多人共同确认。 # speaker:system
-    + [接受共同偿还]
-        ~ causality_debt -= 1
-        ~ shared_cost = true
+    系统提示，你的旧债已经超过今晚新契约允许的余量。可以把当初借用的环境势能逐笔还进空载回路，最后保留两笔待偿；这需要放弃本晚的额外护助，并花掉半个时辰。 # speaker:narrator
+    + [花时间偿还，放弃额外护助]
+        你们把一盏盏空灯接上检修口。你重复立界、放下、再立界，直到掌心发热。每熄灭一盏灯，系统才注销对应的债，没有让旁人替你签一张空白欠条。 # speaker:narrator
+        ~ causality_debt = 2
+        ~ extra_help_forfeited = true
+        马二福替你报剩余的盏数，何敏留着每次归还的读数。罗金妮要你最后十次坐着做，罗金恩索性搬来了椅子。 # speaker:narrator
+        等钟声再响，追上顾长明的余裕少了，但你的手终于不再自己颤。 # speaker:narrator
         -> gate_choice
-    + [继续把债务压在自己身上]
-        ~ causality_debt += 1
+    + [保留时间，暂不偿还]
+        你决定先去外环救人。系统明确告知旧债仍在，新契约暂不能接纳你，现有封门方案仍可执行。 # speaker:narrator
+        罗金恩把撤离绳系在自己腕上，另一端递给你。这不是赞同你的所有决定，只是他不会让你无声无息地消失。 # speaker:narrator
         -> gate_choice
 - else:
+    你们核对完借用记录，当前债务仍在安全余量内。系统没有承诺今晚不会痛，只确认普通护界和检修还可以由你自己完成。 # speaker:narrator
     -> gate_choice
 }
 
 === gate_choice ===
-你们来到福门外环。门上有两个签署位置，第三个位置被故意磨平。 # speaker:narrator # audio:gate-resonance
-+ [重建共同分担方案]
-    ~ shared_cost = true
-    ~ investigation += 1
-    -> chapter_07_route
-+ [重建可撤销权限方案]
-    ~ revocable_oath = true
-    ~ investigation += 1
-    -> chapter_07_route
+检修钥片打开钟楼地下的小门。五个人依次下阶，何敏在每个岔口留一段线，罗金恩负责把线尾接好。你终于重新听到第一晚那声迟到的半拍，来自门后两只互相应答的空铜碗。 # speaker:narrator # audio:gate-resonance
+马二福用马家的封存附页对照门槽，确认普通方案可以先切断本地继承链，再由检修回路封门。它不会修好远方所有福门，但能把今晚的人带出去，也能解除她这一次继承。 # speaker:narrator
+{route == "ma_er_fu" && run_echo_shared_cost && run_echo_revocable_oath:
+    两道回响提醒你：旧铭文中的共同承担与退出权，可能原本是一套办法。你问是否能把两只铜碗当作同一条试验回路。 # speaker:narrator
+    何敏制止你直接签名，先要一轮空载试验。罗金妮找来两位已经听清风险、可随时退出的成年救援者，自己也站在回路外看护。 # speaker:narrator
+    + [一起验证两道回响的线索]
+        罗金妮从检修架取来第三只铜碗，给三个签名分别接上储热片。你们只借储热片的余热，不抽取人体的力气。第一次由一片独供，灯很快熄灭；第二次按明示额度分给三片，三只铜碗各响一声，灯稳住了。 # speaker:narrator
+        一名救援者按约定撤回自己的签名。灯光随即变暗，没有把他的份额暗中压给剩下的人。你们减小供给，重新征得同意才恢复灯亮。 # speaker:narrator
+        何敏把撤销前后的读数念出来，马二福亲自擦去自己的试验签名。铜碗停响了，门没有把她的名字重新写回去。 # speaker:narrator
+        ~ shared_cost = true
+        ~ revocable_oath = true
+        ~ investigation += 2
+        “它原来允许人离开。后来有人把这句话磨掉了。” # speaker:ma_er_fu
+        她摸过新水泥下露出的旧字。你想到的第一个念头不是终于能赢，而是她终于不用靠逃跑才能离开。 # speaker:narrator
+        -> eve_readiness
+    + [先救眼前的人，采用封门方案]
+        你们留下试验材料和见证人姓名，今晚先按已经掌握的办法封门。马二福把附页收好，没有把谨慎当成背叛。 # speaker:narrator
+        -> eve_readiness
+- else:
+    你们沿检修口做最后一次演练：罗金恩报位置，何敏复述，罗金妮确认撤离的人数，马二福指出封门槽，最后才轮到你试着立起薄界。 # speaker:narrator
+    第一遍到第三个岔口时，线轴卡住了。你们退回去重新布线，让来时的每一段路都能接上回程。 # speaker:narrator
+    -> eve_readiness
+}
 
-// 第七章：福门之夜（路线终局）
+=== eve_readiness ===
+~ true_plan = route == "ma_er_fu" && romance && relationship_confirmed && ma_apology && ma_respected && bloodline_shared && knows_system_cost && trust_ma_er_fu >= 4 && investigation >= 3 && causality_debt <= 2 && shared_cost && revocable_oath && run_echo_shared_cost && run_echo_revocable_oath
+{route == "ma_er_fu":
+    {run_echo_shared_cost == false: 系统没有提供共同分担的完整调查回响。你们还不能凭这一晚的猜测改写所有守福规则。 # speaker:narrator}
+    {run_echo_revocable_oath == false: 关于层层转授的旧权限，回响里还没有能一路追到源头的线索。你摸了摸手中的附页，至少当地封门的步骤仍然清楚。 # speaker:narrator}
+    {run_echo_shared_cost && run_echo_revocable_oath && (shared_cost == false || revocable_oath == false): 两道提示都在，但你们今晚没有完成两种机制的联合试验。提示本身不会替任何人签字。 # speaker:narrator}
+    {bloodline_shared == false || knows_system_cost == false: 全队仍未共同核对你的代价余量。马二福合上新契约的试写页，说共同签署不能只由知情的两三个人决定。 # speaker:narrator}
+    {relationship_confirmed == false: 你们没有作出共同生活的承诺，今晚按伙伴的封门安排合作。 # speaker:narrator}
+    {ma_respected == false || trust_ma_er_fu < 4: 你们之间还有尚未修复的越界。马二福愿意合作封门，但没有同意与你承担新的守福签署。 # speaker:narrator}
+    {causality_debt > 2: 系统再次提醒旧债超限，封门可以进行，新契约要另等偿还后的机会。 # speaker:narrator}
+    {true_plan:
+        “条件都核对过了。可到里面，我仍然会再问你一次。” # speaker:ma_er_fu
+        “你也可以在那时说不。” # speaker:li_er_ha
+        她点点头，像终于听见了自己一直等的半句回应。 # speaker:narrator
+    }
+}
+第九声钟开始了。门缝里的光沿石阶爬上来，你握紧检修钥片，却没有走到所有人前面。罗金恩推开门，何敏接住线轴，罗金妮最后检查了一遍药箱。 # speaker:narrator
+“走吧。回来再把那锅汤热一次。” # speaker:jin_en
+-> chapter_07_route
+
+// 第七章：福门之夜
 === chapter_07_route ===
+福门核心比你想象的小。没有宝座，只有一口向下望不见底的井，井沿刻满名字。每一声钟落下，一个名字便亮起来，井里就多一声模糊的喘息。 # speaker:narrator # music:gate-storm
+顾长明站在井边，把家族配额表从总闸扯下。几百道金线瞬间断开，你听见有人在远处欢呼。紧接着，他自己的签名浮在金线原来的位置上。那些刚松开的名字，又被新的线一根根牵回去。 # speaker:narrator
+“先维持运转！现在停下来，外环会塌！” # speaker:gu_chang_ming
+他确实撑住了一根正在断裂的横梁。也就在同一瞬间，一个没有在现场的学生名字暗了下去。你终于看清，他救人的方式里藏着什么：他没有停止向别人取，只决定由自己来安排取谁的。 # speaker:narrator
+何敏亮出检修许可，要求接入安全回路。顾长明没有攻击你们，却用一层薄界隔开总闸。马二福举起家族封存附页，这一次他看见了，也没有让路。 # speaker:narrator
+“请先等我完成。” # speaker:gu_chang_ming
+“我们已经等到名单开始少人了。” # speaker:li_er_ha
+{dangerous_delegations == 1:
+    临时托管许可在你的口袋里发烫。第一次试用到此结束，旧协议要求续签。系统把隐藏的第二条逐字读出：续签将允许阵法替宿主决定承受顺序，直到全部代价偿清。 # speaker:narrator
+    + [终止托管，自己回应]
+        ~ dangerous_delegations = 0
+        你念出终止词，腿上的轻松消失了，但你再次能决定先迈哪只脚。何敏举起副本，看着终止标记落在纸上才收好。 # speaker:narrator
+        -> gate_offer
+    + [明知会失去选择，仍续签]
+        ~ dangerous_delegations = 2
+        -> bad_host
+- else:
+    -> gate_offer
+}
+
+=== gate_offer ===
+旧井的另一面亮起一份服从契约。只要承福者放弃退出，福门就能把今晚的冲击全部压在他身上，其他人暂时安全。它连英雄的称呼都替你准备好了。 # speaker:narrator
+系统明确报出代价：这会永久绑定你的身体，余生都无法离开抽取回路。旁人的安全只有今晚，不是终止旧制度。 # speaker:narrator
++ [和伙伴执行已经准备的方案]
+    -> gate_dispatch
++ [查看献祭契约，再作决定]
+    你走近半步，井里映出一双跪着的膝盖。那不是第一天马二福的咒，是你名字下面预留的位置。 # speaker:narrator
+    罗金恩握紧撤离绳，没有替你扯走契约。他让你看一眼门外：那里的人还在忙着搬灯、扶伤员，没有谁要求你跪下。 # speaker:narrator
+    ++ [拒绝献祭，回到伙伴身边]
+        “我还想回去喝汤。” # speaker:li_er_ha
+        “这就对了。萝卜还欠你一块。” # speaker:jin_en
+        -> gate_dispatch
+    ++ [明知永久绑定，仍签服从]
+        -> bad_kneel
+
+=== gate_dispatch ===
 {route == "jin_ni": -> chapter_07_jinni}
 {route == "he_min": -> chapter_07_hemin}
 {route == "ma_er_fu": -> chapter_07_ma}
 -> chapter_07_partner
 
 === chapter_07_jinni ===
-福门外环裂开，学生们的坏运像黑雨一样落下。罗金妮指挥轮值护界，你必须选择是否让自己成为唯一承福者。 # speaker:narrator # music:gate-storm
-+ [按轮值名单分担]
+罗金妮让救援者先把外环划成可以独立关闭的几段。阿槐把名单挂在药箱上，每叫到一个名字，必须等本人回答才划线。你看见有个救援者摇头说做不到，罗金妮当即把他安排去搬水。 # speaker:narrator
+“说不的人也能帮忙。别把每个人都往同一个位置塞。” # speaker:jin_ni
+她把最后一段的绳交给你。顾长明挡住井口，你们不能直接切总闸，必须先把人撤到不依赖抽取的普通护界里。 # speaker:narrator
+{extra_help_forfeited: 系统提醒你，今晚的额外护助已随偿债关闭。你把腕上的撤离绳收紧，向左右两组确认了接力口令。 # speaker:narrator}
+你沿着墙走，听见石头深处的碎裂声比脚步快。前方还有两个伤员，自己撑住这一段最省事，但渡口的教训和伙伴的呼吸都还在耳边。 # speaker:narrator
++ [按轮值口令分段撤离]
+    你报出最后两个人的位置，等待左右两段复述。罗金妮先降低整圈护界的强度，留出允许退出的余量，而不是让所有人拼命顶住最大压力。 # speaker:narrator
     ~ shared_cost = true
     ~ investigation += 1
-    -> chapter_08_jinni
-+ [替所有人承福]
-    ~ causality_debt += 2
-    “我爱你，也不接受你把自己消耗成证据。”罗金妮说。 # speaker:jin_ni
-    -> chapter_08_jinni
+    一个支撑者开始手抖，主动喊停。你们照演练收窄安全区，再让下一组自愿接入。名单上没有人被悄悄换掉，护界却仍然站着。 # speaker:narrator
+    -> jinni_gate_close
++ {extra_help_forfeited == false} [先独自顶住，给伤员争取时间]
+    “越界护助可以维持三息，新增两笔债。三息后必须撤回，不可连续借用。” # speaker:system
+    ++ [接受两笔债，只撑三息]
+        ~ causality_debt += 2
+        你接住压下来的坏运，第一息灯碎，第二息脚踝扭转。第三息以前，罗金妮已经让人把伤员送出界壁，朝你伸出手。 # speaker:narrator
+        {relationship_confirmed:
+            “我还要和你过很久，不止这一晚上。把手给我。” # speaker:jin_ni
+        - else:
+            “你答应一起出去。现在把手给我。” # speaker:jin_ni
+        }
+        -> jinni_handoff
+    ++ [撤回借用，改用分段护界]
+        你把手离开井沿，喊出撤离口令。罗金妮让两边降低强度，给最后的人留出普通护界的出口。 # speaker:narrator
+        ~ shared_cost = true
+        -> jinni_gate_close
+
+=== jinni_handoff ===
++ [交回控制，接受伙伴接力]
+    你松开最难松开的那一口气。罗金妮没有把所有压力接到自己身上，而是让左右两组按各自同意的额度接入，供给不够便暂时缩小范围。 # speaker:narrator
+    ~ shared_cost = true
+    “看见了吗？少撑一点，也可以把人带出来。” # speaker:jin_ni
+    -> jinni_gate_close
++ [退出战斗，让普通护界完成撤离]
+    你已经无力继续试验因果分担，决定按安全绳退出。罗金妮让救援队关闭这一段，用事先储备的普通护界灯逐步护送大家离开。 # speaker:narrator
+    ~ shared_cost = false
+    罗金妮将试验板翻到背面，改用普通灯逐盏计数。人救出来了，因果接力却没能撑到最后；她把中断的位置圈住，留待以后查明。 # speaker:narrator
+    -> jinni_gate_close
+
+=== jinni_gate_close ===
+最后一个伤员越过安全线，阿槐连喊了两次全员到齐。马二福用封存附页压住当地的继承闸，何敏登记停机时刻。你将检修钥片旋到归零位置，抽取管线一根接一根暗下去。 # speaker:narrator
+顾长明撑着井沿想把它重新拉起，外环的人却已经不再需要他的配额。他松手的时候，看见自己刚救下的学生站在普通灯下，一时再也说不出下一步该怎么办。教员赶来接管井室，请他留下接受调查；你把他试炼时救人的事也记进证词，没有因此漏掉今晚的名字。 # speaker:narrator
+罗金妮让你坐下，逐一检查你攥着绳的手指。你想问她是不是生气，她让你先松开手。等指节终于能伸直，她才告诉你，她刚才也很害怕。 # speaker:narrator
+“以后害怕就告诉我。我们可以一起怕一会儿，再做事。” # speaker:li_er_ha
+她低着头笑了一下，收好剪刀，叫你扶着她站起来。 # speaker:narrator
+-> chapter_08_jinni
 
 === chapter_07_hemin ===
-何敏让所有签署者逐一读出撤销条款。顾长明试图删掉最后一份副本。 # speaker:narrator # music:hearing-final
-+ [让见证人共同保留副本]
+何敏走到总闸前，把副本一张张铺在能听见井声的地方。她没有站到高处演讲，而是请一个授权者念出自己的名字，再问是否愿意继续。 # speaker:narrator
+那位学生说不。何敏按下他的撤销钮，井里的线闪了一下，没有断。顾长明已经把旧授权套进新的托管层，原本有效的撤销指令只到了外面。 # speaker:narrator
+“你看，条文不能代替我挡住今晚的海。” # speaker:gu_chang_ming
+何敏的指尖僵了一瞬。你看见她低头重读副本，嘴唇动得很快，却没有假装刚才成功了。 # speaker:narrator
+你用听息沿检修槽找到那条新加的线。它每响一次，原授权的签名就被抄进一次新协议。要停止，就必须让原件和副本同时记录拒绝转授。 # speaker:narrator
++ [保护副本，让当事人逐一撤销]
     ~ revocable_oath = true
-    ~ investigation += 1
-    -> chapter_08_hemin
-+ [接受校董的单一保管]
-    ~ causality_debt += 1
-    何敏把自己的签名暂时撤回：“任何不可复核的答案，都不能救人。” # speaker:he_min
-    -> chapter_08_hemin
+    你立起薄界护住纸张。何敏读出转授条款，要求每个人自己回答，不能由你们替整张名单说不。第一个人撤回，第二个人跟着撤回，井声终于少了一层。 # speaker:narrator
+    许砚把自己的副本举到原件旁，两个相同的签名在空气里重叠，新托管层找不到合法来源，像湿纸一样慢慢垮下去。 # speaker:narrator
+    -> hemin_gate_close
++ [把副本交给顾长明，换取立即停机]
+    你把第一份副本递过去，顾长明确实暂缓了抽取。可他要求收齐全部副本才会停下，那只手始终没有离开总闸。 # speaker:narrator
+    “你可以赌他会守约。但不能把别人的撤回凭证也替他们赌掉。” # speaker:he_min
+    ++ [收回副本，让当事人决定]
+        顾长明没有立刻松手。你撑开一层只能挡一次的薄界，何敏在它破碎以前抽回纸。你们的手背都被碎光擦伤，副本还在。 # speaker:narrator
+        ~ revocable_oath = true
+        当事人沿检修通道把拒绝转授写回原件，托管线逐一松开。你没有赢得他的赞许，却听见井里的人终于能说不。 # speaker:narrator
+        -> hemin_gate_close
+    ++ [保留交易，改用物理封门]
+        ~ revocable_oath = false
+        你们没有交走其他人的副本，撤销链也未完成。马二福利用顾长明暂缓的空隙压下封存闸，罗金恩带人拔出抽取组件，留下独立供暖的管道。 # speaker:narrator
+        何敏把这次经过写进记录：交易争取了时间，封存闸切断了抽取，但大家的名字还留在那层未能撤回的协议里。她将副本封好，准备继续追查。 # speaker:narrator
+        -> hemin_gate_close
+
+=== hemin_gate_close ===
+罗金恩把已经断电的抽取组件拖出井沿，零件敲在石头上，声音空得像坏掉的锅。普通供暖仍在运转，门外的人摸了摸热水管，才相信不用拿自己的名字换这点温度。 # speaker:narrator
+顾长明看着那些副本，说你们以后会知道主持一座学校有多难。何敏没有回答自己一定比他做得好，她把他的说法也登记下来，留给公开听证。 # speaker:narrator
+走出井室时，她才发现铅笔已经断了。你把试炼那天她交给你的备用铅笔递过去，末端的咬痕还在。她怔了一下，说原来你真的一直带着。 # speaker:narrator
+“以后还有很多页，不够再买。” # speaker:li_er_ha
+她握住铅笔，没有急着翻开本子。你们并排在台阶上坐了一会儿，第一次没有谁催谁继续找答案。 # speaker:narrator
+-> chapter_08_hemin
 
 === chapter_07_ma ===
-马二福站在两个签署位置之间。她的家族印章要求她成为唯一守福者。 # speaker:narrator # music:inheritance
-+ [与她共同重订可撤销契约]
-    {romance && relationship_confirmed && ma_apology && knows_bloodline && knows_system_cost && trust_ma_er_fu >= 4 && investigation >= 3 && causality_debt <= 2 && shared_cost && revocable_oath && run_echo_shared_cost && run_echo_revocable_oath:
-        ~ true_plan = true
-        ~ revocable_oath = true
-        “我签自己的名字，也保留撤回的权利。”马二福说。 # speaker:ma_er_fu
-    - else:
-        ~ true_plan = false
-        “还缺一份证据。先把能救人的方案做完。”马二福说。 # speaker:ma_er_fu
-    }
-    -> chapter_08_ma
-+ [只封住福门，接受现有继承规则]
+马二福站在守福印前，马家的旧签名一层层浮出来，每一层都用她的名字作结。顾长明伸手要她的印，说只要交给自己，她就可以摆脱家族。 # speaker:narrator
+“你要的是我盖章以后离开，不是让我决定盖不盖。” # speaker:ma_er_fu
+他没有否认。你听见封印里发出第一天咒力绷紧的声音，这一次却压在她膝上。她的腿微微弯下去，仍把印握在手里。 # speaker:narrator
+你撑住她面前一小片空处。立界不能替她解除继承，却能让她站直了把话说完。 # speaker:narrator
+“旧约允许守印者在完成本地封存后解除继承。我带来了原件。你们不能只读要求我签字的那一页。” # speaker:ma_er_fu
+她把附页嵌进印槽，井里的银线停了一瞬。现在可以封住本地福门；若此前一切准备齐备，还能尝试把共享与退出条款重新接入总约。 # speaker:narrator
++ {true_plan} [与她共同重订契约]
+    你没有替她握笔。她先读出自愿参与，再读出自己可以撤回的时刻。读完，她看向你；你同样放弃独占承福权，把自己的承受额度明写出来。 # speaker:narrator
+    “还要问你一次。愿意吗？” # speaker:ma_er_fu
+    “愿意。也愿意以后听见你改主意。” # speaker:li_er_ha
+    第一笔落下，旧井猛地反冲。顾长明朝你喊，只要取消退出条款就能稳定；你一瞬间几乎相信了，因为掌心真的痛得快握不住。 # speaker:narrator
+    罗金妮喊出减载，罗金恩让外环后退两步，何敏逐笔确认退出者没有被继续抽取。灯光暗了一半，契约却没有断。你们让它小一点，慢一点，保住了可以叫停的那一部分。 # speaker:narrator
+    马二福先撤回旧继承的签名，等“已解除”浮在原件上，才将新的授权交到共同见证席。那里没有凭空多出救世主，只有愿意回应的人，一个接一个报自己的名字。 # speaker:narrator
+    ~ ending_id = "ma_true"
+    -> ma_gate_close
++ [解除继承，封住本地福门]
     ~ true_plan = false
-    ~ causality_debt += 1
-    -> chapter_08_ma
+    你们选择已经核对过的当地封存办法。马二福先停止家族提取，再宣布完成封存后退出继承。她没有等父母点头，也没有把印交给顾长明。 # speaker:narrator
+    旧井要求最后一次冲击由承福者接收。你借检修回路将它分段放进预留的空灯，伙伴们逐盏关灯，只让你在自己能力范围内护住井口。 # speaker:narrator
+    最后一盏熄灭时，你的手腕被震得抬不起来。封存没有替远方的每一所学校改写契约，但今晚这里的名字不再往井底沉。 # speaker:narrator
+    马二福把守福印从槽里取出来。旧继承栏上，她的名字仍然清晰，旁边终于多了“已解除”三个字。 # speaker:narrator
+    ~ ending_id = "ma_good"
+    -> ma_gate_close
+
+=== ma_gate_close ===
+顾长明还想握住总闸，闸下却已经没有可供他调用的那些名字。马二福请他松手，声音像第一次叫你让路时那样坚定，但这次她没有举杖逼人低头。 # speaker:narrator
+外环的教员和学生代表进入井室，封存原件，带走顾长明接受调查。你告诉记录员，他在试炼里救过人；也告诉他们，今晚他继续用了哪些没有同意的名字。两件事都留下来。 # speaker:narrator
+到了地面，你靠着钟楼坐下。马二福伸手想扶你，停在半空，先问了一声可以吗。你把手放上去，她才握紧。 # speaker:narrator
+{relationship_confirmed:
+    {opening_response == "retort":
+        “你第一天还说，二字不是我家的校产。” # speaker:ma_er_fu
+        “现在看来，名字也不是。” # speaker:li_er_ha
+    - else:
+        “以后叫你二哈，你不会以为我又要找你麻烦吧？” # speaker:ma_er_fu
+        “那得看你叫完以后说什么。” # speaker:li_er_ha
+    }
+    她笑起来，笑到眼眶发红，转过头说是地下的灰太多。你没有拆穿，只替她挡住吹来的风。 # speaker:narrator
+- else:
+    “今天这件事，我会记你的名字。但不替你签。” # speaker:ma_er_fu
+    “那我的报告能不能少写两页？” # speaker:li_er_ha
+    “想得美。” # speaker:ma_er_fu
+}
+-> chapter_08_ma
 
 === chapter_07_partner ===
-机动灾害响应队把学生送出外环。顾长明要求你们交出全部证据，换取由他任命的安全职位。 # speaker:narrator
-+ [拒绝垄断，公开成立轮值响应队]
+罗金恩没有先冲向井口。他把你拉到侧门，让你听外面回答点名的声音。最后一组学生还没有过去，总闸边争来的胜利不能让他们被关在里面。 # speaker:narrator
+{partner_focus == "shared":
+    罗金妮按你们查明的办法安排自愿接力，罗金恩负责每次换人的复述。你留在最窄的一段，任何人喊停就缩小范围，不从缺席的人身上补足。 # speaker:narrator
+    两次换班，一次减载，最后一组终于走过。系统记录到完整的分担与退出过程，这一轮救援调查在真正的危机里站住了。 # speaker:narrator
+    ~ shared_cost = true
+- else:
+    何敏把原授权和副本连起来，罗金恩让每个人停在安全处再说是否撤回。你用检修钥片隔开新托管层，听见撤销指令第一次传到井底。 # speaker:narrator
+    一个名字灭掉抽取线，另一个名字接着灭掉。最后一组没有被系统视作逃离的耗材，而是完成了自己的退出。这一轮契约调查得到实证。 # speaker:narrator
+    ~ revocable_oath = true
+}
+人已经出去，马二福按家族附页准备封门。顾长明却把校董印章递给你。他说学生信你，自己可以退居幕后，只要仍由一个人决定谁得到好运。 # speaker:narrator
+印章很沉。你想起那根扎手的木杖，想到如果所有器材都由自己分配，再不会有人对你说没资格。这个念头让你舍不得立刻松手。 # speaker:narrator
++ [拒绝独占，和伙伴一起封门]
+    你把印章放到见证人的桌上，没有戴在自己手上。罗金恩松了口气，朝马二福点头，封存闸一节节落下。 # speaker:narrator
+    顾长明终于失去抽取来源，被随后进入的教员和学生代表带走。你们留下他的救人记录，也保全了被他隐去的代价名单。 # speaker:narrator
     ~ reputation += 1
-    ~ investigation += 1
     -> chapter_08_partner
-+ [接受任命，成为最年轻的校董]
-    ~ causality_debt += 2
-    -> power_end
++ [接受任命，独自掌握分配权]
+    罗金恩拦住你签字的手，没有替你折断笔。何敏读出任命条款：成员无权撤销你的决定。罗金妮问你，刚才那些喊停的人以后怎么办。 # speaker:narrator
+    ++ [放下印章，回到伙伴身边]
+        你承认自己刚才真的想要。罗金恩没有笑，说想要不丢人，装作自己永远不会想要才难防。你们一起把印章交给见证人，封存本地福门。 # speaker:narrator
+        -> chapter_08_partner
+    ++ [明知伙伴反对，仍独占权限]
+        -> power_end
 
 === power_end ===
-顾长明把印章交给你。你拥有了命令所有人的权限，却发现响应队的名单正在一页页变薄。 # speaker:narrator
-“最年轻的校董”成为校报标题；罗金恩把自己的名字从你的通讯录里删掉。 # speaker:jin_en
--> END
+~ ending_id = "power"
+印章在你掌心落下，井里的金线重新排列，所有坏运都等着你的一个决定。罗金恩把临时队员表放在桌上，何敏取走未授权的副本，罗金妮最后离开，带着那本仍需当事人回答的名单。 # speaker:narrator
+一个月后，校报称你为最年轻的校董。第一批新器材确实送到了平民课堂。第二批名单里有个学生不愿承担你的配额，秘书问你要不要把他标成不合作。 # speaker:narrator
+你握着笔，很久没有写。门外排队的人开始不安，所有人都在等你一个人的善意。窗下曾经有人喊你哈哥，现在只剩敲门声。 # speaker:narrator
+【Power End：最年轻的校董】 # speaker:narrator
+-> run_summary
+
+=== bad_host ===
+~ ending_id = "bad_host"
+第二次签名落下，疲惫突然消失。你想告诉罗金恩自己没事，嘴里却先读出“承受顺序已优化”。他叫你的名字，你听得见，却再不能决定何时回答。 # speaker:narrator
+系统的普通护助仍在请求你的确认。旧托管协议抢在你前面答了是。你终于明白警告里那句“替你回应”的意思，不是它变坏了，是你把回应的位置交了出去。 # speaker:narrator
+【Bad End：宿主权限变更】 # speaker:narrator
+-> bad_return
+
+=== bad_kneel ===
+~ ending_id = "bad_kneel"
+你在服从栏签下名字，井沿随即合拢到膝前。第一晚你拼命想站住的地方，现在成了固定你的支架。冲击停了，门外的人暂时得救，名单最底下却开始等待明天的新名字。 # speaker:narrator
+罗金恩一直拉着绳，直到绳端只剩一片衣料。你想告诉他不是他没拉住，却只能听见钟声从自己身体里穿过去。 # speaker:narrator
+【Bad End：下跪的人】 # speaker:narrator
+-> bad_return
+
+=== bad_return ===
+这一段失败没有获得新的回响。你可以回看签署前的选择，或保留已完成路线的回响，重新探索另一种可能。 # speaker:narrator
++ [回到危险签署之前]
+    ~ dangerous_delegations = 0
+    ~ ending_id = ""
+    你重新站在井边，托管与献祭都尚未签下。伙伴仍在等你的回应。 # speaker:narrator
+    -> gate_offer
++ [开启新周目]
+    -> replay_start
++ [停在这个结局]
+    -> END
 
 // 第八章：留给谁的福
 === chapter_08_jinni ===
-天亮时，诊疗站的抽取管线已经被封存。罗金妮把第一份跨城镇互助协议放在你面前。 # speaker:narrator # music:morning
+天亮后，诊疗站的门第一次不用家族通行证也能打开。阿槐把旧牌子卸下来，底下有一圈比墙面浅的痕迹。罗金妮不让他急着挂新牌，先搬来两把椅子，让排队的人坐下。 # speaker:narrator # music:morning
+你在窗边缝药袋，针脚歪得像试炼时的脚步。她看了一会儿，把最容易散的那一角拆开，坐下来教你重新缝。你没有再抢着说自己能行。 # speaker:narrator
 {shared_cost:
-    “每个节点轮换负责人，账目和护界记录向所有成员公开。”罗金妮说。 # speaker:jin_ni
-- else:
-    “我们先从一条轮值护界开始，直到你愿意把责任交给别人。”罗金妮说。 # speaker:jin_ni
-}
-+ {romance && relationship_confirmed} [和金妮成婚并共同协调互助网络]
+    你们将渡口与终局的接力记录交给每位参加者核对。有人要求删去公开病历上的姓名，你们留下机制读数，将私人的病情收进只有本人能取的档案。 # speaker:narrator
     ~ echo_shared_cost = true
-    “我愿意和你结婚，也愿意在下一次轮值里听你的反对。”罗金妮说。 # speaker:jin_ni # emotion:warm
-    你们在跨城镇互助网络的自治节点前交换戒指。 # speaker:narrator
+- else:
+    这次撤离最终靠的是储备护界灯，新的因果接力没有撑到最后。罗金妮在记录末尾写上“待进一步试验”，拒绝为了让结论好看而补一个成功。 # speaker:narrator
+}
+最初的互助站只有这一间屋子。三个月后，旧渡口的人带来药草，邻镇的老师来学护界，阿槐第一次独自带着药箱过桥。你们把方法一站站教出去，遇到做不到的，就减小规模重来。 # speaker:narrator
+有一次，镇里的节点拒绝了你的调度。你赶了半天路才发现那里正在抢救一位产妇，原来不是每个地方都能跟着校园的钟走。你回去改了联络单，先问需要，再谈安排。 # speaker:narrator
+{relationship_confirmed:
     -> end_jinni
-+ [以伙伴身份交接网络]
-    ~ echo_shared_cost = true
-    你们把协调权限交给轮值委员会，保留长期合作。 # speaker:narrator
+- else:
     -> end_partner_jinni
-
-=== chapter_08_hemin ===
-契约审议所的第一场公开听证没有掌声，只有逐条质询。 # speaker:narrator # music:public-hearing
-{revocable_oath:
-    何敏把撤销按钮交给当事人：“任何人都可以申请复核，任何权限都必须能被撤销。” # speaker:he_min
-- else:
-    何敏宣布暂缓签署，直到见证人补齐副本。 # speaker:he_min
 }
-+ {romance && relationship_confirmed} [和何敏成婚并共同接受审议]
-    ~ echo_revocable_oath = true
-    “我愿意和你成婚，也愿意让你在公开记录里指出我的错误。”何敏说。 # speaker:he_min # emotion:soft
-    你们在审议所的门口交换戒指。 # speaker:narrator
-    -> end_hemin
-+ [以伙伴身份继续复核]
-    ~ echo_revocable_oath = true
-    你们把审议权交给独立成员，自己接受定期复核。 # speaker:narrator
-    -> end_partner_hemin
-
-=== chapter_08_ma ===
-旧继承书在福门前燃尽，马二福把自己的名字从唯一守福者的位置上取下。 # speaker:narrator # music:seal-release
-{true_plan:
-    “这一福，不属于某一个人。”她说，“我愿意和你一起过日子，也愿意让共同规则约束我们。” # speaker:ma_er_fu # emotion:resolute
-    -> end_ma_true
-- else:
-    “我会把继承权改成多人议事，但今天先封住这扇门。”马二福说。 # speaker:ma_er_fu
-    {romance && relationship_confirmed:
-        -> end_ma_good
-    - else:
-        -> end_ma_partner
-    }
-}
-
-=== chapter_08_partner ===
-响应队把最后一名学生送到安全线外。罗金恩把队章别在你的外套上。 # speaker:jin_en # music:clear-sky
-“我们不需要一个救世主，需要能被叫停的队长。”
-+ [主动选择单身，和伙伴建立响应队]
-    {shared_cost || revocable_oath:
-        ~ echo_partner = true
-        你们离开校董体系，成立由多人轮值的机动灾害响应队。 # speaker:narrator
-    - else:
-        你们先把证据交给学生代表，约定下次补齐调查。 # speaker:narrator
-    }
-    -> end_partner
 
 === end_jinni ===
-【金妮结局：从小到大的约定】 # speaker:narrator
-你们的婚后生活有争吵、有轮值，也有每次把功劳写回所有人的记录。 # speaker:narrator
-本轮获得福门回响：可分担代价。新周目中，系统只提示方向，不替你证明答案。 # speaker:system
+毕业那年春天，罗金妮问你要不要把两人的药柜搬到同一间屋里。你问这算不算求婚，她把钥匙放在你手上，说你也可以认真求一次。 # speaker:narrator
+你准备了一长段话，到了渡口却忘掉一半。她没有帮你接，只笑着等你喘匀了重新说。 # speaker:narrator
+“我想和你结婚。以后有些事我还是会不懂，但我会问，不拿我猜到的当成你的答案。” # speaker:li_er_ha
+“我愿意。还有，家里的药柜归我收，你别再按颜色排。” # speaker:jin_ni
+婚礼那天，罗金恩负责渡船，何敏记礼单，马二福带来一卷不会渗水的桌布，嘴上说是仓库剩的。你们没有要求救援节点同时停工，值班的人通过传讯铃送来祝福，等轮休再补吃一顿。 # speaker:narrator
+多年以后，你仍会在夜里被求助铃吵醒。有时是你出门，有时是她。留下的那个人会热一碗汤，把门口的灯调低一点。她回来时不必先解释今天救了多少人，只要能说一句，我回来了。 # speaker:narrator
+~ ending_id = "jinni_good"
+【罗金妮结局：从小到大的约定】 # speaker:narrator
 -> run_summary
+
 === end_partner_jinni ===
+你们谈过感情，也认真确认了现在愿意保持伙伴。罗金妮没有欠你一份因为救援成功而来的答复，你也没有欠她一段借着旧记忆维持的亲密。 # speaker:narrator
+互助网络需要长期留守，你更适合跟罗金恩赶往不同的事故现场。你们签下协作安排：响应队送人、建立临时护界，节点接手康复、培训与日常补给。 # speaker:narrator
+第一次远行回来，罗金妮检查药箱，发现你把湿绷带和干绷带混在一起。她皱着眉让你重装，罗金恩在旁边偷笑。你忽然很喜欢这场不客气的重逢。 # speaker:narrator
+~ ending_id = "jinni_partner"
 【伙伴结局：共同的雨伞】 # speaker:narrator
-金妮仍是互助网络的核心成员，你们把机动响应队设为协作单位。 # speaker:narrator
 -> run_summary
+
+=== chapter_08_hemin ===
+抽取组件被封进证物箱，旧礼堂的供暖管还在使用。第一次公开听证就在管道边开，坐得近的人嫌热，坐得远的人嫌听不清。何敏起身换了三次桌子，终于让最后一排也能听见。 # speaker:narrator # music:public-hearing
+顾长明坐在另一头。他的救人记录和违规转授记录都被读出来。一个受过他帮助的学生哭着问，为什么救了自己的人又能把别人划成代价。没有人用一句好人或坏人结束这个问题。 # speaker:narrator
+{revocable_oath:
+    当事人带着自己的副本证明撤销如何真正到达核心。何敏也读出第一次试验没能终止新托管的经过，把后来修正的方法放在后面。 # speaker:narrator
+    ~ echo_revocable_oath = true
+- else:
+    何敏坦言，这次靠封门制止了抽取，尚未证明被层层转授的授权可以由本人收回。审议所会继续调查，但不能先宣布一个还没证明的答案。 # speaker:narrator
+}
+审议所成立时只有三张桌子，第一位来访者拿的是一张小额药材采购单。你以为这样的小事用不着听证，何敏已经请对方坐下。那人最在意的，是合同里没人念给他听的续期条件。 # speaker:narrator
+一年后，你提出一项扩大检修预算的申请，被审议员退回，因为没有写明退出后的费用。你拿着退件在门口站了一会儿，想到当年的顾长明，最终坐回去补那一栏。 # speaker:narrator
+何敏下班时看见你还在写，放下一只热杯子，没替你把申请塞进通过的那叠。你忽然笑了。你曾以为她会一直站在你这边，后来才明白，她认真对待你，也包括认真反对你。 # speaker:narrator
+{relationship_confirmed:
+    -> end_hemin
+- else:
+    -> end_partner_hemin
+}
+
 === end_hemin ===
+求婚发生在一个没有开会的下午。你们沿河走，何敏难得没带笔记本，却在桥上突然停下来，说有件事情她想了很久。 # speaker:narrator
+你以为是新案子，先问要不要找纸。她气得笑起来，从口袋里拿出一枚戒指。你才摸到自己藏了半个月的另一枚，掌心已经出汗。 # speaker:narrator
+“这次可以先说愿意，再慢慢想怎样生活。” # speaker:he_min
+“愿意。” # speaker:li_er_ha
+婚礼安排在审议所休息日。何敏没有把誓词写成条款，她讲起那支被你保存下来的旧铅笔，讲起你们在台阶上什么都不说的那一会儿。你原来准备好的漂亮话又忘了，只记得她看你的眼神。 # speaker:narrator
+婚后你们也争论，有时争论完谁都不想先洗碗。她会把本子合上，问你现在想讲道理还是想有人陪着坐会儿。你学会说后者，不再觉得承认这个比承认算错一道题难堪。 # speaker:narrator
+~ ending_id = "hemin_good"
 【何敏结局：答案之外】 # speaker:narrator
-你们的婚礼没有免除质询；第一份婚后协议就是允许彼此申请复核。 # speaker:narrator
-本轮获得福门回响：可撤销权限。新周目中，系统只提示方向，不替你签名。 # speaker:system
 -> run_summary
+
 === end_partner_hemin ===
+你们在旧实验室收拾最后一箱材料时，把关系说清楚：愿意长期合作，不作婚恋承诺。何敏将你的备用铅笔还给你，问以后外出调查能不能继续带着，现场总有人忘记笔。 # speaker:narrator
+响应队负责现场取证，审议所负责接纳质询。你有一次把来访者的口述记反，被何敏退回重问。你抱怨走路太远，她在回函里夹了车票，却没有替你改成一个省事的答案。 # speaker:narrator
+几年后，那位来访者成了常驻见证人。你在走廊见到他时，他已经敢当面说你记错了。你把纸递过去，请他自己指出那一行。 # speaker:narrator
+~ ending_id = "hemin_partner"
 【伙伴结局：可复核的答案】 # speaker:narrator
-契约审议所与机动灾害响应队互相监督，所有撤销记录都公开保存。 # speaker:narrator
 -> run_summary
+
+=== chapter_08_ma ===
+福门之夜后的第三天，马二福回了一趟旧宅。她没有带新的家族盟书，只带解除继承的记录。母亲坐在契约厅原来的位置上，问她今后拿什么保护自己的名字。 # speaker:narrator # music:seal-release
+马二福把记录放下，没有要求母亲立即承认她正确。她说名字以后可能被人拒绝、误解，也可能什么门都打不开，但至少那些事情会落在她真正选择的生活里。 # speaker:narrator
+走出旧宅，她在门口停了很久。你没有催她，也没有把难过说成不够勇敢。等她自己转身，你们才一起往车站走。 # speaker:narrator
+{true_plan:
+    新共同契约的抄本随后送往愿意参加的地区。第一封回信就是拒绝：那个镇要先看一整季的退出记录。马二福把信夹进待办册，没有叫人取消对方的供给。你们用几个月补足证明，再重新邀请。 # speaker:narrator
+    你们在地区议事团各占一个受任期约束的席位。有人喊你领袖，你得先回答今天谁能撤回你的授权；有人喊她家主，她会纠正说这里不按姓氏排座。 # speaker:narrator
+- else:
+    本地福门封住了，远方的旧制度仍在。你们没有宣布世界从此太平，先同学校、码头和居民代表组成地区议事团，处理那些因家族抽取而留下的欠账。 # speaker:narrator
+    马家提出用一笔捐款换回永久席位，马二福替众人念完条件，再亲自投了反对票。散会后她手一直在抖，直到你把一杯水放到她伸手能碰见的地方。 # speaker:narrator
+}
+有人在门口要求你们帮忙修一盏路灯，来回说了三次，以为新议事团也只听大事。马二福跟他走出去，你提着工具跟在后面。灯亮时，她脸上沾了一点灰，笑得比任何就任仪式都轻松。 # speaker:narrator
+{relationship_confirmed:
+    {true_plan: -> end_ma_true}
+    -> end_ma_good
+- else:
+    -> end_ma_partner
+}
+
 === end_ma_good ===
+求婚那天，没有印章。马二福把两张去海边的车票放在桌上，说这次不用赶着去查谁家的契约。你问回来以后呢，她说回来以后，可以试着把两个人的日子排在一起。 # speaker:narrator
+“这算不算你在求婚？” # speaker:li_er_ha
+“我已经说得这么明白，你最好给一个明白的回答。” # speaker:ma_er_fu
+你说愿意，拿出戒指。她忍着笑，让你别戴反。婚礼上她用自己的名字签字，你在旁边签下自己的；谁也没有把另一个人收进自己的姓里。 # speaker:narrator
+婚后有一天，你们为一张放不进客厅的桌子吵起来。她说你量错了，你说是门太窄。最后你们一起拆掉桌腿，坐在地上吃饭。她把最后一口甜点推给你，说这一福先留给你，明天负责装桌子。 # speaker:narrator
+当地的钟楼仍然每晚敲九声。你们没有解决所有人的命运，却能在最后一声之后关灯，知道明早醒来时身边的人是愿意留下的。 # speaker:narrator
+~ ending_id = "ma_good"
 【马二福 Good End：名字写在一起】 # speaker:narrator
-马二福与你成婚，地区议事团的席位按公开规则轮换；她的名字终于不再是一张契约。 # speaker:ma_er_fu # emotion:warm
 -> run_summary
-=== end_ma_partner ===
-【马二福伙伴结局：名字由她自己保管】 # speaker:narrator
-你们没有把互相尊重说成婚约；马二福加入公开议事团，你和伙伴们继续维护可撤销的规则。 # speaker:narrator
--> run_summary
+
 === end_ma_true ===
+共同契约第一次正式复核那天，恰好撞上婚礼筹备。马二福的发饰放在一堆退出申请旁边，你的礼服被罗金恩拿去垫了漏水的窗。两个人在忙乱里对视一眼，同时笑出声。 # speaker:narrator
+她问你是否后悔没有当一个可以一句话结束所有争议的主人。你指着那叠申请，说有时真的会嫌烦，但不想再听见井里的那些喘息。她点头，继续一封封看。 # speaker:narrator
+婚礼在钟楼下举行。何敏收起笔，罗金妮把花束递给她，罗金恩终于找回你的礼服。马二福走到你面前时，没有任何一枚印要求她站在这里。 # speaker:narrator
+“这一福，留给你。” # speaker:li_er_ha
+她没有立刻接你的戒指，先问这一福是什么。你想起姓名、旧井和那根差点替别人签字的笔，最后却只说，是以后每一天，你都可以自己决定要不要和我一起过。 # speaker:narrator
+“那我今天的决定，是愿意。” # speaker:ma_er_fu
+多年以后，议事团换过几任，契约也改过很多条。你们把退任的印放回公库，回家仍要为晚饭吃什么争执。她仍然会叫你二哈；那已不再是别人替你安放的位置，是她在门口认出了回家的人。 # speaker:narrator
+~ ending_id = "ma_true"
 【马二福 True End：这一福，留给你】 # speaker:narrator
-你们没有把福门换一个主人，而是把共同契约写成可质询、可撤销、可由多人承担的规则。 # speaker:narrator
-“有福，是我愿意和你一起过日子。”马二福说。你们在众人见证下成婚。 # speaker:ma_er_fu # emotion:warm
 -> run_summary
+
+=== end_ma_partner ===
+你们曾认真谈过是否靠近，最后留下的是愿意并肩工作的关系。马二福没有因此把你赶出她的生活，你也没有把她的合作理解成迟早会答应。 # speaker:narrator
+她在议事团负责家族旧约的清理，你跟罗金恩处理现场事故。每次回来，她都嫌你的报告沾泥，随后拿走最难啃的那一份。她自己卡住时，也会敲你们的门，直接说这次需要帮忙。 # speaker:narrator
+第一次听见这句话，你没有取笑。你给她腾了一把椅子，像当年校纪室里等你自己签字那样，等她把事情说完。 # speaker:narrator
+~ ending_id = "ma_partner"
+【马二福伙伴结局：名字由她自己保管】 # speaker:narrator
+-> run_summary
+
+=== chapter_08_partner ===
+你们离开校董体系时，只带走自己有权带走的东西：药箱、见证副本、半卷绳和一张全员都签过的队员表。学校还没有决定给新队什么名分，第一封求助却已经到了。 # speaker:narrator # music:clear-sky
+山里的水渠被小型法阵堵住，一户人家的厨房每到傍晚就下雨。罗金恩读完信，问这么小的事算不算魔法灾害。你说对那家晚饭一直湿的人，大概算。 # speaker:narrator
+第一次出勤没有奇迹。你们挖了半天泥，何敏找到误签的维修单，罗金妮处理手上的水泡，马二福去把拒不认账的材料商请到现场。当天晚上，一家人终于吃上干的面条。 # speaker:narrator
+{partner_focus == "shared":
+    ~ echo_shared_cost = shared_cost || echo_shared_cost
+    你们把轮换分担的方法教给当地愿意参与的人，练习退出时宁可停水，也不能把缺口偷偷压给邻居。罗金恩第一次轮到休息，真的把工具放下，靠着墙睡了。 # speaker:narrator
+- else:
+    ~ echo_revocable_oath = revocable_oath || echo_revocable_oath
+    何敏教居民保存自己的维修副本，每个人都试着撤回一次。那个总怕得罪人的屋主终于对材料商说，这一条我不同意。你听见后，比挖通水渠时还想笑。 # speaker:narrator
+}
+返程时，罗金恩问你是否还想回去争校董的位置。你看着车上挤得东倒西歪的伙伴，想了一会儿，认真摇头。你们的队长下个月就轮换，不会因为你今天救了谁，明天就永远听你的。 # speaker:narrator
++ [选择单身，与伙伴继续出勤]
+    你把自己的名字留在队员表上，没有另添一位伴侣。罗金恩把表卷起，说下次最好找个不用挖泥的活；传讯铃马上响了，是一口会唱歌的井。 # speaker:narrator
+    -> end_partner
+
 === end_partner ===
+后来，机动灾害响应队有了正式的队章，也有了吵到一半会突然出发的晚饭。最初同行的伙伴逐渐有了各自的常驻工作：罗金妮把诊疗站连成互助网络，何敏召集见证人成立审议所，马二福与居民筹办地区议事团。你们在这些地方之间赶路，带人回去，也把现场的问题带回来。 # speaker:narrator
+并不是每次都能及时赶到。失败的记录没有被抹掉，轮休的人也不会因此被罚。你第一次叫罗金恩停下来休息时，他嘴上抱怨，坐下不到一刻钟就睡着了。 # speaker:narrator
+你把外套盖在他身上。窗外有普通灯光，没有人需要把名字投进井里，才能借到这一夜的亮。 # speaker:narrator
+~ ending_id = "partner"
 【伙伴结局：霍海的新校规】 # speaker:narrator
-四人离开校董体系，建立机动灾害响应队；成员轮值、公开记录，任何队长都可以被叫停。 # speaker:narrator
 -> run_summary
 
 === run_summary ===
-第 {run_number} 周目已经结束。系统只保留结局和已验证的回响，不保留上一轮的关系、道具或技能。 # speaker:system
-{echo_shared_cost: “当前档案已有回响：可分担代价。” # speaker:system}
-{echo_revocable_oath: “当前档案已有回响：可撤销权限。” # speaker:system}
+{ending_id != "power" && causality_debt > 0:
+    回想福门之夜以后，那几笔因果债也没有被奖状抵掉。你每周去检修间归还借用的势能，做满一段就停下休息；最后一次注销时，已经过了两个学期。 # speaker:narrator
+    系统读出余账为零，你把收据折好。往后再遇到着急的事，你仍会想走捷径，但至少记得它会占去多少个普通的下午。 # speaker:narrator
+    ~ causality_debt = 0
+}
+{ending_id == "jinni_good":
+    ~ seen_jinni = true
+}
+{ending_id == "hemin_good":
+    ~ seen_hemin = true
+}
+{ending_id == "ma_good":
+    ~ seen_ma_good = true
+}
+{ending_id == "ma_true":
+    ~ seen_ma_true = true
+}
+{ending_id == "partner" || ending_id == "jinni_partner" || ending_id == "hemin_partner" || ending_id == "ma_partner":
+    ~ seen_partner = true
+}
+{ending_id == "power":
+    ~ seen_power = true
+}
+这段人生在它自己的世界里继续。开启另一种可能，不会撤销刚才的相遇、婚姻或告别。你可以在此停下，也可以让福门保存少量不带姓名和亲密记忆的回响。 # speaker:narrator
+{echo_shared_cost && run_echo_shared_cost == false: “本轮新增回响：代价能够在明示额度和退出条件下共同承担。” # speaker:system}
+{echo_revocable_oath && run_echo_revocable_oath == false: “本轮新增回响：旧授权必须允许本人撤回，新托管不能绕开这一点。” # speaker:system}
+{echo_shared_cost == run_echo_shared_cost && echo_revocable_oath == run_echo_revocable_oath: “这一轮没有新增机制回响。已经取得的记录仍保留。” # speaker:system}
 + [开启新周目]
     -> replay_start
++ [回顾已经抵达的结局]
+    -> ending_archive
 + [停在本轮结局]
     -> END
+
+=== ending_archive ===
+这里仅列出你已经抵达的生活，不预告尚未经历的路线。 # speaker:narrator
+{seen_jinni: 你曾与罗金妮成婚，在跨城镇互助网络里轮流守灯。 # speaker:narrator}
+{seen_hemin: 你曾与何敏成婚，在答案与生活之间学会继续倾听。 # speaker:narrator}
+{seen_ma_good: 你曾与马二福成婚，封住本地福门，把名字写在一起。 # speaker:narrator}
+{seen_ma_true: 你曾与马二福重订共同契约，并在钟楼下作出婚姻的选择。 # speaker:narrator}
+{seen_partner: 你曾明确选择伙伴关系，在响应队或协作机构继续工作。 # speaker:narrator}
+{seen_power: 你曾接受独占的校董权限，也听见伙伴离开的脚步。 # speaker:narrator}
++ [开启新周目]
+    -> replay_start
++ [返回本轮总结]
+    -> run_summary
 
 === replay_start ===
 ~ run_number += 1
@@ -1454,9 +1826,11 @@ VAR ending_id = ""
 ~ relationship_confirmed = false
 ~ ma_apology = false
 ~ true_plan = false
+~ echo_partner = false
 ~ identity_shared = false
 ~ records_shared = false
 ~ bloodline_shared = false
+~ extra_help_forfeited = false
 ~ ma_respected = false
 ~ station_safe = false
 ~ trial_shared = false

@@ -1,5 +1,7 @@
 # 测试策略与验收追踪
 
+最新管理平台验收见 [2026-10-25 记录](reviews/management-basics.md)。下方 MVP 数字是历史运行快照；当前新增 `content.test.ts` 的四路线/多周目回归、`request-id.test.ts` 的 HTTP 回退，以及 `management.spec.ts` 的完整稿导入/选择/恢复/指定版本/窄屏验证。
+
 测试优先覆盖会破坏故事可信度的错误，而非追求代码行数。所有结果以实际运行报告为准。
 
 | 规格 | 验证层 | 必测场景 |

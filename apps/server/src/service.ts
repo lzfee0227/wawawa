@@ -1,38 +1,60 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { GameError } from './errors.js';
 import { compile, renderTurn, resolveChoice } from './engine.js';
+import { analyzeStoryGraph } from './story-graph.js';
 import { publicPlaytestEntry, readPlaytestEntries } from './playtest.js';
 import type { Repository } from './repository.js';
 import type { ChoiceInput, Draft, DraftInput, DraftRecord, LinxCaller, Session, SessionRecord, Version, VersionRecord } from './types.js';
 
 function publicDraft({ publicationCounter: _, ...draft }: DraftRecord): Draft { return draft; }
-function publicVersion({ compiled: _, characters: __, source: ___, sourceRevision: ____, ...version }: VersionRecord): Version { return version; }
+function publicVersion({ compiled: _, characters: __, relations: ___, graph: ____, source: _____, sourceRevision: ______, ...version }: VersionRecord): Version { return version; }
 function publicSession({ inkState: _, receipts: __, linx: ___, ...session }: SessionRecord): Session { return session; }
 function required<T>(value: T | null, message: string): T {
   if (!value) throw new GameError(404, 'NOT_FOUND', message);
   return value;
 }
 function conflict(): never { throw new GameError(409, 'STALE_REVISION', '内容已更新，请刷新后重试。'); }
+function validateRelations(input: DraftInput) {
+  const ids = new Set(input.characters.map(character => character.id));
+  for (const relation of input.relations ?? []) {
+    if (!ids.has(relation.from) || !ids.has(relation.to)) throw new GameError(400, 'INVALID_RELATION', '人物关系必须引用当前草稿中的角色。');
+  }
+}
 
 export class GameService {
   constructor(private repo: Repository) {}
   async listDrafts() { return (await this.repo.listDrafts()).map(publicDraft); }
   async getDraft(id: string) { return publicDraft(required(await this.repo.getDraft(id), '找不到故事')); }
   async createDraft(input: DraftInput) {
-    const record: DraftRecord = { ...input, id: randomUUID(), revision: 0, publicationCounter: 0, updatedAt: new Date().toISOString() };
+    validateRelations(input);
+    const record: DraftRecord = { ...input, relations: input.relations ?? [], id: randomUUID(), revision: 0, publicationCounter: 0, updatedAt: new Date().toISOString() };
     await this.repo.insertDraft(record);
     return publicDraft(record);
   }
   async updateDraft(id: string, input: DraftInput, revision: number) {
+    validateRelations(input);
     const current = required(await this.repo.getDraft(id), '找不到故事');
     if (current.revision !== revision) conflict();
-    const next = { ...current, ...input, revision: revision + 1, updatedAt: new Date().toISOString() };
+    const next = { ...current, ...input, relations: input.relations ?? [], revision: revision + 1, updatedAt: new Date().toISOString() };
     if (!await this.repo.updateDraft(next, revision)) conflict();
     return publicDraft(next);
   }
   compile(source: string) {
     const { compiled: _, ...result } = compile(source);
     return result;
+  }
+  analyze(source: string) {
+    const result = compile(source);
+    return { ...result, ...(result.ok ? { graph: analyzeStoryGraph(source) } : {}) };
+  }
+  async graph(storyId: string, versionId?: string) {
+    required(await this.repo.getDraft(storyId), '找不到故事');
+    if (versionId) {
+      const version = required(await this.repo.getVersion(versionId), '找不到已发布版本');
+      if (version.storyId !== storyId) throw new GameError(400, 'VERSION_MISMATCH', '版本不属于该故事');
+      return version.graph;
+    }
+    return analyzeStoryGraph((await this.repo.getDraft(storyId))!.source);
   }
   async publish(id: string, revision: number) {
     const draft = required(await this.repo.getDraft(id), '找不到故事');
@@ -45,7 +67,7 @@ export class GameService {
     for (const entry of entries) renderTurn(result.compiled, undefined, undefined, entry.path);
     const number = await this.repo.reserveVersion(id, revision);
     if (number === null) conflict();
-    const version: VersionRecord = { id: randomUUID(), storyId: id, number, compiled: result.compiled, source: draft.source, sourceRevision: draft.revision, characters: draft.characters, createdAt: new Date().toISOString(), playtestEntries: entries.map(publicPlaytestEntry) };
+    const version: VersionRecord = { id: randomUUID(), storyId: id, number, compiled: result.compiled, source: draft.source, sourceRevision: draft.revision, characters: draft.characters, relations: draft.relations ?? [], graph: analyzeStoryGraph(draft.source), createdAt: new Date().toISOString(), playtestEntries: entries.map(publicPlaytestEntry) };
     await this.repo.insertVersion(version);
     return publicVersion(version);
   }

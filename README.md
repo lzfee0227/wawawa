@@ -1,16 +1,18 @@
 # 二哈有福：不烧心
 
-## 队伍
+## 参赛信息
 
-- 名称：wawawa
+- 队伍名称：wawawa
+- 参赛题目：灵矽应用：做一款语音类游戏
 - 成员分工：
   - 李智丰：实现系统底座 & 编写剧本
   - 杜笠：对接灵矽 & 实现 MCP 协议
+- 仓库地址：https://github.com/lzfee0227/wawawa
 
 ## 游戏介绍
 
 - 演示视频：[https://www.bilibili.com/video/BV1VpnU65ET6](https://www.bilibili.com/video/BV1VpnU65ET6)
-- 游戏的互动故事内容包在 [content/stories/erha-youfu/](content/stories/erha-youfu/)，包含 Ink 剧本、剧情设计文档及相关配套文件，用于验证创作、发布和分支游玩的完整流程。
+- 游戏原始的互动故事内容包在 [content/stories/erha-youfu/](content/stories/erha-youfu/) 里，包含 Ink 剧本、剧情设计文档及相关配套文件，用于验证创作、发布和分支游玩的完整流程。
 
 ### 基本信息
 

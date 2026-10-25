@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
-import { api, ApiError, type Character, type Compilation, type Draft, type Session, type Turn, type Version } from './api';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { api, ApiError, type Character, type CharacterRelation, type Compilation, type Draft, type Session, type Turn, type Version } from './api';
 import { createRequestId } from './request-id';
 import { McpConsole } from './McpConsole';
 import { VoicePanel } from './VoicePanel';
 import { ChapterPlaytest } from './ChapterPlaytest';
 import { sampleCharacters, sampleSource } from './sample';
+
+const StoryVisuals = lazy(() => import('./StoryVisuals').then(module => ({ default: module.StoryVisuals })));
 
 const sessionKey = (storyId: string) => `wawawa.session.${storyId}`;
 const playtestKey = (storyId: string) => `wawawa.playtest.${storyId}`;
@@ -24,7 +26,7 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
-  const [tab, setTab] = useState<'write' | 'play' | 'mcp'>('write');
+  const [tab, setTab] = useState<'write' | 'play' | 'mcp' | 'visuals'>('write');
   const [loading, setLoading] = useState(true);
   const requestLock = useRef(false);
   const selected = useRef<string | null>(null);
@@ -104,10 +106,28 @@ export default function App() {
     if (draft) edit({ characters: draft.characters.map((character, position) => position === index ? { ...character, ...patch } : character) });
   }
 
+  function editRelation(index: number, patch: Partial<CharacterRelation>) {
+    if (draft) edit({ relations: (draft.relations ?? []).map((relation, position) => position === index ? { ...relation, ...patch } : relation) });
+  }
+
+  function visualPanel() {
+    if (!draft) return null;
+    const relations = draft.relations ?? [];
+    return <section aria-label="编辑人物资料">
+      <div className="panel"><div className="panel-heading"><div><span className="tiny-label">CAST & RELATIONS</span><h2>人物设定与关系图</h2></div><span className="chip">{draft.characters.length} 人 · {relations.length} 条关系</span></div>
+        <p className="muted">设定由作者维护；剧情中的动态关系仍由 Ink 变量决定。关系图同时提供文本列表，支持键盘访问。</p>
+        <div className="visual-character-grid">{draft.characters.map((character, index) => <fieldset className="character-card" key={character.id}><legend>{character.name}</legend><label>简介<textarea rows={2} value={character.bio ?? ''} disabled={busy} onChange={event => editCharacter(index, { bio: event.target.value })} /></label><label>性格<input value={(character.traits ?? []).join('、')} disabled={busy} onChange={event => editCharacter(index, { traits: event.target.value.split(/[、,，]/).map(value => value.trim()).filter(Boolean) })} /></label><label>目标<input value={(character.goals ?? []).join('、')} disabled={busy} onChange={event => editCharacter(index, { goals: event.target.value.split(/[、,，]/).map(value => value.trim()).filter(Boolean) })} /></label></fieldset>)}</div>
+        <h3>关系列表</h3>{relations.length === 0 && <p className="muted">还没有关系。请在下方添加。</p>}{relations.map((relation, index) => <div className="relation-row" key={relation.id}><select value={relation.from} disabled={busy} onChange={event => editRelation(index, { from: event.target.value })}>{draft.characters.map(character => <option key={character.id} value={character.id}>{character.name}</option>)}</select><span aria-hidden="true">→</span><select value={relation.to} disabled={busy} onChange={event => editRelation(index, { to: event.target.value })}>{draft.characters.map(character => <option key={character.id} value={character.id}>{character.name}</option>)}</select><input aria-label="关系类型" value={relation.type} disabled={busy} onChange={event => editRelation(index, { type: event.target.value })} /><input aria-label="关系描述" placeholder="关系描述" value={relation.description ?? ''} disabled={busy} onChange={event => editRelation(index, { description: event.target.value })} /><button className="text-button" disabled={busy} onClick={() => edit({ relations: relations.filter((_, position) => position !== index) })}>移除</button></div>)}<button className="add-character" disabled={busy || draft.characters.length < 2} onClick={() => { const [from, to] = draft.characters; edit({ relations: [...relations, { id: `relation_${createRequestId().slice(0, 8)}`, from: from.id, to: to.id, type: '其他', strength: 50 }] }); }}>＋ 添加关系</button>
+        <div className="relation-visual" aria-label="关系图预览">{relations.map(relation => <div className="relation-edge" key={relation.id}><strong>{draft.characters.find(character => character.id === relation.from)?.name ?? relation.from}</strong><span>→</span><strong>{draft.characters.find(character => character.id === relation.to)?.name ?? relation.to}</strong><small>{relation.type}{relation.description ? ` · ${relation.description}` : ''}</small></div>)}</div>
+      </div>
+    </section>;
+  }
+
   async function save(): Promise<Draft> {
     if (!draft) throw new Error('请先创建故事。');
     const saved = await api<Draft>(`/stories/${draft.id}`, 'PUT', {
-      title: draft.title, source: draft.source, characters: draft.characters, revision: draft.revision
+      title: draft.title, source: draft.source, characters: draft.characters, revision: draft.revision,
+      ...(draft.relations !== undefined ? { relations: draft.relations } : {})
     });
     setDraft(saved); setDirty(false);
     setStories(previous => previous.map(item => item.id === saved.id ? saved : item));
@@ -225,8 +245,8 @@ export default function App() {
       <div className="feedback" aria-live="polite">{notice && <p className="notice">{notice}</p>}</div>
       {error && <div className="error-banner" role="alert"><strong>操作未完成</strong><span>{error}</span><button onClick={() => setError('')} aria-label="关闭错误提示">×</button></div>}
       {loading ? <div className="empty"><span className="loading-dot" /><h2>正在打开故事书架</h2><p>正在连接本地剧情服务。</p></div> : !draft ? <div className="empty welcome"><div className="wave" aria-hidden="true">▂ ▅ ▃ ▇ ▄ ▆ ▂</div><span className="eyebrow">WRITE · CHOOSE · REMEMBER</span><h2>用声音构建世界，<br />用选择改变故事。</h2><p>从「雨夜来信」开始，验证角色、好感度与长线分支。<br />先让故事跑通，再让角色开口。</p><button className="primary" onClick={createStory} disabled={busy}>创建第一个故事</button>{error && <p>请确认后端与 MongoDB 已启动，然后刷新页面。</p>}</div> : <>
-        <div className="workspace-nav"><div className="tabs" role="tablist" aria-label="工作模式"><button role="tab" aria-selected={tab === 'write'} onClick={() => setTab('write')}>01 剧本工作室</button><button role="tab" aria-selected={tab === 'play'} onClick={() => setTab('play')}>02 对话模拟器</button><button role="tab" aria-selected={tab === 'mcp'} onClick={() => setTab('mcp')}>03 MCP 测试</button></div><span className={`save-state ${dirty ? 'unsaved' : ''}`}>{busy ? '处理中…' : dirty ? '● 有未保存修改' : `已保存 · r${draft.revision}`}</span></div>
-        {tab === 'mcp' ? <McpConsole /> : tab === 'write' ? <section className="author-layout" aria-label="剧本工作室">
+        <div className="workspace-nav"><div className="tabs" role="tablist" aria-label="工作模式"><button role="tab" aria-selected={tab === 'write'} onClick={() => setTab('write')}>01 剧本工作室</button><button role="tab" aria-selected={tab === 'play'} onClick={() => setTab('play')}>02 对话模拟器</button><button role="tab" aria-selected={tab === 'visuals'} onClick={() => setTab('visuals')}>人物与剧情图</button><button role="tab" aria-selected={tab === 'mcp'} onClick={() => setTab('mcp')}>03 MCP 测试</button></div><span className={`save-state ${dirty ? 'unsaved' : ''}`}>{busy ? '处理中…' : dirty ? '● 有未保存修改' : `已保存 · r${draft.revision}`}</span></div>
+        {tab === 'mcp' ? <McpConsole /> : tab === 'visuals' ? <Suspense fallback={<p role="status">正在加载图形视图…</p>}><StoryVisuals key={draft.id} draft={draft}>{visualPanel()}</StoryVisuals></Suspense> : tab === 'write' ? <section className="author-layout" aria-label="剧本工作室">
           <div className="editor-panel panel"><div className="panel-heading"><div><span className="tiny-label">SCRIPT</span><h2>编写故事</h2></div><span className="chip">Ink</span></div>
             <label className="field-label" htmlFor="story-title">剧本名称</label><input id="story-title" value={draft.title} maxLength={120} disabled={busy} onChange={event => edit({ title: event.target.value })} />
             <div className="source-label"><label className="field-label" htmlFor="story-source">Ink 剧本</label><span>{draft.source.split('\n').length} 行</span></div>

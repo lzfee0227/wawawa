@@ -1,8 +1,9 @@
 import { createApp } from './app.js';
 import { connectMongo } from './mongo.js';
+import { audioConfigFromEnv } from './audio.js';
 
 const connection = await connectMongo(process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/wawawa');
-const app = createApp(connection.repository, { logger: true });
+const app = createApp(connection.repository, { logger: true, audio: audioConfigFromEnv() });
 app.addHook('onClose', () => connection.close());
 for (const signal of ['SIGINT', 'SIGTERM'] as const) process.once(signal, () => { void app.close(); });
 try {

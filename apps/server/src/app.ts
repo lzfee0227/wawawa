@@ -5,8 +5,10 @@ import { attachStoryMcp } from './mcp-http.js';
 import { GameService } from './service.js';
 import type { Repository } from './repository.js';
 import { choiceSchema, compileSchema, draftSchema, revisionSchema, sessionSchema } from './validation.js';
+import { attachAudio } from './audio-http.js';
+import type { AudioConfig } from './audio.js';
 
-export function createApp(repository: Repository, options: { logger?: boolean } = {}) {
+export function createApp(repository: Repository, options: { logger?: boolean; audio?: AudioConfig; audioFetch?: typeof fetch } = {}) {
   const app = Fastify({ logger: options.logger ?? false, bodyLimit: 512_000 });
   const service = new GameService(repository);
   const params = z.object({ id: z.string().min(1).max(100) });
@@ -36,5 +38,6 @@ export function createApp(repository: Repository, options: { logger?: boolean } 
   app.get('/api/sessions/:id', request => service.resume(params.parse(request.params).id));
   app.post('/api/sessions/:id/choices', request => service.choose(params.parse(request.params).id, choiceSchema.parse(request.body)));
   attachStoryMcp(app, service);
+  attachAudio(app, options.audio ?? {}, options.audioFetch);
   return app;
 }

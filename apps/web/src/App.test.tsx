@@ -319,3 +319,95 @@ describe('simulated play acceptance R05-R09', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('无法连接本机 MCP 服务。');
   });
 });
+
+describe('chapter playtest CP01/CP04/CP05', () => {
+  const entry = { id: 'ch2-hemin', chapter: '第二章', label: '何敏保管校徽', description: '保留共同线调查记录，校徽交给何敏。' };
+  const otherEntry = { id: 'ch3', chapter: '第三章', label: '共同调查', description: '已完成档案室取证。' };
+  const trial: Session = { ...session, id: 'trial-1', playtest: entry, turn: { ...session.turn, lines: [{ text: '第二章的档案室。', tags: [] }] } };
+  function setupTrial() {
+    mockApi(path => {
+      if (path === '/stories/story-1/versions') return [{ ...version, playtestEntries: [entry, { ...entry, id: 'ch2-ma', label: '马二福保管校徽' }, otherEntry] }, { ...version, id: 'version-old', number: 0 }];
+      if (path === '/playtest-sessions' || path === '/sessions/trial-1') return structuredClone(trial);
+      if (path === '/sessions/trial-1/choices') return { ...ending, id: 'trial-1', playtest: entry };
+    });
+  }
+
+  it('selects declared presets per version and keeps ordinary progress while playing and restarting a trial', async () => {
+    setupTrial(); localStorage.setItem('wawawa.session.story-1', session.id);
+    const user = userEvent.setup(); await loaded();
+    await user.click(screen.getByRole('tab', { name: '02 对话模拟器' }));
+    await user.selectOptions(screen.getByLabelText('起始章节'), '第三章');
+    expect(screen.getByLabelText('前情预设')).toHaveValue('ch3');
+    await user.selectOptions(screen.getByLabelText('起始章节'), '第二章');
+    await user.selectOptions(screen.getByLabelText('前情预设'), 'ch2-ma');
+    await user.selectOptions(screen.getByLabelText('试跑版本'), 'version-old');
+    expect(screen.getByText(/此版本未配置章节入口/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '从此章节试跑' })).not.toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText('试跑版本'), version.id);
+    expect(screen.getByLabelText('前情预设')).toHaveValue(entry.id);
+    await user.click(screen.getByRole('button', { name: '从此章节试跑' }));
+    expect(await screen.findByText('第二章的档案室。')).toBeInTheDocument();
+    expect(request).toHaveBeenCalledWith('/playtest-sessions', 'POST', { storyId: draft.id, versionId: version.id, entryId: entry.id });
+    expect(localStorage.getItem('wawawa.session.story-1')).toBe(session.id);
+    expect(localStorage.getItem('wawawa.playtest.story-1')).toBe(trial.id);
+    expect(localStorage.getItem('wawawa.playMode.story-1')).toBe('playtest');
+    await user.click(screen.getByRole('button', { name: /1 答应保密/ }));
+    await screen.findByText('结局：共同的秘密。');
+    await user.click(screen.getByRole('button', { name: '重新开始' }));
+    await screen.findByText('第二章的档案室。');
+    expect(request.mock.calls.filter(call => call[0] === '/playtest-sessions')).toHaveLength(2);
+    await user.click(screen.getByRole('button', { name: '重新试跑此章节' }));
+    await waitFor(() => expect(request.mock.calls.filter(call => call[0] === '/playtest-sessions')).toHaveLength(3));
+    await user.click(screen.getByRole('button', { name: '返回正常进度' }));
+    await screen.findByText('这封信的事，可以先不要告诉别人吗？');
+    expect(localStorage.getItem('wawawa.playMode.story-1')).toBe('normal');
+    await user.click(screen.getByRole('button', { name: '恢复上次章节试跑' }));
+    await screen.findByText('第二章的档案室。');
+  });
+
+  it('restores the selected trial on reload and returns to an empty normal game without overwriting trial state', async () => {
+    setupTrial();
+    localStorage.setItem('wawawa.playtest.story-1', trial.id);
+    localStorage.setItem('wawawa.playMode.story-1', 'playtest');
+    const user = userEvent.setup(); await loaded();
+    await screen.findByText(/已恢复上次章节试跑/);
+    await user.click(screen.getByRole('tab', { name: '02 对话模拟器' }));
+    expect(screen.getByText('章节试跑 · 第二章')).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: '返回正常进度' }));
+    expect(await screen.findByRole('button', { name: '开始模拟' })).toBeEnabled();
+    expect(localStorage.getItem('wawawa.session.story-1')).toBeNull();
+    expect(localStorage.getItem('wawawa.playtest.story-1')).toBe(trial.id);
+  });
+
+  it('falls back to ordinary progress when a stored trial no longer exists', async () => {
+    localStorage.setItem('wawawa.playtest.story-1', 'missing');
+    localStorage.setItem('wawawa.playMode.story-1', 'playtest');
+    localStorage.setItem('wawawa.session.story-1', session.id);
+    mockApi(path => path === '/sessions/missing' ? Promise.reject(new ApiError('存档不存在', 404)) : undefined);
+    await loaded(); await screen.findByText(/已恢复上次进度/);
+    expect(localStorage.getItem('wawawa.playtest.story-1')).toBeNull();
+    expect(localStorage.getItem('wawawa.session.story-1')).toBe(session.id);
+    expect(localStorage.getItem('wawawa.playMode.story-1')).toBe('normal');
+  });
+
+  it('explains how to publish an unpublished story before choosing a chapter', async () => {
+    mockApi(path => path === '/stories/story-1/versions' ? [] : undefined);
+    const user = userEvent.setup(); await loaded();
+    await user.click(screen.getByRole('tab', { name: '02 对话模拟器' }));
+    expect(screen.getByText(/先在剧本工作室导入或编辑完整剧本/)).toBeInTheDocument();
+  });
+
+  it('keeps the normal session when starting a chapter fails', async () => {
+    mockApi(path => {
+      if (path === '/stories/story-1/versions') return [{ ...version, playtestEntries: [entry] }];
+      if (path === '/playtest-sessions') return Promise.reject(new ApiError('此入口不可用', 400));
+    });
+    localStorage.setItem('wawawa.session.story-1', session.id);
+    const user = userEvent.setup(); await loaded();
+    await user.click(screen.getByRole('tab', { name: '02 对话模拟器' }));
+    await user.click(screen.getByRole('button', { name: '从此章节试跑' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('此入口不可用');
+    expect(screen.getByText('这封信的事，可以先不要告诉别人吗？')).toBeInTheDocument();
+    expect(localStorage.getItem('wawawa.playtest.story-1')).toBeNull();
+  });
+});

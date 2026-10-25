@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { Compiler, CompilerOptions } from 'inkjs/compiler/Compiler';
 import { Story } from 'inkjs/engine/Story';
 import { GameError } from './errors.js';
+import { readPlaytestEntries } from './playtest.js';
 import type { Choice, Compilation, Diagnostic, Line, Turn } from './types.js';
 
 export function compile(source: string): Compilation & { compiled?: string } {
@@ -9,6 +10,7 @@ export function compile(source: string): Compilation & { compiled?: string } {
   if (!source.trim() || source.length > 100_000) return { ok: false, diagnostics: [{ severity: 'error', message: '剧本不能为空且不得超过 100000 字符。' }] };
   // No external file loader: INCLUDE cannot read arbitrary server files.
   try {
+    readPlaytestEntries(source);
     const compiler = new Compiler(source, new CompilerOptions(null, [], false, (message, type) => {
       diagnostics.push({ severity: type === 2 ? 'error' : 'warning', message });
     }));
@@ -21,9 +23,10 @@ export function compile(source: string): Compilation & { compiled?: string } {
   }
 }
 
-export function renderTurn(compiled: string, inkState?: string, choiceIndex?: number) {
+export function renderTurn(compiled: string, inkState?: string, choiceIndex?: number, entryPath?: string) {
   try {
     const story = new Story(compiled);
+    if (entryPath !== undefined) story.ChoosePathString(entryPath);
     if (inkState) story.state.LoadJson(inkState);
     if (choiceIndex !== undefined) story.ChooseChoiceIndex(choiceIndex);
     const lines: Line[] = [];

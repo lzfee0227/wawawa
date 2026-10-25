@@ -2,7 +2,7 @@
 
 ## 2026-10-25：灵矽调用方进入本地存档
 
-核对 `@modelcontextprotocol/server` 2.4.0：`/mcp` 已是 Streamable HTTP，`GET`/`POST`/`DELETE` 由 `createMcpHandler` 处理，没有补第二套传输，也没有增加 `POST /mcp/message`。SDD-006 规定把 `X-Linx-Device-Id`、`X-Linx-Agent-Id`、`X-Linx-Session-Id` 写入会话记录的 `linx`，公开会话和游玩快照都不带这三个值。读取不改存档，相同 `requestId` 的重试不覆盖已写入的调用方。设备播放、语音识别和玩家绑定都还没有实机证据，阶段分数不因此变化。
+核对 `@modelcontextprotocol/server` 2.4.0：`/mcp` 已是 Streamable HTTP，`GET`/`POST`/`DELETE` 由 `createMcpHandler` 处理，没有补第二套传输，也没有增加 `POST /mcp/message`。SDD-007 规定把 `X-Linx-Device-Id`、`X-Linx-Agent-Id`、`X-Linx-Session-Id` 写入会话记录的 `linx`，公开会话和游玩快照都不带这三个值。读取不改存档，相同 `requestId` 的重试不覆盖已写入的调用方。设备播放、语音识别和玩家绑定都还没有实机证据，阶段分数不因此变化。
 
 ## 2026-10-25：重新聚焦管理平台
 

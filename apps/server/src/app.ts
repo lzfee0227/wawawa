@@ -4,7 +4,7 @@ import { GameError } from './errors.js';
 import { attachStoryMcp } from './mcp-http.js';
 import { GameService } from './service.js';
 import type { Repository } from './repository.js';
-import { choiceSchema, compileSchema, draftSchema, revisionSchema, sessionSchema } from './validation.js';
+import { choiceSchema, compileSchema, draftSchema, revisionSchema, sessionSchema, playtestSessionSchema } from './validation.js';
 import { attachAudio } from './audio-http.js';
 import type { AudioConfig } from './audio.js';
 
@@ -36,6 +36,10 @@ export function createApp(repository: Repository, options: { logger?: boolean; a
     return reply.code(201).send(await service.start(input.storyId, input.versionId));
   });
   app.get('/api/sessions/:id', request => service.resume(params.parse(request.params).id));
+  app.post('/api/playtest-sessions', async (request, reply) => {
+    const input = playtestSessionSchema.parse(request.body);
+    return reply.code(201).send(await service.startPlaytest(input.storyId, input.versionId, input.entryId));
+  });
   app.post('/api/sessions/:id/choices', request => service.choose(params.parse(request.params).id, choiceSchema.parse(request.body)));
   attachStoryMcp(app, service);
   attachAudio(app, options.audio ?? {}, options.audioFetch);

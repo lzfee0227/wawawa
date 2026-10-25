@@ -8,6 +8,7 @@ export const draftSchema = z.object({
 export const compileSchema = z.object({ source }).strict();
 export const revisionSchema = z.object({ revision: z.number().int().nonnegative() }).strict();
 export const sessionSchema = z.object({ storyId: id, versionId: id.optional() }).strict();
+export const playtestSessionSchema = z.object({ storyId: id, versionId: id, entryId: z.string().regex(/^[A-Za-z][A-Za-z0-9_-]{0,79}$/) }).strict();
 export const choiceSchema = z.object({
   turnId: id, revision: z.number().int().nonnegative(), requestId: id,
   choiceId: id.optional(), input: z.string().trim().min(1).max(300).optional()

@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { GameError } from './errors.js';
 import { compile, renderTurn, resolveChoice } from './engine.js';
+import { publicPlaytestEntry, readPlaytestEntries } from './playtest.js';
 import type { Repository } from './repository.js';
 import type { ChoiceInput, Draft, DraftInput, DraftRecord, Session, SessionRecord, Version, VersionRecord } from './types.js';
 
@@ -40,9 +41,11 @@ export class GameService {
     if (!result.ok || !result.compiled) throw new GameError(422, 'COMPILE_ERROR', '请修复编译错误后发布。', result.diagnostics);
     // Check the entry scene before publishing, including non-terminating loops.
     renderTurn(result.compiled);
+    const entries = readPlaytestEntries(draft.source);
+    for (const entry of entries) renderTurn(result.compiled, undefined, undefined, entry.path);
     const number = await this.repo.reserveVersion(id, revision);
     if (number === null) conflict();
-    const version: VersionRecord = { id: randomUUID(), storyId: id, number, compiled: result.compiled, source: draft.source, sourceRevision: draft.revision, characters: draft.characters, createdAt: new Date().toISOString() };
+    const version: VersionRecord = { id: randomUUID(), storyId: id, number, compiled: result.compiled, source: draft.source, sourceRevision: draft.revision, characters: draft.characters, createdAt: new Date().toISOString(), playtestEntries: entries.map(publicPlaytestEntry) };
     await this.repo.insertVersion(version);
     return publicVersion(version);
   }
@@ -60,6 +63,17 @@ export class GameService {
     return publicSession(record);
   }
   async resume(id: string) { return publicSession(required(await this.repo.getSession(id), '找不到存档')); }
+  async startPlaytest(storyId: string, versionId: string, entryId: string) {
+    required(await this.repo.getDraft(storyId), '找不到故事');
+    const version = required(await this.repo.getVersion(versionId), '找不到已发布版本');
+    if (version.storyId !== storyId) throw new GameError(400, 'VERSION_MISMATCH', '版本不属于该故事');
+    const entry = readPlaytestEntries(version.source).find(candidate => candidate.id === entryId);
+    if (!entry) throw new GameError(400, 'INVALID_PLAYTEST_ENTRY', '该版本没有此试跑入口，请重新选择章节和前情预设。');
+    const rendered = renderTurn(version.compiled, undefined, undefined, entry.path);
+    const record: SessionRecord = { id: randomUUID(), storyId, versionId: version.id, versionNumber: version.number, revision: 0, characters: version.characters, playtest: publicPlaytestEntry(entry), ...rendered, receipts: [], updatedAt: new Date().toISOString() };
+    await this.repo.insertSession(record);
+    return publicSession(record);
+  }
   async choose(id: string, input: ChoiceInput) {
     const current = required(await this.repo.getSession(id), '找不到存档');
     const fingerprint = createHash('sha256').update(JSON.stringify([input.turnId, input.revision, input.choiceId ?? null, input.input ?? null])).digest('hex');

@@ -4,6 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { MongoRepository } from '../src/mongo.js';
 import { GameService } from '../src/service.js';
 import { sampleCharacters, sampleSource } from '../src/sample.js';
+import { playtestEntry, playtestSource } from './playtest-fixture.js';
 
 describe('real MongoDB persistence and atomic writes R07/R08', () => {
   const client = new MongoClient(process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017', { serverSelectionTimeoutMS: 5000 });
@@ -16,6 +17,21 @@ describe('real MongoDB persistence and atomic writes R07/R08', () => {
     service = new GameService(repo);
   });
   afterAll(async () => { if (client) { await db.dropDatabase().catch(() => {}); await client.close(); } });
+  it('CP04 persists independent chapter presets and restores the pinned state and receipts', async () => {
+    const draft = await service.createDraft({ title: 'Chapter persistence', source: playtestSource, characters: [] });
+    const version = await service.publish(draft.id, 0);
+    const ordinary = await service.start(draft.id);
+    const preview = await service.startPlaytest(draft.id, version.id, 'second');
+    const request = { turnId: preview.turn.id, revision: 0, requestId: 'chapter-first', input: '提起秘密' };
+    const next = await service.choose(preview.id, request);
+    const restored = new GameService(new MongoRepository(db));
+    expect(await restored.resume(preview.id)).toEqual(next);
+    expect(await restored.choose(preview.id, request)).toEqual(next);
+    expect(next.playtest).toEqual(playtestEntry);
+    expect(next.variables).toEqual({ trust: 3, secret: true });
+    expect(await restored.resume(ordinary.id)).toEqual(ordinary);
+    expect((await restored.versions(draft.id))[0].playtestEntries).toEqual([playtestEntry]);
+  });
   it('restores exact current turn across service recreation and rejects concurrent updates', async () => {
     const d = await service.createDraft({ title: 'Mongo integration', source: sampleSource, characters: sampleCharacters });
     await service.publish(d.id, 0);

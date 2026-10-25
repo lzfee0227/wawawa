@@ -70,6 +70,18 @@ describe('MCP transports M08', () => {
     expect(rejected.json().error.code).toBe('VALIDATION_ERROR');
     expect(repo.sessions.size).toBe(1);
 
+    const duplicateHeader = await app.inject({
+      method: 'POST', url: '/mcp',
+      headers: {
+        'content-type': 'application/json', accept: 'application/json, text/event-stream',
+        'x-linx-device-id': ['device-1', 'device-2'], 'x-linx-agent-id': 'agent-1', 'x-linx-session-id': 'linx-1'
+      },
+      payload: { jsonrpc: '2.0', id: 2, method: 'initialize', params: { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'duplicate', version: '0' } } },
+    });
+    expect(duplicateHeader.statusCode).toBe(400);
+    expect(duplicateHeader.json().error.code).toBe('VALIDATION_ERROR');
+    expect(repo.sessions.size).toBe(1);
+
     const choosing = new Client({ name: 'wawawa-linx-next', version: '0.1.0' }, { versionNegotiation: { mode: 'auto' } });
     closers.push(() => choosing.close());
     await choosing.connect(new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${address.port}/mcp`), {

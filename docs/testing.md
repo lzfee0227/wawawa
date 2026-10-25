@@ -1,6 +1,8 @@
 # 测试策略与验收追踪
 
-最新管理平台验收见 [2026-10-25 记录](reviews/management-basics.md)。下方 MVP 数字是历史运行快照；当前新增 `content.test.ts` 的四路线/多周目回归、`request-id.test.ts` 的 HTTP 回退，以及 `management.spec.ts` 的完整稿导入/选择/恢复/指定版本/窄屏验证。
+最新管理平台验收见 [2026-10-25 记录](reviews/management-basics.md)。截至 2026-10-26，本工作区最新可复验快照为服务端 86 个、前端 75 个单元/组件测试通过；服务端覆盖率为语句 96.65% / 分支 91.61% / 函数 93.27% / 行 97.69%，前端为语句 89.39% / 分支 82.49% / 函数 86.37% / 行 96.93%。这些覆盖率仍只统计各 Vitest 配置的 include 文件，不是全仓覆盖率。下方按日期列出的其他数字均为历史运行快照。
+
+同日复验：使用独立无认证 MongoDB `mongodb://127.0.0.1:27018` 的 3 个集成测试通过；使用专用端口和测试数据库运行的 7 个 Chromium Playwright 流程通过。默认 `27017` 若启用了认证，必须改用带凭据的 `MONGODB_URI`；不能把认证失败的本机实例当作集成测试通过证据。
 
 指定章节试跑的最新结果见 [SDD-006 验收记录](reviews/chapter-playtest.md)，包含 22 个内容预设、独立恢复、版本隔离和桌面/窄屏证据。
 
@@ -43,7 +45,7 @@
 
 历史 MVP 未包含音频；当前 SDD-005 增加模拟器语音和音频，具体验证与未实测边界见语音迭代记录。小智设备仍未实现。M01–M07 由进程内 MCP 客户端覆盖，M08 由 API 进程上的 `/mcp` 和失败启动时的 stdio 输出覆盖。L01–L05 由 `linx.test.ts`、`service.test.ts` 和 `mcp-transport.test.ts` 覆盖：官方 Streamable HTTP 客户端可以开局，三个请求头写入仓储且不出现在快照，残缺请求头返回 400。这不包含设备播放。C01–C07 由工作室 MCP 测试台的组件测试、客户端单测和浏览器流程覆盖。设备试点仍须单独验证播完转监听、打断、重连和音色一致性。
 
-## 2026-10-24 本地运行验收
+## 2026-10-24 本地运行验收（历史快照）
 
 以下为集成人实际执行后的结果，取代初始化阶段的“未安装、未运行”状态；早期阻塞记录保留在实施日志中。
 
@@ -80,11 +82,11 @@ E2E_MONGODB_URI=mongodb://127.0.0.1:27018/wawawa_e2e npm run test:e2e
 
 远端证据：[Quality CI](https://github.com/lzfee0227/wawawa/actions/runs/40088730485) 已通过，包含 MongoDB 7、单元/组件覆盖率、构建及 Chromium E2E；本地旧 MongoDB 版本不再是目标版本的未验证缺口。
 
-## 2026-10-24 MCP 游玩
+## 2026-10-24 MCP 游玩（历史快照）
 
 [传输检查](https://github.com/lzfee0227/wawawa/actions/runs/40103467985) 在 Node 22 上通过：服务端 19 个测试、前端 20 个、MongoDB 集成 2 个、Playwright 2 个。其中包含官方客户端的分支游玩、非法选择、`/mcp` 和 stdio 失败启动。没有宿主模型对话、配音或小智记录。阶段分数见 [MCP 游玩评审](reviews/mcp-play.md)。本机若是 Node 25，既有前端测试需要 `NODE_OPTIONS=--no-experimental-webstorage`，否则 Node 自带的 `localStorage` 会让组件测试失败。
 
-## 2026-10-24 MCP 测试台
+## 2026-10-24 MCP 测试台（历史快照）
 
 本地 Node 25 在 `NODE_OPTIONS=--no-experimental-webstorage` 下通过 `npm run check`：服务端 19 个测试，前端 35 个测试。前端覆盖统计包含 `App.tsx`、`api.ts`、`mcp-client.ts`、`McpConsole.tsx`，行覆盖 100%，语句 94.61%，分支 85.45%，函数 99.16%。Playwright 3 个通过，其中包含经真实 `/mcp` 发布、非法原话、选项推进、读取不推进，以及 390px 无横向溢出。远端 [Quality](https://github.com/lzfee0227/wawawa/actions/runs/40108062395) 在 Node 22 上通过，包含 MongoDB 集成和 Chromium。浏览器里走通了同一条人工操作路径。测试台仍然不是宿主模型，也没有播放音频。
 

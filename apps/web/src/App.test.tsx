@@ -59,6 +59,57 @@ describe('authoring acceptance R01-R04', () => {
     expect(screen.getByText(/音色 ID 仅作为配置保存/)).toBeInTheDocument();
   });
 
+  it('creates a blank template without sample characters', async () => {
+    const user = userEvent.setup(); await loaded();
+    await user.click(screen.getByRole('button', { name: /新建空白故事/ }));
+    await screen.findByText(/空白草稿已创建/);
+    expect(request).toHaveBeenCalledWith('/stories', 'POST', { title: '未命名故事', source: '// 在这里编写故事\n-> END\n', characters: [] });
+    expect(screen.queryByLabelText('角色 1 名称')).not.toBeInTheDocument();
+  });
+
+  it('imports an independent source draft and never publishes automatically', async () => {
+    const user = userEvent.setup(); await loaded();
+    const source = '你好 # speaker:guide\n* [继续]\n    -> END\n';
+    await user.upload(screen.getByLabelText('导入 Ink 文件'), new File([source], '新故事.ink', { type: 'text/plain' }));
+    await screen.findByText(/已导入为独立草稿/);
+    expect(request).toHaveBeenCalledWith('/stories', 'POST', { title: '新故事', source, characters: [] });
+    expect(screen.getByLabelText('Ink 剧本')).toHaveValue(source);
+    expect(request.mock.calls.some(call => call[0].endsWith('/publish') || call[1] === 'PUT')).toBe(false);
+  });
+
+  it('rejects empty, oversized and unsupported imports without changing the current story', async () => {
+    const user = userEvent.setup({ applyAccept: false }); await loaded();
+    const input = screen.getByLabelText('导入 Ink 文件');
+    await user.upload(input, new File([' '], 'empty.ink'));
+    expect(await screen.findByRole('alert')).toHaveTextContent('剧本不能为空');
+    await user.upload(input, new File(['a'.repeat(100001)], 'long.ink'));
+    expect(await screen.findByRole('alert')).toHaveTextContent('不得超过 100000');
+    await user.upload(input, new File(['a'.repeat(400001)], 'huge.ink'));
+    expect(await screen.findByRole('alert')).toHaveTextContent('400000 字节');
+    await user.upload(input, new File(['text'], 'wrong.json'));
+    expect(await screen.findByRole('alert')).toHaveTextContent('请选择 .ink');
+    expect(screen.getByLabelText('Ink 剧本')).toHaveValue(sampleSource);
+    expect(request.mock.calls.some(call => call[1] === 'POST')).toBe(false);
+  });
+
+  it('preserves unsaved content when leaving for blank or imported stories is cancelled', async () => {
+    const user = userEvent.setup(); await loaded();
+    fireEvent.change(screen.getByLabelText('Ink 剧本'), { target: { value: '未保存内容' } });
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    await user.click(screen.getByRole('button', { name: /新建空白故事/ }));
+    await user.upload(screen.getByLabelText('导入 Ink 文件'), new File(['结束\n-> END'], 'new.ink'));
+    expect(screen.getByLabelText('Ink 剧本')).toHaveValue('未保存内容');
+    expect(request.mock.calls.some(call => call[1] === 'POST')).toBe(false);
+  });
+
+  it('keeps the editor when importing fails to save on the server', async () => {
+    mockApi((path, method) => path === '/stories' && method === 'POST' ? Promise.reject(new Error('服务暂时不可用')) : undefined);
+    const user = userEvent.setup(); await loaded();
+    await user.upload(screen.getByLabelText('导入 Ink 文件'), new File(['结束\n-> END'], 'new.ink'));
+    expect(await screen.findByRole('alert')).toHaveTextContent('服务暂时不可用');
+    expect(screen.getByLabelText('Ink 剧本')).toHaveValue(sampleSource);
+  });
+
   it('edits title/source/characters and saves the revision', async () => {
     const user = userEvent.setup(); await loaded();
     fireEvent.change(screen.getByLabelText('剧本名称'), { target: { value: '新的来信' } });
@@ -96,6 +147,14 @@ describe('authoring acceptance R01-R04', () => {
     const saveCall = request.mock.calls.findIndex(call => call[1] === 'PUT');
     const publishCall = request.mock.calls.findIndex(call => call[0].endsWith('/publish'));
     expect(saveCall).toBeLessThan(publishCall);
+  });
+
+  it('starts a simulator session from the selected immutable release', async () => {
+    const user = userEvent.setup(); await loaded();
+    await user.click(screen.getByRole('button', { name: '从 v1 开始模拟' }));
+    await screen.findByText(/已开始已发布版本 v1/);
+    expect(request).toHaveBeenCalledWith('/sessions', 'POST', { storyId: 'story-1', versionId: 'version-1' });
+    expect(screen.getByRole('tab', { name: '02 对话模拟器' })).toHaveAttribute('aria-selected', 'true');
   });
 
   it('surfaces a publishing error and allows dismissing it', async () => {

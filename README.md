@@ -48,6 +48,7 @@ npm run test:e2e
 ## 文档入口
 
 - [MVP规格](docs/specs/001-mvp.md)
+- [管理平台基础规格](docs/specs/004-management-basics.md)
 - [MCP 游玩规格](docs/specs/002-mcp-play.md)
 - [MCP 测试台规格](docs/specs/003-mcp-console.md)
 - [架构与API约定](docs/architecture.md)

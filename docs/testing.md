@@ -86,5 +86,5 @@ E2E_MONGODB_URI=mongodb://127.0.0.1:27018/wawawa_e2e npm run test:e2e
 
 - A01/A06/A07：`apps/server/test/audio.test.ts` 覆盖配置、密钥不泄漏、上游 multipart/JSON 契约、超时、类型/尺寸边界、安全错误。上游为测试替身，不代表真实云服务已验证。
 - A02/A03/A05：`VoicePanel.test.tsx`、`voice.test.ts` 覆盖顺序朗读、浏览器/云独立切换、录音释放、迟到结果取消、仅填字不提交等生命周期。
-- A01/A03/A04/A08：`tests/e2e/audio.spec.ts` 在真实游戏 API/MongoDB 上测试手动确认选择，真实 HTMLAudioElement 解码生成的 WAV，桌面/390px 截图；ASR 使用浏览器替身，不能证明真人识别准确率或扬声器音质。
+- A01/A03/A04/A08：`tests/e2e/audio.spec.ts` 在真实游戏 API/MongoDB 上测试手动确认选择，真实 HTMLAudioElement 播放器控件与停止清理、生成 WAV 文件试听入口，桌面/390px 截图；无头 CI 不把音频进度当作扬声器/解码证据。ASR 使用浏览器替身，不能证明真人识别准确率或扬声器音质。
 - 真实设备手测：在 localhost/HTTPS 允许麦克风，说“第一个”，确认文字再提交；测试拒绝权限、无语音、停止；听两角色台词与选项；配置云密钥后分别重复 ASR/TTS，记录厂商/模型/浏览器/中文准确率与时延。未执行前不得标为通过。

@@ -29,8 +29,11 @@ export function createApp(repository: Repository, options: { logger?: boolean; a
     return service.updateDraft(params.parse(request.params).id, draftSchema.parse(input), revision);
   });
   app.post('/api/compile', request => service.compile(compileSchema.parse(request.body).source));
+  app.post('/api/analyze', request => service.analyze(compileSchema.parse(request.body).source));
   app.post('/api/stories/:id/publish', async (request, reply) => reply.code(201).send(await service.publish(params.parse(request.params).id, revisionSchema.parse(request.body).revision)));
   app.get('/api/stories/:id/versions', request => service.versions(params.parse(request.params).id));
+  app.get('/api/stories/:id/graph', request => service.graph(params.parse(request.params).id));
+  app.get('/api/stories/:id/versions/:versionId/graph', request => { const parsed = z.object({ id: z.string().min(1).max(100), versionId: z.string().min(1).max(100) }).parse(request.params); return service.graph(parsed.id, parsed.versionId); });
   app.post('/api/sessions', async (request, reply) => {
     const input = sessionSchema.parse(request.body);
     return reply.code(201).send(await service.start(input.storyId, input.versionId));

@@ -130,4 +130,16 @@
 ~ relationship_confirmed = false
 ~ ma_apology = false
 ~ true_plan = false
+~ identity_shared = false
+~ records_shared = false
+~ bloodline_shared = false
+~ ma_respected = false
+~ station_safe = false
+~ trial_shared = false
+~ evidence_public = false
+~ relationship_ready = false
+~ partner_focus = "none"
+~ archive_focus = "none"
+~ dangerous_delegations = 0
+~ ending_id = ""
 -> arrival

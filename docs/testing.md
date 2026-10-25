@@ -14,6 +14,7 @@
 | R10 | CI | typecheck、覆盖率门槛、构建、实际Mongo、浏览器流程 |
 | M01–M07 | 进程内 MCP 客户端 | 已发布列表、开局快照、续读不推进、合法与非法选择、重复 requestId、过期回合、结果不含 Ink 状态 |
 | M08 | stdio 与 HTTP `/mcp` | 两种入口注册同一组工具和 `play_turn`；stdio 不把日志写入 stdout |
+| L01–L05 | Streamable HTTP 与灵矽调用方 | `/mcp` 接受官方 Streamable HTTP 客户端；三个请求头写入本地存档且不出现在快照；残缺请求头返回 400 且不创建存档 |
 | C01–C05 | React 组件 | MCP 测试标签、工具与 `play_turn` 约束、快照渲染、非法选择不推进、读取不推进 |
 | C06 | 前端单测 | `/mcp` 的 `2026-07-28` 信封、JSON 与 SSE、协议错误和工具错误分开 |
 | C07 | Playwright | 发布后经测试台走一步真实分支；窄屏无横向溢出 |

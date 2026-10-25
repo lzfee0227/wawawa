@@ -2,11 +2,12 @@ export type Character = { id: string; name: string; voiceId: string };
 export type Draft = { id: string; title: string; source: string; characters: Character[]; revision: number; updatedAt: string };
 export type Diagnostic = { severity: 'error' | 'warning'; message: string };
 export type Compilation = { ok: boolean; diagnostics: Diagnostic[] };
-export type Version = { id: string; storyId: string; number: number; createdAt: string };
+export type PlaytestEntry = { id: string; chapter: string; label: string; description: string };
+export type Version = { id: string; storyId: string; number: number; createdAt: string; playtestEntries?: PlaytestEntry[] };
 export type Line = { text: string; tags: string[]; speaker?: string; emotion?: string; audio?: string; music?: string };
 export type Choice = { id: string; index: number; text: string };
 export type Turn = { id: string; lines: Line[]; choices: Choice[]; ended: boolean };
-export type Session = { id: string; storyId: string; versionId: string; versionNumber: number; revision: number; turn: Turn; characters: Character[]; variables: Record<string, unknown>; updatedAt: string };
+export type Session = { id: string; storyId: string; versionId: string; versionNumber: number; revision: number; turn: Turn; characters: Character[]; variables: Record<string, unknown>; updatedAt: string; playtest?: PlaytestEntry };
 
 export class ApiError extends Error {
   constructor(message: string, public status: number, public diagnostics?: Diagnostic[]) { super(message); }

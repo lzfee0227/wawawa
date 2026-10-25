@@ -30,6 +30,17 @@ node --import tsx content/stories/erha-youfu/tools/verify-routes.mjs --service
 
 ## 导入约定
 
+`authoring.json` 保存 8 个说话角色的简介、性格、目标、秘密，以及 7 条初始关系；依据本目录 `design.md` 与章稿整理。关系不预设恋爱结局，`variableKey` 仅关联真实 Ink 变量，不赋值；信任变量不映射成虚构的 0–100 强度。旁白是演出角色，不额外编造社会关系。
+
+```sh
+node content/stories/erha-youfu/tools/build.mjs --check
+node --import tsx content/stories/erha-youfu/tools/import.mjs --check
+# 使用已确认的本地数据库；--write 更新草稿，--publish 另发不可变版本
+MONGODB_URI=mongodb://127.0.0.1:27018/wawawa node --import tsx content/stories/erha-youfu/tools/import.mjs --write --publish
+```
+
+导入器保留现有 voiceId，按修订号更新同名故事，多个同名记录会拒绝操作。修改前草稿备份在忽略目录 `.local/import-backups`；导入后读回核对角色、关系、源码和图快照，并验证既有版本/会话未被改写。内容未改变时重复执行不新增版本。结构图沿用 SDD-008 当前提取器，不代表全部条件路径已被穷举。
+
 导入工作台时，将 `story.ink` 作为当前故事的 `source`，再按 `design.md` 中的角色表填写角色配置。发布前要在工作台编译并保存；`chapter-01.ink` 仅用于单章回看，不代表完整故事入口。
 
 ## 多周目设计入口

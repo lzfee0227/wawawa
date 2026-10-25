@@ -14,7 +14,9 @@ test('C01–C05 and C07 play a published story through the MCP console', async (
     await expect(page.getByRole('list', { name: 'MCP 工具' }).getByText(name, { exact: true })).toBeVisible();
   }
   const prompt = page.getByLabel('play_turn 提示');
-  await expect(prompt).toContainText('照读');
+  await expect(prompt).toContainText('照读工具返回的台词');
+  await expect(prompt).toContainText('不要总结');
+  await expect(prompt).toContainText('逐字按照返回的剧本和台词');
   await expect(prompt).toContainText('禁止编造选项');
   await expect(prompt).toContainText('禁止声称已播放声音');
 

@@ -6,7 +6,7 @@ import type { Character, Line, LinxCaller, Session } from './types.js';
 
 const id = z.string().min(1).max(100);
 const playTurn = [
-  '照读工具返回的台词，并保留说话人。不要增删情节，不要替用户做选择，不要修改变量。',
+  '照读工具返回的台词。不要总结，要逐字按照返回的剧本和台词，并保留说话人。不要增删情节，不要替用户做选择，不要修改变量。',
   '只呈现本次返回的选项。禁止编造选项。',
   '用户选定后，用上一次快照里的 sessionId、turnId、revision，以及你为这一次选择新生成的 requestId，调用 choose_option。choiceId 与用户原话只能提供一个。',
   '同一次选择的重试必须复用同一个 requestId。新的选择必须使用新的 requestId。',
@@ -92,7 +92,7 @@ export function createStoryMcpServer(service: GameService, linx?: LinxCaller) {
   });
   server.registerPrompt('play_turn', {
     title: '游玩当前回合',
-    description: '要求照读台词，禁止编造选项，并禁止声称已播放声音。',
+    description: '要求逐字照读返回的剧本和台词，禁止总结，禁止编造选项，并禁止声称已播放声音。',
   }, () => ({ messages: [{ role: 'user', content: { type: 'text', text: playTurn } }] }));
   return server;
 }

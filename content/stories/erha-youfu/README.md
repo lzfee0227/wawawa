@@ -13,7 +13,19 @@
 
 ## 当前范围
 
-仓库中保存的是完整八章《下跪咒与新生注册》故事源稿；当前主干已确认该完整稿可被 `inkjs` 编译并按代表性路线推进，但它仍需要通过管理平台的本地导入和发布流程进入数据库，不能把仓库文件视为已发布故事。完整稿包含结局总结和主动开启新周目的循环：重玩会重置本轮关系、道具、债务和技能，只保留已验证的福门回响。每章完成后先在 `story.ink` 上编译，再用代表性路径遍历检查结局；后续章节依赖合并稿中的全局变量，不能单独复制到工作台运行。`voiceId`、`audio` 和 `music` 仍然是素材关联的元数据，不代表已经有真实音频。
+仓库保存八章完整源稿，包含三条恋爱路线、各自伙伴变体、伙伴调查线、马二福真线、权力结局和两种失败结局。本轮重点扩写第二章以后的场景、互动、选择后果与生活尾声，验收依据和实际检查结果见 [扩写审查记录](expansion-review.md)。
+
+`chapter-01.ink` 至 `chapter-08.ink` 是编辑源；`story.ink` 是由构建脚本拼接的导入产物，**不会在运行时自动读取章稿**。第一章末尾的单章结束点在构建时改成第二章入口，其余跨章跳转与变量统一由完整稿编译。改章稿后须重新构建，不要分别维护两套正文。
+
+```sh
+node content/stories/erha-youfu/tools/build.mjs
+node content/stories/erha-youfu/tools/build.mjs --check
+node content/stories/erha-youfu/tools/verify.mjs
+node content/stories/erha-youfu/tools/verify-routes.mjs
+node --import tsx content/stories/erha-youfu/tools/verify-routes.mjs --service
+```
+
+故事内的新周目会重置本轮关系、道具、债务与技能，保留已获得的机制回响和已达结局回顾。同一存档可以连续完成多周目；另开平台会话不会继承回响。本轮未导入或发布数据库版本，已发布会话不受文件改动影响。`voiceId`、`audio` 和 `music` 是素材关联元数据；本轮没有实测配音或听读时长。
 
 ## 导入约定
 

@@ -31,7 +31,7 @@ const tools = [
   { name: 'get_session', title: '读取当前回合' },
   { name: 'choose_option', title: '提交选项' },
 ];
-const prompt = '照读工具返回的台词，并保留说话人。\n只呈现本次返回的选项。禁止编造选项。\n禁止声称已播放声音。';
+const prompt = '照读工具返回的台词。不要总结，要逐字按照返回的剧本和台词，并保留说话人。\n只呈现本次返回的选项。禁止编造选项。\n禁止声称已播放声音。';
 const story = { id: 'story-1', title: '雨夜来信', latestVersionNumber: 2 };
 const opened: PlaySnapshot = {
   sessionId: 'session-1', storyId: 'story-1', versionId: 'version-1', versionNumber: 2, revision: 4, updatedAt: '2026-10-24T00:00:00Z',
@@ -72,6 +72,8 @@ describe('MCP console C01–C05', () => {
     for (const name of ['list_stories', 'start_session', 'get_session', 'choose_option']) expect(within(toolList).getByText(name)).toBeInTheDocument();
     const shown = screen.getByLabelText('play_turn 提示');
     expect(shown).toHaveTextContent('照读工具返回的台词');
+    expect(shown).toHaveTextContent('不要总结');
+    expect(shown).toHaveTextContent('逐字按照返回的剧本和台词');
     expect(shown).toHaveTextContent('禁止编造选项');
     expect(shown).toHaveTextContent('禁止声称已播放声音');
     expect(setItem).not.toHaveBeenCalled();

@@ -50,6 +50,15 @@ async function play(user: ReturnType<typeof userEvent.setup>) {
 beforeEach(() => { request.mockReset(); vi.restoreAllMocks(); mockApi(); });
 
 describe('authoring acceptance R01-R04', () => {
+  it('V08 preserves imported character settings and relations when saving edited source', async () => {
+    const imported = { ...draft, characters: draft.characters.map(character => ({ ...character, bio: '人物设定', secrets: ['创作者备注'] })), relations: [{ id: 'r1', from: 'narrator', to: 'lin', type: '同行', variableKey: 'affection' }] };
+    mockApi((path, method) => path === '/stories' && method === 'GET' ? [imported] : undefined);
+    const user = userEvent.setup(); await loaded();
+    fireEvent.change(screen.getByLabelText('Ink 剧本'), { target: { value: '修改正文\n-> END' } });
+    await user.click(screen.getByRole('button', { name: '保存草稿' }));
+    await screen.findByText('草稿已保存。');
+    expect(request).toHaveBeenCalledWith('/stories/story-1', 'PUT', expect.objectContaining({ characters: imported.characters, relations: imported.relations }));
+  });
   it('creates the sample from an empty bookshelf', async () => {
     mockApi((path, method) => path === '/stories' && method === 'GET' ? [] : undefined);
     const user = userEvent.setup(); render(<App />);

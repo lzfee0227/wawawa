@@ -135,7 +135,8 @@ export default function App() {
   async function save(): Promise<Draft> {
     if (!draft) throw new Error('请先创建故事。');
     const saved = await api<Draft>(`/stories/${draft.id}`, 'PUT', {
-      title: draft.title, source: draft.source, characters: draft.characters, revision: draft.revision
+      title: draft.title, source: draft.source, characters: draft.characters, revision: draft.revision,
+      ...(draft.relations !== undefined ? { relations: draft.relations } : {})
     });
     setDraft(saved); setDirty(false);
     setStories(previous => previous.map(item => item.id === saved.id ? saved : item));

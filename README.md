@@ -46,7 +46,7 @@ npm --prefix apps/web run dev
 
 ## MCP 游玩
 
-stdio 给本机客户端拉起，HTTP 挂在同一个 API 进程的 `/mcp`。两者调用同一套游玩工具。先发布故事，再让客户端列出故事、开始会话并提交当前选项。日志写在 stderr。
+stdio 给本机客户端拉起，HTTP 用 Streamable HTTP 挂在同一个 API 进程的 `/mcp`。两者调用同一套游玩工具。先发布故事，再让客户端列出故事、开始会话并提交当前选项。日志写在 stderr。灵矽若在请求里带上 `X-Linx-Device-Id`、`X-Linx-Agent-Id` 和 `X-Linx-Session-Id`，服务会把它们记到本地存档，不会放进返回给模型的台词。规格见 [SDD-007](docs/specs/007-linx-caller.md)。
 
 ```sh
 npm run mcp
@@ -76,6 +76,7 @@ npm run test:e2e
 - [管理平台基础规格](docs/specs/004-management-basics.md)
 - [管理平台迭代验收](docs/reviews/management-basics.md)
 - [MCP 游玩规格](docs/specs/002-mcp-play.md)
+- [灵矽调用方规格](docs/specs/007-linx-caller.md)
 - [MCP 测试台规格](docs/specs/003-mcp-console.md)
 - [架构与API约定](docs/architecture.md)
 - [需求、商业与技术调研](docs/research.md)

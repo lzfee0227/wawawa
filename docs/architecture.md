@@ -58,7 +58,9 @@ The studio console in SDD-003 is another client of this HTTP endpoint. It posts 
 
 Service errors become MCP tool errors whose text starts with `CODE: message`. Invalid tool arguments are rejected by the SDK and do not call the service. The adapter does not author, compile, publish, play audio, or interpret raw speech. A host that only displays the returned text still satisfies the contract.
 
-stdio reserves stdout for JSON-RPC. HTTP uses the existing `HOST` and `PORT`, localhost by default. Device playback, including Xiaozhi, stays unverified and outside this adapter.
+stdio reserves stdout for JSON-RPC. HTTP uses the existing `HOST` and `PORT`, localhost by default. The HTTP entry is Streamable HTTP on `GET`, `POST`, and `DELETE /mcp`: the official client posts JSON-RPC and receives SSE only when a response streams. `POST /mcp/message` is not mounted.
+
+SDD-007 reads `X-Linx-Device-Id`, `X-Linx-Agent-Id`, and `X-Linx-Session-Id` from that HTTP request and passes the triple into the game service. `start_session` stores it on the session record as `linx`; `choose_option` replaces it when a new triple arrives and keeps the stored triple when the request has none. Reads do not write it. Public session JSON and play snapshots omit `linx`, just as they omit Ink state and retry receipts. A stored device id is not an account and does not authorize the session. Device playback stays unverified.
 
 ## Simulator audio boundary (SDD-005)
 

@@ -13,4 +13,5 @@ export type Turn = { id: string; lines: Line[]; choices: Choice[]; ended: boolea
 export type Session = { id: string; storyId: string; versionId: string; versionNumber: number; revision: number; turn: Turn; characters: Character[]; variables: Record<string, unknown>; updatedAt: string; playtest?: PlaytestEntry };
 export type ChoiceInput = { turnId: string; revision: number; requestId: string; choiceId?: string; input?: string };
 export type Receipt = { requestId: string; fingerprint: string; result: Session };
-export type SessionRecord = Session & { inkState: string; receipts: Receipt[] };
+export type LinxCaller = { deviceId: string; agentId: string; sessionId: string };
+export type SessionRecord = Session & { inkState: string; receipts: Receipt[]; linx?: LinxCaller };

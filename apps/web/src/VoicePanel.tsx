@@ -24,8 +24,6 @@ export function VoicePanel({ session, busy, onRecognized }: Props) {
   const attachPlayer = useCallback((element: HTMLAudioElement | null) => {
     if (player.current && player.current !== element) {
       player.current.pause();
-      player.current.removeAttribute('src');
-      player.current.load();
     }
     player.current = element;
   }, []);

@@ -12,7 +12,7 @@ test('R01–R09 author, publish, compare branches and restore pinned sessions', 
   await page.screenshot({ path: testInfo.outputPath('desktop-author.png'), fullPage: true });
   await page.getByRole('tab', { name: '02 对话模拟器' }).click();
   await page.getByRole('button', { name: '开始模拟', exact: true }).click();
-  await expect(page.getByText('模拟模式 · 以下展示台词和语音识别后的文字，不会启动麦克风或播放音频。')).toBeVisible();
+  await expect(page.getByText('模拟模式 · 可试听台词或录入语音，识别文字经确认提交后才推进剧情。')).toBeVisible();
   await page.screenshot({ path: testInfo.outputPath('desktop-simulator.png'), fullPage: true });
   await page.getByLabel('语音识别后的文字').fill('第一个');
   await page.getByRole('button', { name: '提交选择', exact: true }).click();

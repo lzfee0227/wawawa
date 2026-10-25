@@ -56,7 +56,7 @@ describe('authoring acceptance R01-R04', () => {
     await user.click(await screen.findByRole('button', { name: '创建第一个故事' }));
     expect(await screen.findByLabelText('Ink 剧本')).toHaveValue(sampleSource);
     expect(request).toHaveBeenCalledWith('/stories', 'POST', expect.objectContaining({ characters: sampleCharacters }));
-    expect(screen.getByText(/音色 ID 仅作为配置保存/)).toBeInTheDocument();
+    expect(screen.getByText(/音色 ID 用于模拟器朗读/)).toBeInTheDocument();
   });
 
   it('creates a blank template without sample characters', async () => {

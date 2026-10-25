@@ -9,7 +9,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom', setupFiles: ['./src/test-setup.ts'],
     coverage: {
-      provider: 'v8', include: ['src/api.ts', 'src/App.tsx', 'src/request-id.ts', 'src/mcp-client.ts', 'src/McpConsole.tsx'],
+      provider: 'v8', include: ['src/api.ts', 'src/App.tsx', 'src/request-id.ts', 'src/mcp-client.ts', 'src/McpConsole.tsx', 'src/VoicePanel.tsx', 'src/voice.ts'],
       reporter: ['text', 'lcov', 'html'],
       thresholds: { lines: 80, statements: 80, functions: 75, branches: 70 }
     }

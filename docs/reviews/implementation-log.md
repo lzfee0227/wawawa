@@ -1,5 +1,9 @@
 # 实施与验证记录
 
+## 2026-10-25：灵矽调用方进入本地存档
+
+核对 `@modelcontextprotocol/server` 2.4.0：`/mcp` 已是 Streamable HTTP，`GET`/`POST`/`DELETE` 由 `createMcpHandler` 处理，没有补第二套传输，也没有增加 `POST /mcp/message`。SDD-006 规定把 `X-Linx-Device-Id`、`X-Linx-Agent-Id`、`X-Linx-Session-Id` 写入会话记录的 `linx`，公开会话和游玩快照都不带这三个值。读取不改存档，相同 `requestId` 的重试不覆盖已写入的调用方。设备播放、语音识别和玩家绑定都还没有实机证据，阶段分数不因此变化。
+
 ## 2026-10-25：重新聚焦管理平台
 
 核对主干确认 PR #6–#18 已合并，基线检查通过（19 服务端、35 前端测试）。新增 [SDD-004](../specs/004-management-basics.md)，规格 PR #19 已通过 CI 合并。实现新增独立导入/空白模板/版本试玩/HTTP 请求 ID 回退，25 服务端、43 前端、2 MongoDB、4 E2E 通过，详情见 [本轮验收](management-basics.md)。MCP 保留既有功能，仅运行兼容回归。以下各节均为历史记录。

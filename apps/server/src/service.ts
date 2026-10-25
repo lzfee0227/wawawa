@@ -2,11 +2,11 @@ import { createHash, randomUUID } from 'node:crypto';
 import { GameError } from './errors.js';
 import { compile, renderTurn, resolveChoice } from './engine.js';
 import type { Repository } from './repository.js';
-import type { ChoiceInput, Draft, DraftInput, DraftRecord, Session, SessionRecord, Version, VersionRecord } from './types.js';
+import type { ChoiceInput, Draft, DraftInput, DraftRecord, LinxCaller, Session, SessionRecord, Version, VersionRecord } from './types.js';
 
 function publicDraft({ publicationCounter: _, ...draft }: DraftRecord): Draft { return draft; }
 function publicVersion({ compiled: _, characters: __, source: ___, sourceRevision: ____, ...version }: VersionRecord): Version { return version; }
-function publicSession({ inkState: _, receipts: __, ...session }: SessionRecord): Session { return session; }
+function publicSession({ inkState: _, receipts: __, linx: ___, ...session }: SessionRecord): Session { return session; }
 function required<T>(value: T | null, message: string): T {
   if (!value) throw new GameError(404, 'NOT_FOUND', message);
   return value;
@@ -50,17 +50,17 @@ export class GameService {
     required(await this.repo.getDraft(id), '找不到故事');
     return (await this.repo.listVersions(id)).map(publicVersion);
   }
-  async start(storyId: string, versionId?: string) {
+  async start(storyId: string, versionId?: string, linx?: LinxCaller) {
     required(await this.repo.getDraft(storyId), '找不到故事');
     const version = required(versionId ? await this.repo.getVersion(versionId) : (await this.repo.listVersions(storyId))[0] ?? null, '请先发布故事');
     if (version.storyId !== storyId) throw new GameError(400, 'VERSION_MISMATCH', '版本不属于该故事');
     const rendered = renderTurn(version.compiled);
-    const record: SessionRecord = { id: randomUUID(), storyId, versionId: version.id, versionNumber: version.number, revision: 0, characters: version.characters, ...rendered, receipts: [], updatedAt: new Date().toISOString() };
+    const record: SessionRecord = { id: randomUUID(), storyId, versionId: version.id, versionNumber: version.number, revision: 0, characters: version.characters, ...rendered, receipts: [], ...(linx ? { linx } : {}), updatedAt: new Date().toISOString() };
     await this.repo.insertSession(record);
     return publicSession(record);
   }
   async resume(id: string) { return publicSession(required(await this.repo.getSession(id), '找不到存档')); }
-  async choose(id: string, input: ChoiceInput) {
+  async choose(id: string, input: ChoiceInput, linx?: LinxCaller) {
     const current = required(await this.repo.getSession(id), '找不到存档');
     const fingerprint = createHash('sha256').update(JSON.stringify([input.turnId, input.revision, input.choiceId ?? null, input.input ?? null])).digest('hex');
     const retry = this.receipt(current, input.requestId, fingerprint);
@@ -71,6 +71,7 @@ export class GameService {
     const version = required(await this.repo.getVersion(current.versionId), '找不到存档对应的故事版本');
     const rendered = renderTurn(version.compiled, current.inkState, choice.index);
     const next: SessionRecord = { ...current, ...rendered, revision: current.revision + 1, updatedAt: new Date().toISOString() };
+    if (linx) next.linx = linx;
     const result = publicSession(next);
     next.receipts = [...current.receipts, { requestId: input.requestId, fingerprint, result }].slice(-8);
     if (!await this.repo.updateSession(next, current.revision)) {

@@ -58,6 +58,27 @@ describe('story service R01/R03/R07/R08', () => {
     const ended = await service.start(other.id);
     await expect(service.choose(ended.id, request(ended))).rejects.toMatchObject({ code: 'STORY_ENDED' });
   });
+  it('keeps a Linx caller on the session record and out of the public snapshot', async () => {
+    const { draft, session } = await setup();
+    expect(await repo.getSession(session.id)).not.toHaveProperty('linx');
+    const caller = { deviceId: 'device-1', agentId: 'agent-1', sessionId: 'linx-1' };
+    const started = await service.start(draft.id, undefined, caller);
+    expect(started).not.toHaveProperty('linx');
+    expect((await repo.getSession(started.id))?.linx).toEqual(caller);
+    expect(await service.resume(started.id)).toEqual(started);
+    expect((await repo.getSession(started.id))?.linx).toEqual(caller);
+    const replacement = { deviceId: 'device-2', agentId: 'agent-2', sessionId: 'linx-2' };
+    await expect(service.choose(started.id, { ...request(started, 'bad'), input: '随便' }, replacement)).rejects.toMatchObject({ code: 'INVALID_CHOICE' });
+    expect((await repo.getSession(started.id))?.linx).toEqual(caller);
+    const advanced = await service.choose(started.id, request(started, 'keep'), replacement);
+    expect(JSON.stringify(advanced)).not.toContain('device-2');
+    expect((await repo.getSession(started.id))?.linx).toEqual(replacement);
+    expect(await service.choose(started.id, request(started, 'keep'), caller)).toEqual(advanced);
+    expect((await repo.getSession(started.id))?.linx).toEqual(replacement);
+    const kept = await service.choose(started.id, request(advanced, 'later'));
+    expect(kept.revision).toBe(advanced.revision + 1);
+    expect((await repo.getSession(started.id))?.linx).toEqual(replacement);
+  });
   it('blocks invalid publishes and detects races while saving or publishing', async () => {
     const bad = await service.createDraft({ title: 'bad', source: '-> missing', characters: [] });
     expect(service.compile(bad.source).ok).toBe(false);

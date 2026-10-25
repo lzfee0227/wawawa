@@ -2,7 +2,7 @@ import { McpServer } from '@modelcontextprotocol/server';
 import * as z from 'zod/v4';
 import { GameError } from './errors.js';
 import type { GameService } from './service.js';
-import type { Character, Line, Session } from './types.js';
+import type { Character, Line, LinxCaller, Session } from './types.js';
 
 const id = z.string().min(1).max(100);
 const playTurn = [
@@ -46,7 +46,7 @@ export function playSnapshot(session: Session) {
   };
 }
 
-export function createStoryMcpServer(service: GameService) {
+export function createStoryMcpServer(service: GameService, linx?: LinxCaller) {
   const server = new McpServer({ name: 'wawawa', version: '0.1.0' });
   server.registerTool('list_stories', {
     title: '列出已发布故事',
@@ -68,7 +68,7 @@ export function createStoryMcpServer(service: GameService) {
     description: '为已发布故事创建存档。省略 versionId 时使用最新版本。返回台词、选项、sessionId、turnId 和 revision。',
     inputSchema: storyId,
   }, async ({ storyId: id, versionId }) => {
-    try { return ok(playSnapshot(await service.start(id, versionId))); }
+    try { return ok(playSnapshot(await service.start(id, versionId, linx))); }
     catch (error) { return fail(error); }
   });
   server.registerTool('get_session', {
@@ -87,7 +87,7 @@ export function createStoryMcpServer(service: GameService) {
   }, async args => {
     try {
       const selection = 'choiceId' in args ? { choiceId: args.choiceId } : { input: args.input };
-      return ok(playSnapshot(await service.choose(args.sessionId, { turnId: args.turnId, revision: args.revision, requestId: args.requestId, ...selection })));
+      return ok(playSnapshot(await service.choose(args.sessionId, { turnId: args.turnId, revision: args.revision, requestId: args.requestId, ...selection }, linx)));
     } catch (error) { return fail(error); }
   });
   server.registerPrompt('play_turn', {

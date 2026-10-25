@@ -37,6 +37,12 @@ describe('HTTP boundary R01–R09', () => {
     const invalid = await app.inject({ method: 'POST', url: '/api/stories', payload: { ...draft, characters: [sampleCharacters[0], sampleCharacters[0]] } });
     expect(invalid.statusCode).toBe(400);
     expect(invalid.json().error.code).toBe('VALIDATION_ERROR');
+    const duplicateRelations = await app.inject({ method: 'POST', url: '/api/stories', payload: { ...draft, relations: [
+      { id: 'same', from: 'narrator', to: 'lin', type: '同行' },
+      { id: 'same', from: 'lin', to: 'narrator', type: '对立' }
+    ] } });
+    expect(duplicateRelations.statusCode).toBe(400);
+    expect(duplicateRelations.json().error.code).toBe('VALIDATION_ERROR');
     expect((await app.inject({ method: 'POST', url: '/api/compile', payload: { source: 'a'.repeat(100001) } })).statusCode).toBe(400);
     expect((await app.inject({ method: 'POST', url: '/api/sessions/x/choices', payload: { revision: 0, turnId: 'x', requestId: 'x', choiceId: 'x', input: '1' } })).statusCode).toBe(400);
     expect((await app.inject('/api/stories/missing')).statusCode).toBe(404);

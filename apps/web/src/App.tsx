@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, ApiError, type Character, type Compilation, type Draft, type Session, type Turn, type Version } from './api';
+import { createRequestId } from './request-id';
 import { McpConsole } from './McpConsole';
 import { sampleCharacters, sampleSource } from './sample';
 
@@ -8,6 +9,7 @@ type Entry = { turn: Turn; answer?: string };
 
 export default function App() {
   const [stories, setStories] = useState<Draft[]>([]);
+  const [publishedSummary, setPublishedSummary] = useState<Record<string, { number: number; createdAt: string } | null>>({});
   const [draft, setDraft] = useState<Draft | null>(null);
   const [dirty, setDirty] = useState(false);
   const [versions, setVersions] = useState<Version[]>([]);
@@ -46,6 +48,9 @@ export default function App() {
     const result = await api<Version[]>(`/stories/${story.id}/versions`);
     if (selected.current !== story.id) return;
     setVersions(result);
+    setPublishedSummary(previous => result[0]
+      ? { ...previous, [story.id]: { number: result[0].number, createdAt: result[0].createdAt } }
+      : { ...previous, [story.id]: null });
     const saved = localStorage.getItem(sessionKey(story.id));
     if (saved) {
       try {
@@ -109,6 +114,38 @@ export default function App() {
     });
   }
 
+  function createBlankStory() {
+    if (dirty && !window.confirm('当前草稿尚未保存，确定离开吗？')) return;
+    void run(async () => {
+      const created = await api<Draft>('/stories', 'POST', {
+        title: '未命名故事', source: '// 在这里编写故事\n-> END\n', characters: []
+      });
+      setStories(previous => [...previous, created]); await loadStory(created); setTab('write');
+      setNotice('空白草稿已创建。填写台词和选项后，编译并发布即可模拟。');
+    });
+  }
+
+  function importStory(file?: File) {
+    if (!file || requestLock.current) return;
+    if (dirty && !window.confirm('当前草稿尚未保存，确定离开吗？')) return;
+    void run(async () => {
+      if (!/\.(ink|txt)$/i.test(file.name)) throw new Error('请选择 .ink 或 .txt 文件。');
+      if (file.size > 400_000) throw new Error('文件超过 400000 字节，请拆分或缩短剧本。');
+      const source = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result ?? ''));
+        reader.onerror = () => reject(new Error('文件读取失败，请重新选择。'));
+        reader.onabort = () => reject(new Error('文件读取已取消，请重新选择。'));
+        reader.readAsText(file, 'UTF-8');
+      });
+      if (!source.trim() || source.length > 100_000) throw new Error('剧本不能为空且不得超过 100000 字符。');
+      const title = file.name.replace(/\.(ink|txt)$/i, '').trim().slice(0, 120) || '导入的故事';
+      const created = await api<Draft>('/stories', 'POST', { title, source, characters: [] });
+      setStories(previous => [...previous, created]); await loadStory(created); setTab('write');
+      setNotice('已导入为独立草稿，尚未发布。请按 speaker 标签配置角色，编译后发布。');
+    });
+  }
+
   function chooseStory(story: Draft) {
     if (story.id === draft?.id) return;
     if (dirty && !window.confirm('当前草稿尚未保存，确定离开吗？')) return;
@@ -119,11 +156,12 @@ export default function App() {
     setSession(next); localStorage.setItem(sessionKey(next.storyId), next.id);
   }
 
-  function start() {
+  function start(versionId?: string) {
     if (!draft) return;
     void run(async () => {
-      const next = await api<Session>('/sessions', 'POST', { storyId: draft.id });
+      const next = await api<Session>('/sessions', 'POST', { storyId: draft.id, ...(versionId ? { versionId } : {}) });
       remember(next); setEntries([{ turn: next.turn }]); setInput(''); retry.current = null;
+      setTab('play');
       setNotice(`已开始已发布版本 v${next.versionNumber}，草稿修改不会影响本次游玩。`);
     });
   }
@@ -131,7 +169,7 @@ export default function App() {
   function choose(payload: { choiceId: string } | { input: string }, answer: string) {
     if (!session) return;
     const key = JSON.stringify([session.id, session.turn.id, payload]);
-    if (retry.current?.key !== key) retry.current = { key, id: crypto.randomUUID() };
+    if (retry.current?.key !== key) retry.current = { key, id: createRequestId() };
     const requestId = retry.current.id;
     void run(async () => {
       const next = await api<Session>(`/sessions/${session.id}/choices`, 'POST', {
@@ -147,8 +185,10 @@ export default function App() {
     <aside className="sidebar">
       <a className="brand" href="#main"><span className="brand-mark" aria-hidden="true">≋</span><span>声间<small>STORY STUDIO</small></span></a>
       <div className="sidebar-heading"><span>故事书架</span><span>{stories.length.toString().padStart(2, '0')}</span></div>
-      <nav aria-label="故事列表">{stories.map(story => <button key={story.id} className={`story-item ${draft?.id === story.id ? 'selected' : ''}`} aria-current={draft?.id === story.id ? 'page' : undefined} disabled={busy || loading} onClick={() => chooseStory(story)}><span className="story-icon" aria-hidden="true">▤</span><span>{story.title}<small>草稿 · r{story.revision}</small></span></button>)}</nav>
+      <nav aria-label="故事列表">{stories.map(story => <button key={story.id} className={`story-item ${draft?.id === story.id ? 'selected' : ''}`} aria-current={draft?.id === story.id ? 'page' : undefined} disabled={busy || loading} onClick={() => chooseStory(story)}><span className="story-icon" aria-hidden="true">▤</span><span>{story.title}<small>草稿 · r{story.revision}{publishedSummary[story.id] ? ` · 已发布 v${publishedSummary[story.id]!.number}` : publishedSummary[story.id] === null ? ' · 未发布' : ' · 发布状态待查看'}</small><small>更新于 {new Date(story.updatedAt).toLocaleString('zh-CN')}</small></span></button>)}</nav>
       <button className="new-story" onClick={createStory} disabled={busy || loading}>＋ 新建示例故事</button>
+      <button className="new-story" onClick={createBlankStory} disabled={busy || loading}>＋ 新建空白故事</button>
+      <label className="import-story">导入 Ink 文件<input type="file" aria-label="导入 Ink 文件" accept=".ink,.txt" disabled={busy || loading} onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; importStory(file); }} /></label>
       <div className="sidebar-note"><span className="tiny-label">LOCAL PROTOTYPE</span><p>每个选择，<br />都留下回声。</p><small>本地创作与调试工具<br />未接入真实语音和设备</small></div>
     </aside>
 
@@ -163,18 +203,18 @@ export default function App() {
             <label className="field-label" htmlFor="story-title">剧本名称</label><input id="story-title" value={draft.title} maxLength={120} disabled={busy} onChange={event => edit({ title: event.target.value })} />
             <div className="source-label"><label className="field-label" htmlFor="story-source">Ink 剧本</label><span>{draft.source.split('\n').length} 行</span></div>
             <textarea id="story-source" className="source-editor" value={draft.source} spellCheck={false} disabled={busy} onChange={event => edit({ source: event.target.value })} />
-            <div className="editor-actions"><button disabled={busy} onClick={() => void run(async () => { setCompilation(await api<Compilation>('/compile', 'POST', { source: draft.source })); })}>编译检查</button><button disabled={busy} onClick={() => void run(async () => { await save(); setNotice('草稿已保存。'); })}>保存草稿</button><button className="primary" disabled={busy || !draft.title.trim()} onClick={() => void run(async () => { const saved = await save(); const version = await api<Version>(`/stories/${saved.id}/publish`, 'POST', { revision: saved.revision }); setVersions(previous => [version, ...previous]); setNotice(`版本 v${version.number} 已发布。可以前往对话模拟器开始验证。`); setCompilation({ ok: true, diagnostics: [] }); })}>保存并发布 <span aria-hidden="true">↗</span></button></div>
+            <div className="editor-actions"><button disabled={busy} onClick={() => void run(async () => { setCompilation(await api<Compilation>('/compile', 'POST', { source: draft.source })); })}>编译检查</button><button disabled={busy} onClick={() => void run(async () => { await save(); setNotice('草稿已保存。'); })}>保存草稿</button><button className="primary" disabled={busy || !draft.title.trim()} onClick={() => void run(async () => { const saved = await save(); const version = await api<Version>(`/stories/${saved.id}/publish`, 'POST', { revision: saved.revision }); setVersions(previous => [version, ...previous]); setPublishedSummary(previous => ({ ...previous, [saved.id]: { number: version.number, createdAt: version.createdAt } })); setNotice(`版本 v${version.number} 已发布。可以前往对话模拟器开始验证。`); setCompilation({ ok: true, diagnostics: [] }); })}>保存并发布 <span aria-hidden="true">↗</span></button></div>
             <div aria-live="polite">{compilation && <div className={`compilation ${compilation.ok ? 'success' : 'failure'}`}><strong>{compilation.ok ? '编译通过' : '编译失败，尚未发布'}</strong>{compilation.diagnostics.map((diagnostic, index) => <p key={index}>{diagnostic.severity === 'error' ? '错误' : '警告'}：{diagnostic.message}</p>)}</div>}</div>
           </div>
           <aside className="inspector"><section className="panel"><div className="panel-heading"><div><span className="tiny-label">CAST</span><h2>角色与声音</h2></div><span className="chip">{draft.characters.length}</span></div><p className="muted">音色 ID 仅作为配置保存。本版本不生成或播放配音。</p>
             {draft.characters.map((character, index) => <fieldset className="character-card" key={index}><legend>角色 {index + 1}</legend><label>角色标识<input aria-label={`角色 ${index + 1} 标识`} value={character.id} disabled={busy} onChange={event => editCharacter(index, { id: event.target.value })} /></label><label>显示名称<input aria-label={`角色 ${index + 1} 名称`} value={character.name} disabled={busy} onChange={event => editCharacter(index, { name: event.target.value })} /></label><label>音色 ID<input aria-label={`角色 ${index + 1} 音色`} value={character.voiceId} disabled={busy} onChange={event => editCharacter(index, { voiceId: event.target.value })} /></label><button className="text-button" disabled={busy} onClick={() => edit({ characters: draft.characters.filter((_, position) => position !== index) })}>移除角色 {index + 1}</button></fieldset>)}
-            <button className="add-character" disabled={busy || draft.characters.length >= 20} onClick={() => edit({ characters: [...draft.characters, { id: `character_${crypto.randomUUID().slice(0, 8)}`, name: '新角色', voiceId: '' }] })}>＋ 添加角色</button>
-          </section><section className="panel version-panel"><span className="tiny-label">RELEASES</span><h2>发布记录</h2><p className="muted">发布版本固定保存。编辑草稿不会改变已有存档。</p>{versions.length ? <ol className="version-list">{versions.map(version => <li key={version.id}><strong>v{version.number}</strong><span>{new Date(version.createdAt).toLocaleString('zh-CN')}</span></li>)}</ol> : <p className="muted">还没有发布版本。</p>}</section></aside>
+            <button className="add-character" disabled={busy || draft.characters.length >= 20} onClick={() => edit({ characters: [...draft.characters, { id: `character_${createRequestId().slice(0, 8)}`, name: '新角色', voiceId: '' }] })}>＋ 添加角色</button>
+          </section><section className="panel version-panel"><span className="tiny-label">RELEASES</span><h2>发布记录</h2><p className="muted">发布版本固定保存。编辑草稿不会改变已有存档。</p>{versions.length ? <ol className="version-list">{versions.map(version => <li key={version.id}><div><strong>v{version.number}</strong><span>{new Date(version.createdAt).toLocaleString('zh-CN')}</span></div><button onClick={() => start(version.id)} disabled={busy}>从 v{version.number} 开始模拟</button></li>)}</ol> : <p className="muted">还没有发布版本。</p>}</section></aside>
         </section> : <section className="simulator-layout" aria-label="对话模拟器"><div className="panel conversation-panel"><div className="panel-heading"><div><span className="tiny-label">PLAYTEST</span><h2>听觉故事的文字预演</h2></div>{session && <span className="chip">固定版本 v{session.versionNumber}</span>}</div><p className="simulation-note">模拟模式 · 以下展示台词和语音识别后的文字，不会启动麦克风或播放音频。</p>
-          {!session ? <div className="empty simulator-empty"><div className="wave" aria-hidden="true">▂ ▅ ▃ ▇ ▄</div><h3>从第一次相遇开始</h3><p>{versions.length ? '使用最新已发布版本，选择不同回答，观察故事的变化。' : '先在剧本工作室保存并发布，然后开始模拟。'}</p><button className="primary" disabled={busy || !versions.length} onClick={start}>开始模拟</button></div> : <>
+          {!session ? <div className="empty simulator-empty"><div className="wave" aria-hidden="true">▂ ▅ ▃ ▇ ▄</div><h3>从第一次相遇开始</h3><p>{versions.length ? '使用最新已发布版本，选择不同回答，观察故事的变化。' : '先在剧本工作室保存并发布，然后开始模拟。'}</p><button className="primary" disabled={busy || !versions.length} onClick={() => start()}>开始模拟</button></div> : <>
             <div className="transcript" aria-label="对话日志">{entries.map((entry, index) => <div key={entry.turn.id} className="turn" ref={index === entries.length - 1 ? currentTurnRef : undefined} tabIndex={-1} aria-label={`第 ${index + 1} 段剧情`}><div className="turn-divider">场景片段 {String(index + 1).padStart(2, '0')}</div>{entry.turn.lines.map((line, lineIndex) => { const character = session.characters.find(item => item.id === line.speaker); return <article className={`dialogue ${line.speaker === 'narrator' || !line.speaker ? 'narration' : ''}`} key={lineIndex}><div className="speaker"><span className="avatar" aria-hidden="true">{(character?.name ?? line.speaker ?? '旁白').slice(0, 1)}</span><strong>{character?.name ?? line.speaker ?? '旁白'}</strong>{line.emotion && <small>{line.emotion}</small>}</div><p>{line.text}</p>{(line.music || line.audio) && <div className="audio-cue">{line.music && `♫ 音乐提示：${line.music}`}{line.audio && ` · 配音：${line.audio}`}</div>}</article>; })}{entry.answer && <div className="player-answer"><small>你的选择</small>{entry.answer}</div>}</div>)}</div>
-            {session.turn.ended ? <div className="ending"><span className="tiny-label">END OF STORY</span><h3>这一次，故事停在这里。</h3><p>重新开始，看看另一种选择留下什么回声。</p><button onClick={start} disabled={busy}>重新开始</button></div> : <div className="choice-area"><div className="choice-heading"><strong>你会怎么选择？</strong><span>只接受当前选项</span></div><div className="choices">{session.turn.choices.map((choice, index) => <button key={choice.id} disabled={busy} onClick={() => choose({ choiceId: choice.id }, choice.text)}><span>{index + 1}</span>{choice.text}<i aria-hidden="true">↗</i></button>)}</div><form onSubmit={event => { event.preventDefault(); if (input.trim()) choose({ input: input.trim() }, input.trim()); }}><label className="field-label" htmlFor="choice-input">语音识别后的文字</label><div className="input-row"><input id="choice-input" value={input} disabled={busy} placeholder="例如：第一个，或完整选项文字" maxLength={300} onChange={event => setInput(event.target.value)} /><button className="primary" disabled={busy || !input.trim()} type="submit">提交选择</button></div></form></div>}
-          </>}</div><aside className="inspector"><section className="panel"><span className="tiny-label">SESSION</span><h2>本次游玩</h2>{session ? <><dl className="session-stats"><div><dt>故事版本</dt><dd>v{session.versionNumber}</dd></div><div><dt>存档修订</dt><dd>{session.revision}</dd></div><div><dt>当前状态</dt><dd>{session.turn.ended ? '已结束' : '等待选择'}</dd></div></dl><p className="muted">每次选择自动保存。刷新页面可恢复当前回合。</p><div className="stack-actions"><button disabled={busy} onClick={() => void run(async () => { const restored = await api<Session>(`/sessions/${session.id}`); remember(restored); setEntries([{ turn: restored.turn }]); setNotice('已从服务端恢复当前回合，剧情未推进。'); })}>恢复当前回合</button><button disabled={busy} onClick={start}>新开一局</button></div><details className="debug"><summary>调试状态</summary><p className="muted">仅创作者可见，用于检查历史选择和好感度。</p><pre>{JSON.stringify(session.variables, null, 2)}</pre><small>存档 ID</small><code>{session.id}</code></details></> : <p className="muted">开始模拟后，可在这里检查好感度、历史事件和存档状态。</p>}</section><section className="panel guide"><span className="tiny-label">TRY TWO PATHS</span><h2>验证故事会记住你</h2><p>① 答应保密 → 借伞 → 请求留下</p><p>② 拒绝保密 → 等雨停 → 请求留下</p><p className="muted">比较结局；再检查“提起保密的约定”是否只在第一条路径出现。</p></section></aside></section>}
+            {session.turn.ended ? <div className="ending"><span className="tiny-label">END OF STORY</span><h3>这一次，故事停在这里。</h3><p>重新开始，看看另一种选择留下什么回声。</p><button onClick={() => start()} disabled={busy}>重新开始</button></div> : <div className="choice-area"><div className="choice-heading"><strong>你会怎么选择？</strong><span>只接受当前选项</span></div><div className="choices">{session.turn.choices.map((choice, index) => <button key={choice.id} disabled={busy} onClick={() => choose({ choiceId: choice.id }, choice.text)}><span>{index + 1}</span>{choice.text}<i aria-hidden="true">↗</i></button>)}</div><form onSubmit={event => { event.preventDefault(); if (input.trim()) choose({ input: input.trim() }, input.trim()); }}><label className="field-label" htmlFor="choice-input">语音识别后的文字</label><div className="input-row"><input id="choice-input" value={input} disabled={busy} placeholder="例如：第一个，或完整选项文字" maxLength={300} onChange={event => setInput(event.target.value)} /><button className="primary" disabled={busy || !input.trim()} type="submit">提交选择</button></div></form></div>}
+          </>}</div><aside className="inspector"><section className="panel"><span className="tiny-label">SESSION</span><h2>本次游玩</h2>{session ? <><dl className="session-stats"><div><dt>故事版本</dt><dd>v{session.versionNumber}</dd></div><div><dt>存档修订</dt><dd>{session.revision}</dd></div><div><dt>当前状态</dt><dd>{session.turn.ended ? '已结束' : '等待选择'}</dd></div></dl><p className="muted">每次选择自动保存。刷新页面可恢复当前回合。</p><div className="stack-actions"><button disabled={busy} onClick={() => void run(async () => { const restored = await api<Session>(`/sessions/${session.id}`); remember(restored); setEntries([{ turn: restored.turn }]); setNotice('已从服务端恢复当前回合，剧情未推进。'); })}>恢复当前回合</button><button disabled={busy} onClick={() => start()}>新开一局</button></div><details className="debug"><summary>调试状态</summary><p className="muted">仅创作者可见，用于检查历史选择和好感度。</p><pre>{JSON.stringify(session.variables, null, 2)}</pre><small>存档 ID</small><code>{session.id}</code></details></> : <p className="muted">开始模拟后，可在这里检查好感度、历史事件和存档状态。</p>}</section><section className="panel guide"><span className="tiny-label">TRY TWO PATHS</span><h2>验证故事会记住你</h2><p className="muted">以下路径仅对应「雨夜来信」示例。其他剧本请按其当前选项验证。</p><p>① 答应保密 → 借伞 → 请求留下</p><p>② 拒绝保密 → 等雨停 → 请求留下</p><p className="muted">比较结局；再检查“提起保密的约定”是否只在第一条路径出现。</p></section></aside></section>}
       </>}
       <footer>声间 · 让选择被记住 <span>Ink 驱动 / 本地创作原型</span></footer>
     </main>

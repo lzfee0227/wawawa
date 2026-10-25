@@ -16,7 +16,7 @@ describe('request IDs on localhost and HTTP LAN origins', () => {
   });
 
   it('uses fresh cryptographic bytes and sets UUID v4 version and variant bits without randomUUID', () => {
-    const getRandomValues = vi.fn((bytes: Uint8Array) => {
+    const getRandomValues = vi.fn((bytes: Uint8Array): Uint8Array => {
       expect(bytes).toBeInstanceOf(Uint8Array);
       expect(bytes).toHaveLength(16);
       return bytes.map((_, index) => index);

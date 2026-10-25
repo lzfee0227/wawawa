@@ -190,7 +190,7 @@ export default function App() {
       <button className="new-story" onClick={createStory} disabled={busy || loading}>＋ 新建示例故事</button>
       <button className="new-story" onClick={createBlankStory} disabled={busy || loading}>＋ 新建空白故事</button>
       <label className="import-story">导入 Ink 文件<input type="file" aria-label="导入 Ink 文件" accept=".ink,.txt" disabled={busy || loading} onChange={event => { const file = event.target.files?.[0]; event.target.value = ''; importStory(file); }} /></label>
-      <div className="sidebar-note"><span className="tiny-label">LOCAL PROTOTYPE</span><p>每个选择，<br />都留下回声。</p><small>本地创作与调试工具<br />未接入真实语音和设备</small></div>
+      <div className="sidebar-note"><span className="tiny-label">LOCAL PROTOTYPE</span><p>每个选择，<br />都留下回声。</p><small>本地创作与调试工具<br />语音试听 · 设备接入待验证</small></div>
     </aside>
 
     <main id="main">

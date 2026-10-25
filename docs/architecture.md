@@ -59,3 +59,9 @@ The studio console in SDD-003 is another client of this HTTP endpoint. It posts 
 Service errors become MCP tool errors whose text starts with `CODE: message`. Invalid tool arguments are rejected by the SDK and do not call the service. The adapter does not author, compile, publish, play audio, or interpret raw speech. A host that only displays the returned text still satisfies the contract.
 
 stdio reserves stdout for JSON-RPC. HTTP uses the existing `HOST` and `PORT`, localhost by default. Device playback, including Xiaozhi, stays unverified and outside this adapter.
+
+## Simulator audio boundary (SDD-005)
+
+`VoicePanel` is a presentation adapter: browser SpeechSynthesis/SpeechRecognition, MediaRecorder, HTMLAudioElement, and optional same-origin `/api/audio` requests. It never advances Ink. Recognition fills the existing manual choice input; the existing turn/revision/requestId contract remains authoritative. AbortController cancels work on turn/session/source changes, gameplay requests and unmount. Local file object URLs are released when replaced or unmounted.
+
+`GET /api/audio/capabilities` reports configured booleans only. `POST /api/audio/speech` accepts `{text, voice?}` and returns MPEG audio; `POST /api/audio/transcriptions` accepts bounded raw audio and returns `{text}`. The server converts recordings to upstream multipart and enforces timeouts, size limits, safe errors and no credential-bearing redirects. Each provider uses server environment configuration; no browser-provided endpoint or key. No persistence changes, URL proxy, caching, streaming or MCP extensions. These unauthenticated, potentially billable endpoints share the trusted local studio boundary.

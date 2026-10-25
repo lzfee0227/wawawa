@@ -19,7 +19,7 @@ test('R11–R15 import the full story, advance choices and replay a selected ver
   await page.getByRole('button', { name: '保存并发布' }).click();
   await expect(page.getByText('版本 v1 已发布。可以前往对话模拟器开始验证。')).toBeVisible();
   await page.getByRole('button', { name: '从 v1 开始模拟' }).click();
-  for (const choice of ['沉默不语', '立界，硬挡这一击', '把旧校徽交给何敏']) {
+  for (const choice of ['沉默不语', '立界，硬挡这一击', '把旧校徽交给何敏', '接受道歉，要求以后停手']) {
     await page.getByRole('button', { name: new RegExp(choice) }).click();
   }
   await expect(page.getByRole('button', { name: /先查李家的名字/ })).toBeVisible();

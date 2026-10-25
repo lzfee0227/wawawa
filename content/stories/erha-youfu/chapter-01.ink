@@ -30,6 +30,28 @@ VAR run_echo_shared_cost = false
 VAR run_echo_revocable_oath = false
 VAR run_number = 1
 
+VAR identity_shared = false
+VAR records_shared = false
+// Whether the whole team has heard and accepted the current cost ledger.
+VAR bloodline_shared = false
+VAR extra_help_forfeited = false
+VAR ma_respected = false
+VAR station_safe = false
+VAR trial_shared = false
+VAR evidence_public = false
+VAR relationship_ready = false
+VAR partner_focus = "none"
+VAR archive_focus = "none"
+VAR dangerous_delegations = 0
+VAR ending_id = ""
+VAR seen_jinni = false
+VAR seen_hemin = false
+VAR seen_ma_good = false
+VAR seen_ma_true = false
+VAR seen_partner = false
+VAR seen_power = false
+
+
 -> arrival
 
 === arrival ===
@@ -38,7 +60,7 @@ VAR run_number = 1
 你，李博特，醒来时发现自己成了霍海魔法大学的新生李二哈。 # speaker:narrator
 你的记忆和这具身体的记忆在脑中撞成一团；你还没有资格把任何一段人生说成自己的。 # speaker:narrator
 {run_number > 1:
-    这是第 {run_number} 次醒来。系统没有带回上一轮的人生，只留下已经验证过的两道回响。 # speaker:system
+    另一种可能从这场雨开始。上一段人生留在它自己的世界里，系统只带来已经获得的调查回响。 # speaker:system
     {run_echo_shared_cost: “回响一：代价可以由多人分担。” # speaker:system}
     {run_echo_revocable_oath: “回响二：权限必须可以撤回。” # speaker:system}
     你仍然需要在这一轮重新取得证据和信任。 # speaker:narrator
@@ -98,7 +120,7 @@ VAR run_number = 1
 
 你在心里骂了一句：怎么才来？ # speaker:narrator
 
-系统只给出三个选项，像一张不太可靠的救命纸条： # speaker:narrator
+系统迅速报出三种应对。立界只挡一击；借钟声会新增一笔因果债，稍后需要偿还；开口道歉不增加债，但能否停咒取决于对方。你只有片刻作决定。 # speaker:narrator
 + [立界，硬挡这一击]
     ~ courage += 1
     -> break_curse
@@ -170,7 +192,7 @@ VAR run_number = 1
 
 那一眼不像原谅，也不像仇恨。更像她在确认：你到底是走运，还是藏着什么。 # speaker:narrator
 
-何敏把一张被雨水打湿的登记单递给你。纸背面印着一枚半圆形的旧校徽，校徽中央缺了一角。 # speaker:narrator
+何敏把一张被雨水打湿的登记单递给你。纸背面印着半圆形的旧校徽；随登记单一起滑出来的，还有一枚缺角的金属校徽，图案和纸上一样。 # speaker:narrator
 
 “这不是新生登记表的图案。它和校史目录里一张被撕掉的图一模一样。” # speaker:he_min
 
@@ -242,7 +264,7 @@ VAR run_number = 1
 === first_night ===
 新生注册结束，礼堂外的雨也停了。远处钟楼敲响第九声，回声在校园地下停了半拍。 # speaker:narrator # music:bell-distant
 
-你们四个人站在回廊阴影里。没人知道那枚旧校徽最终会打开什么，但每个人都知道，今晚之后，霍海不会再只是大学。 # speaker:narrator
+你们五个人站在回廊阴影里。没人知道那枚旧校徽最终会打开什么，但每个人都知道，今晚之后，霍海不会再只是大学。 # speaker:narrator
 
 {discipline_pending:
     马二福在校纪员的记录纸上签下自己的名字。她看了你一眼。 # speaker:narrator
@@ -298,6 +320,6 @@ VAR run_number = 1
 }
 
 系统的最后一行提示浮在你的意识里。 # speaker:narrator
-“本次残响已归档。下一处响应：旧档案室。” # speaker:system
+“已记下这处待调查的回声。下一处响应：旧档案室。” # speaker:system
 
 -> END

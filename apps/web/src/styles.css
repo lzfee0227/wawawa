@@ -40,7 +40,7 @@ button:disabled {
   opacity: .5;
 }
 
-button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible {
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible {
   outline: 3px solid #d5a54d;
   outline-offset: 3px;
 }
@@ -1171,3 +1171,27 @@ footer span {
     align-items: flex-start;
   }
 }
+.chapter-playtest select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  margin: 6px 0 16px;
+  padding: 10px;
+  font: inherit;
+  color: inherit;
+  background: #fff;
+  border: 1px solid #d8ddd9;
+  border-radius: 8px;
+}
+
+.chapter-playtest button { width: 100%; }
+.chapter-playtest p, .playtest-banner { overflow-wrap: anywhere; }
+.playtest-banner {
+  margin: 0 0 18px;
+  padding: 16px;
+  background: #f2f6ed;
+  border: 1px solid #d9e2ce;
+  border-radius: 10px;
+}
+.playtest-banner p { margin: 8px 0; }

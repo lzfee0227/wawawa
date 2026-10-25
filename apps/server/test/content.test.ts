@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { compile, renderTurn } from '../src/engine.js';
+import { readPlaytestEntries } from '../src/playtest.js';
 
 type Rendered = ReturnType<typeof renderTurn>;
 
@@ -51,8 +52,9 @@ const routes = [
 
 describe('repository story: Erha Youfu R02/R04–R07', () => {
   let compiled: string;
+  const source = readFileSync(new URL('../../../content/stories/erha-youfu/story.ink', import.meta.url), 'utf8');
+  const entries = readPlaytestEntries(source);
   beforeAll(() => {
-    const source = readFileSync(new URL('../../../content/stories/erha-youfu/story.ink', import.meta.url), 'utf8');
     const result = compile(source);
     expect(result.ok, JSON.stringify(result.diagnostics)).toBe(true);
     expect(result.diagnostics).toEqual([]);
@@ -76,6 +78,56 @@ describe('repository story: Erha Youfu R02/R04–R07', () => {
     expect(first.turn.lines[0]).toMatchObject({ speaker: 'narrator', music: 'rain' });
     expect(first.turn.choices.map(choice => choice.text)).toEqual(['沉默不语', '忽略她，直接路过', '怼回去', '先道歉']);
     expect(first.variables).toMatchObject({ run_number: 1, route: 'unselected', echo_shared_cost: false, echo_revocable_oath: false });
+  });
+
+  it('CP06 continues directly into chapter two while the chapter-one demo ends', () => {
+    const complete = play(renderTurn(compiled), commonChoices.slice(0, 3));
+    expect(complete.turn.ended).toBe(false);
+    expect(complete.turn.choices.map(choice => choice.text)).toContain('先查李家的名字');
+    const demoSource = readFileSync(new URL('../../../content/stories/erha-youfu/chapter-01.ink', import.meta.url), 'utf8');
+    const demoCompiled = compile(demoSource).compiled!;
+    let demo = renderTurn(demoCompiled);
+    for (const text of commonChoices.slice(0, 3)) {
+      const choice = demo.turn.choices.find(choice => choice.text === text)!;
+      demo = renderTurn(demoCompiled, demo.inkState, choice.index);
+    }
+    expect(demo.turn.ended).toBe(true);
+  });
+
+  it('CP06 exposes every supported chapter and four later routes', () => {
+    expect(entries).toHaveLength(22);
+    expect(new Set(entries.map(entry => entry.chapter)).size).toBe(7);
+    for (const chapter of [4, 5, 6, 7, 8]) {
+      expect(entries.filter(entry => entry.id.startsWith(`chapter_${chapter}_`))).toHaveLength(4);
+    }
+  });
+
+  it.each(entries)('CP03/CP04/CP06 $id matches valid first-run history and continues after restoration', entry => {
+    const [, chapterText, routeKey] = entry.id.split('_');
+    const chapter = Number(chapterText);
+    const routeIndex = ['jinni', 'hemin', 'ma', 'partner'].indexOf(routeKey);
+    const route = routes[routeIndex < 0 ? 0 : routeIndex];
+    const priorCount = routeKey === 'partner'
+      ? ({ 4: 2, 5: 3, 6: 4, 7: 6, 8: 7 } as Record<number, number>)[chapter]
+      : ({ 4: 2, 5: 4, 6: 6, 7: 8, 8: 9 } as Record<number, number>)[chapter];
+    const prior = chapter < 4
+      ? commonChoices.slice(0, chapter === 2 ? 3 : 5)
+      : [...commonChoices, ...route.choices.slice(0, priorCount)];
+    const remaining = chapter < 4
+      ? [...commonChoices.slice(chapter === 2 ? 3 : 5), ...route.choices]
+      : route.choices.slice(priorCount);
+    const normal = play(renderTurn(compiled), prior);
+    const trial = renderTurn(compiled, undefined, undefined, entry.path);
+    expect(trial.variables).toEqual(normal.variables);
+    expect(trial.variables).toMatchObject({ run_number: 1, echo_shared_cost: false, echo_revocable_oath: false, true_plan: false });
+    expect(trial.turn.choices.map(choice => choice.text)).toEqual(normal.turn.choices.map(choice => choice.text));
+    expect(trial.turn.lines.some(line => line.text.includes('试跑'))).toBe(false);
+    const summary = play(trial, remaining);
+    expect(summary.turn.lines.map(line => line.text)).toContain(route.ending);
+    expect(summary.variables.true_plan).toBe(false);
+    const stopped = choose(summary, '停在本轮结局');
+    expect(stopped.turn.ended).toBe(true);
+    expect(stopped.variables).toEqual(summary.variables);
   });
 
   it.each(routes)('reaches $name ending summary through valid choices and can stop', route => {

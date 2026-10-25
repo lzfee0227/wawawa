@@ -1,5 +1,28 @@
+// @playtest {"id":"chapter_2_common","chapter":"第二章","label":"共同线 · 取证优先","description":"作者预设，非玩家存档：首轮沉默回应、立界挡咒、校徽交何敏。无跨周目回响。","path":"playtest_2_common"}
+// @playtest {"id":"chapter_3_common","chapter":"第三章","label":"共同线 · 取证优先","description":"作者预设，非玩家存档：首轮沉默回应、立界挡咒、校徽交何敏；已查李家并到校史塔取证，取得钥匙半片。无跨周目回响。","path":"playtest_3_common"}
+// @playtest {"id":"chapter_4_jinni","chapter":"第四章","label":"金妮线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择金妮线。首轮无回响，不预解锁真结局。","path":"playtest_4_jinni"}
+// @playtest {"id":"chapter_4_hemin","chapter":"第四章","label":"何敏线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择何敏线。首轮无回响，不预解锁真结局。","path":"playtest_4_hemin"}
+// @playtest {"id":"chapter_4_ma","chapter":"第四章","label":"马二福线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择马二福线。首轮无回响，不预解锁真结局。","path":"playtest_4_ma"}
+// @playtest {"id":"chapter_4_partner","chapter":"第四章","label":"伙伴线 · 伙伴协作","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择伙伴线。首轮无回响，不预解锁真结局。","path":"playtest_4_partner"}
+// @playtest {"id":"chapter_5_jinni","chapter":"第五章","label":"金妮线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择金妮线。此前调查选择公开、尊重与协作；首轮无回响，不预解锁真结局。","path":"playtest_5_jinni"}
+// @playtest {"id":"chapter_5_hemin","chapter":"第五章","label":"何敏线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择何敏线。此前调查选择公开、尊重与协作；首轮无回响，不预解锁真结局。","path":"playtest_5_hemin"}
+// @playtest {"id":"chapter_5_ma","chapter":"第五章","label":"马二福线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择马二福线。此前调查选择公开、尊重与协作；首轮无回响，不预解锁真结局。","path":"playtest_5_ma"}
+// @playtest {"id":"chapter_5_partner","chapter":"第五章","label":"伙伴线 · 伙伴协作","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择伙伴线。此前调查选择公开、尊重与协作；首轮无回响，不预解锁真结局。","path":"playtest_5_partner"}
+// @playtest {"id":"chapter_6_jinni","chapter":"第六章","label":"金妮线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择金妮线。此前调查选择公开、尊重与协作；已确认关系；首轮无回响，不预解锁真结局。","path":"playtest_6_jinni"}
+// @playtest {"id":"chapter_6_hemin","chapter":"第六章","label":"何敏线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择何敏线。此前调查选择公开、尊重与协作；已确认关系；首轮无回响，不预解锁真结局。","path":"playtest_6_hemin"}
+// @playtest {"id":"chapter_6_ma","chapter":"第六章","label":"马二福线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择马二福线。此前调查选择公开、尊重与协作；已确认关系；首轮无回响，不预解锁真结局。","path":"playtest_6_ma"}
+// @playtest {"id":"chapter_6_partner","chapter":"第六章","label":"伙伴线 · 伙伴协作","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择伙伴线。此前调查选择公开、尊重与协作；首轮无回响，不预解锁真结局。","path":"playtest_6_partner"}
+// @playtest {"id":"chapter_7_jinni","chapter":"第七章","label":"金妮线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择金妮线。此前调查选择公开、尊重与协作；已确认关系；已公开血脉并重建分担方案；首轮无回响，不预解锁真结局。","path":"playtest_7_jinni"}
+// @playtest {"id":"chapter_7_hemin","chapter":"第七章","label":"何敏线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择何敏线。此前调查选择公开、尊重与协作；已确认关系；已公开血脉并重建分担方案；首轮无回响，不预解锁真结局。","path":"playtest_7_hemin"}
+// @playtest {"id":"chapter_7_ma","chapter":"第七章","label":"马二福线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择马二福线。此前调查选择公开、尊重与协作；已确认关系；已公开血脉并重建分担方案；首轮无回响，不预解锁真结局。","path":"playtest_7_ma"}
+// @playtest {"id":"chapter_7_partner","chapter":"第七章","label":"伙伴线 · 伙伴协作","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择伙伴线。此前调查选择公开、尊重与协作；已公开血脉并重建分担方案；首轮无回响，不预解锁真结局。","path":"playtest_7_partner"}
+// @playtest {"id":"chapter_8_jinni","chapter":"第八章","label":"金妮线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择金妮线。此前调查选择公开、尊重与协作；已确认关系；已公开血脉并重建分担方案；首轮无回响，不预解锁真结局。","path":"playtest_8_jinni"}
+// @playtest {"id":"chapter_8_hemin","chapter":"第八章","label":"何敏线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择何敏线。此前调查选择公开、尊重与协作；已确认关系；已公开血脉并重建分担方案；首轮无回响，不预解锁真结局。","path":"playtest_8_hemin"}
+// @playtest {"id":"chapter_8_ma","chapter":"第八章","label":"马二福线 · 首轮感情线","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择马二福线。此前调查选择公开、尊重与协作；已确认关系；已公开血脉并重建分担方案；首轮无回响，不预解锁真结局。","path":"playtest_8_ma"}
+// @playtest {"id":"chapter_8_partner","chapter":"第八章","label":"伙伴线 · 伙伴协作","description":"作者预设，非玩家存档：校徽交何敏，校史塔取证，试炼分担压力；已选择伙伴线。此前调查选择公开、尊重与协作；已公开血脉并重建分担方案；首轮无回响，不预解锁真结局。","path":"playtest_8_partner"}
+
 // 《二哈有福》第一章：下跪咒与新生注册
-// 本章单章源稿；完整可导入版本见 story.ink。
+// 八章完整导入稿；按章源稿仅供审阅。
 
 VAR reputation = 0
 VAR courage = 0
@@ -833,3 +856,322 @@ VAR run_number = 1
 ~ ma_apology = false
 ~ true_plan = false
 -> arrival
+
+
+// SDD-006 CP03/CP06：以下作者预设仅由指定章节试跑使用。
+// 独立新存档先使用 VAR 默认值，再套用共同前情及路线差异；普通游玩不经过此处。
+// 数值对应内容测试中的首轮取证/协作路径，不携带真实玩家进度。
+
+=== playtest_common_history ===
+~ reputation = 1
+~ courage = 1
+~ investigation = 1
+~ trust_jin_en = 1
+~ trust_he_min = 2
+~ trust_ma_er_fu = -1
+~ badge_holder = "he_min"
+->->
+
+=== playtest_2_common ===
+-> playtest_common_history ->
+-> chapter_02_start
+
+=== playtest_3_common ===
+-> playtest_common_history ->
+~ investigation = 3
+~ knows_bloodline = true
+~ has_fumen_key = true
+-> chapter_03_start
+
+=== playtest_4_jinni ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 4
+~ trust_jin_ni = 1
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ route = "jin_ni"
+~ romance = true
+-> chapter_04_jinni
+
+=== playtest_4_hemin ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 4
+~ trust_he_min = 3
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ route = "he_min"
+~ romance = true
+-> chapter_04_hemin
+
+=== playtest_4_ma ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 4
+~ trust_ma_er_fu = 0
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ route = "ma_er_fu"
+~ romance = true
+-> chapter_04_ma
+
+=== playtest_4_partner ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 4
+~ trust_jin_en = 2
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ route = "partner"
+-> chapter_04_partner
+
+=== playtest_5_jinni ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 5
+~ trust_jin_ni = 4
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ knows_system_cost = true
+~ route = "jin_ni"
+~ romance = true
+-> chapter_05_jinni
+
+=== playtest_5_hemin ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 7
+~ trust_he_min = 6
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ revocable_oath = true
+~ knows_system_cost = true
+~ route = "he_min"
+~ romance = true
+-> chapter_05_hemin
+
+=== playtest_5_ma ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 5
+~ trust_ma_er_fu = 3
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ knows_system_cost = true
+~ route = "ma_er_fu"
+~ romance = true
+~ ma_apology = true
+-> chapter_05_ma
+
+=== playtest_5_partner ===
+-> playtest_common_history ->
+~ reputation = 3
+~ courage = 2
+~ investigation = 5
+~ trust_jin_en = 4
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ route = "partner"
+-> chapter_05_partner
+
+=== playtest_6_jinni ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 6
+~ trust_jin_ni = 6
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ knows_system_cost = true
+~ route = "jin_ni"
+~ romance = true
+~ relationship_confirmed = true
+-> chapter_06_eve
+
+=== playtest_6_hemin ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 8
+~ trust_he_min = 8
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ revocable_oath = true
+~ knows_system_cost = true
+~ route = "he_min"
+~ romance = true
+~ relationship_confirmed = true
+-> chapter_06_eve
+
+=== playtest_6_ma ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 6
+~ trust_ma_er_fu = 5
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ revocable_oath = true
+~ knows_system_cost = true
+~ route = "ma_er_fu"
+~ romance = true
+~ relationship_confirmed = true
+~ ma_apology = true
+-> chapter_06_eve
+
+=== playtest_6_partner ===
+-> playtest_common_history ->
+~ reputation = 3
+~ courage = 2
+~ investigation = 7
+~ trust_jin_en = 5
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ route = "partner"
+-> chapter_06_eve
+
+=== playtest_7_jinni ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 8
+~ trust_jin_en = 2
+~ trust_jin_ni = 6
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ knows_system_cost = true
+~ route = "jin_ni"
+~ romance = true
+~ relationship_confirmed = true
+-> chapter_07_route
+
+=== playtest_7_hemin ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 10
+~ trust_jin_en = 2
+~ trust_he_min = 8
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ revocable_oath = true
+~ knows_system_cost = true
+~ route = "he_min"
+~ romance = true
+~ relationship_confirmed = true
+-> chapter_07_route
+
+=== playtest_7_ma ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 8
+~ trust_jin_en = 2
+~ trust_ma_er_fu = 5
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ revocable_oath = true
+~ knows_system_cost = true
+~ route = "ma_er_fu"
+~ romance = true
+~ relationship_confirmed = true
+~ ma_apology = true
+-> chapter_07_route
+
+=== playtest_7_partner ===
+-> playtest_common_history ->
+~ reputation = 3
+~ courage = 2
+~ investigation = 9
+~ trust_jin_en = 6
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ route = "partner"
+-> chapter_07_route
+
+=== playtest_8_jinni ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 9
+~ trust_jin_en = 2
+~ trust_jin_ni = 6
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ knows_system_cost = true
+~ route = "jin_ni"
+~ romance = true
+~ relationship_confirmed = true
+-> chapter_08_jinni
+
+=== playtest_8_hemin ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 11
+~ trust_jin_en = 2
+~ trust_he_min = 8
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ revocable_oath = true
+~ knows_system_cost = true
+~ route = "he_min"
+~ romance = true
+~ relationship_confirmed = true
+-> chapter_08_hemin
+
+=== playtest_8_ma ===
+-> playtest_common_history ->
+~ reputation = 2
+~ courage = 2
+~ investigation = 8
+~ trust_jin_en = 2
+~ trust_ma_er_fu = 5
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ revocable_oath = true
+~ knows_system_cost = true
+~ route = "ma_er_fu"
+~ romance = true
+~ relationship_confirmed = true
+~ ma_apology = true
+-> chapter_08_ma
+
+=== playtest_8_partner ===
+-> playtest_common_history ->
+~ reputation = 4
+~ courage = 2
+~ investigation = 10
+~ trust_jin_en = 6
+~ knows_bloodline = true
+~ has_fumen_key = true
+~ shared_cost = true
+~ route = "partner"
+-> chapter_08_partner

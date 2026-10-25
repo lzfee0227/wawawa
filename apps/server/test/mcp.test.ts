@@ -91,7 +91,9 @@ describe('MCP play tools M01–M07', () => {
     expect((await call(client, 'get_session', { sessionId: snapshot.sessionId })).json).toMatchObject({ versionNumber: 1 });
     const prompt = await client.getPrompt({ name: 'play_turn' });
     const promptText = prompt.messages.map(message => message.content.type === 'text' ? message.content.text : '').join('\n');
-    expect(promptText).toContain('照读');
+    expect(promptText).toContain('照读工具返回的台词');
+    expect(promptText).toContain('不要总结');
+    expect(promptText).toContain('逐字按照返回的剧本和台词');
     expect(promptText).toContain('禁止编造选项');
     expect(promptText).toContain('禁止声称已播放声音');
   });
